@@ -46,20 +46,33 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
                 </ul>
               </div>
 
-              {/* macOS/Linux Installation */}
-              <div className="bg-gray-900 p-3 rounded">
-                <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
-                  <span>🍎</span> macOS / <span>🐧</span> Linux
-                </p>
-                <pre className="text-green-400 text-xs overflow-x-auto">brew install hashcat</pre>
-              </div>
+              {/* Installation - Side by Side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* macOS/Linux Installation */}
+                <div className="bg-gray-900 p-3 rounded">
+                  <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    macOS /
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.835-.41 1.6-.41 2.311 0 1.279.678 2.362 1.697 3.005.675.427 1.525.687 2.452.687.181 0 .359-.01.536-.03.722-.082 1.364-.472 1.944-.902.58-.43 1.127-.902 1.697-.902.57 0 1.117.472 1.697.902.58.43 1.222.82 1.944.902.177.02.355.03.536.03.927 0 1.777-.26 2.452-.687 1.019-.643 1.697-1.726 1.697-3.005 0-.711-.132-1.476-.41-2.311-.589-1.771-1.831-3.47-2.716-4.521-.75-1.067-.974-1.928-1.05-3.02-.065-1.491 1.056-5.965-3.17-6.298-.165-.013-.325-.021-.48-.021zm-.134 2.938c1.71 0 2.597 1.522 2.597 3.063 0 1.541-.887 3.063-2.597 3.063s-2.597-1.522-2.597-3.063c0-1.541.887-3.063 2.597-3.063z"/>
+                    </svg>
+                    Linux
+                  </p>
+                  <pre className="text-green-400 text-xs overflow-x-auto">brew install hashcat</pre>
+                </div>
 
-              {/* Windows Installation */}
-              <div className="bg-gray-900 p-3 rounded">
-                <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
-                  <span>🪟</span> Windows
-                </p>
-                <p className="text-gray-400 text-xs">Download from <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">hashcat.net/hashcat</a></p>
+                {/* Windows Installation */}
+                <div className="bg-gray-900 p-3 rounded">
+                  <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                    </svg>
+                    Windows
+                  </p>
+                  <p className="text-gray-400 text-xs">Download from <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">hashcat.net/hashcat</a></p>
+                </div>
               </div>
             </div>
           </div>
