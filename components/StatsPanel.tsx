@@ -1,10 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import Timer from './Timer';
+import ConfirmModal from './ConfirmModal';
 
 export default function StatsPanel() {
   const { stats, resetGame, skipLevel } = useGame();
+  const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const formatTime = (seconds: number | null) => {
     if (seconds === null) return '--:--';
@@ -61,11 +65,7 @@ export default function StatsPanel() {
 
       {/* Skip Level Button */}
       <button
-        onClick={() => {
-          if (confirm('Skip this profile and generate a new one? (No stats penalty)')) {
-            skipLevel();
-          }
-        }}
+        onClick={() => setShowSkipConfirm(true)}
         className="w-full px-4 py-2 bg-yellow-900/50 hover:bg-yellow-900/70 text-yellow-400 rounded-lg font-medium transition-colors"
       >
         ⏭️ Skip Level
@@ -73,11 +73,7 @@ export default function StatsPanel() {
 
       {/* Reset Button */}
       <button
-        onClick={() => {
-          if (confirm('Reset all stats and start fresh? This cannot be undone.')) {
-            resetGame();
-          }
-        }}
+        onClick={() => setShowResetConfirm(true)}
         className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-colors"
       >
         Reset All Stats
@@ -93,6 +89,37 @@ export default function StatsPanel() {
           <li>• Combine words + numbers</li>
         </ul>
       </div>
+
+      {/* Confirmation Modals */}
+      {showSkipConfirm && (
+        <ConfirmModal
+          title="Skip This Profile?"
+          message="Generate a new profile to practice on. Your stats won't be affected."
+          confirmText="Skip Level"
+          cancelText="Keep Playing"
+          confirmColor="yellow"
+          onConfirm={() => {
+            skipLevel();
+            setShowSkipConfirm(false);
+          }}
+          onCancel={() => setShowSkipConfirm(false)}
+        />
+      )}
+
+      {showResetConfirm && (
+        <ConfirmModal
+          title="Reset All Stats?"
+          message="This will erase all your progress, including rounds completed, streaks, and fastest time. This action cannot be undone."
+          confirmText="Reset Everything"
+          cancelText="Cancel"
+          confirmColor="red"
+          onConfirm={() => {
+            resetGame();
+            setShowResetConfirm(false);
+          }}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
     </div>
   );
 }
