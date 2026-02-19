@@ -79,13 +79,6 @@ export default function Home() {
                   📜 Viewing History
                 </span>
               )}
-              <button
-                onClick={() => setShowHowToPlay(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 border border-green-600/50 text-green-400 text-sm rounded-lg transition-colors"
-              >
-                <HelpCircle className="w-4 h-4" />
-                How to Play
-              </button>
             </div>
           </div>
         </div>
@@ -114,6 +107,15 @@ export default function Home() {
 
       {/* Profile Navigation */}
       <ProfileNavigationBar />
+
+      {/* How to Play Button - Bottom Left */}
+      <button
+        onClick={() => setShowHowToPlay(true)}
+        className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 border border-green-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
+      >
+        <HelpCircle className="w-5 h-5" />
+        How to Play
+      </button>
 
       {/* Completion Modal */}
       {roundCompleted && !isViewingHistory && (
