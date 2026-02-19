@@ -1,0 +1,44 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { useGame } from '@/contexts/GameContext';
+
+export default function Timer() {
+  const { isRunning, elapsedTime, startTime, updateElapsedTime } = useGame();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isRunning && startTime) {
+      intervalRef.current = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        updateElapsedTime(elapsed);
+      }, 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, startTime, updateElapsedTime]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 bg-gray-900 rounded-full border border-gray-800">
+      <span className="text-xl">⏱️</span>
+      <span className="font-mono text-lg font-bold text-white">
+        {formatTime(elapsedTime)}
+      </span>
+    </div>
+  );
+}
