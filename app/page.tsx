@@ -8,12 +8,15 @@ import HashBanner from '@/components/HashBanner';
 import CompletionModal from '@/components/CompletionModal';
 import StatsPanel from '@/components/StatsPanel';
 import ProfileNavigationBar from '@/components/ProfileNavigationBar';
+import HowToPlayModal from '@/components/HowToPlayModal';
 import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated, clearAuthSession } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
+import { HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [isAuth, setIsAuth] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
   const router = useRouter();
   const {
     currentProfile,
@@ -70,11 +73,20 @@ export default function Home() {
         <div className="border-b border-gray-800 p-4 backdrop-blur bg-black/80 sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">OSINT Challenge</h2>
-            {isViewingHistory && (
-              <span className="px-3 py-1 bg-yellow-600/20 border border-yellow-600/50 text-yellow-400 text-sm rounded-full">
-                📜 Viewing History
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              {isViewingHistory && (
+                <span className="px-3 py-1 bg-yellow-600/20 border border-yellow-600/50 text-yellow-400 text-sm rounded-full">
+                  📜 Viewing History
+                </span>
+              )}
+              <button
+                onClick={() => setShowHowToPlay(true)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-green-600/20 hover:bg-green-600/30 border border-green-600/50 text-green-400 text-sm rounded-lg transition-colors"
+              >
+                <HelpCircle className="w-4 h-4" />
+                How to Play
+              </button>
+            </div>
           </div>
         </div>
 
@@ -115,6 +127,11 @@ export default function Home() {
           fastestTime={stats.fastestTime}
           onNextRound={handleNextRound}
         />
+      )}
+
+      {/* How to Play Modal */}
+      {showHowToPlay && (
+        <HowToPlayModal onClose={() => setShowHowToPlay(false)} />
       )}
     </div>
   );
