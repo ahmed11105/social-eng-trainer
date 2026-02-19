@@ -94,20 +94,14 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
 
               {/* Step 2: Build Wordlist */}
               <div className="border-l-4 border-green-500 pl-4">
-                <p className="text-white font-semibold mb-2">Step 2: Create wordlist.txt 📝</p>
-                <p className="text-gray-400 text-sm mb-3">
-                  Build a list of password guesses based on the intel you gathered. Choose one approach:
-                </p>
+                <p className="text-white font-semibold mb-3">Step 2: Create wordlist.txt 📝</p>
 
                 {/* Side by side options */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Option A */}
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-2">Option A: Manual Combinations</p>
-                    <p className="text-gray-400 text-xs mb-2">
-                      Write out complete password guesses yourself. Each line is one password attempt.
-                      Hashcat will try each line exactly as written.
-                    </p>
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Guesses</p>
+                    <p className="text-gray-400 text-xs mb-2">Make manual password guesses for hashcat to try</p>
                     <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > wordlist.txt << EOF
 luna2019
 luna2021
@@ -121,11 +115,8 @@ EOF`}</pre>
 
                   {/* Option B */}
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-2">Option B: Keywords Only</p>
-                    <p className="text-gray-400 text-xs mb-2">
-                      Put keywords in separate files. Hashcat will automatically combine them
-                      (luna+2019, luna+2020, seattle+2019, etc.) using combinator mode.
-                    </p>
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Combine</p>
+                    <p className="text-gray-400 text-xs mb-2">Hashcat combines all words with all numbers</p>
                     <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt << EOF
 luna
 seattle
