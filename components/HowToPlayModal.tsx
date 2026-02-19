@@ -199,19 +199,28 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                 <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
 Exhausted
 Status: Not cracked</pre>
-                <p className="text-gray-400 text-sm mt-3 mb-2">Think again! Adoption year was 2020.</p>
+                <p className="text-gray-400 text-sm mt-3 mb-3"><em>Think again! Adoption year was 2020.</em></p>
 
-                <p className="text-gray-400 text-xs mb-1"><strong>If using Option A:</strong> Add the combination manually:</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-echo "luna2020" &gt;&gt; wordlist.txt
-hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
+                {/* Side by side options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Option A */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Fix</p>
+                    <p className="text-gray-400 text-xs mb-2">Add the missing combination</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "luna2020" >> wordlist.txt
+hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                  </div>
 
-                <p className="text-gray-400 text-xs mt-2 mb-1"><strong>If using Option B:</strong> Add 2020 to numbers list:</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-echo "2020" &gt;&gt; numbers.txt
-hashcat -m 0 -a 1 hash.txt words.txt numbers.txt</pre>
+                  {/* Option B */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Fix</p>
+                    <p className="text-gray-400 text-xs mb-2">Add 2020 to auto-combine</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "2020" >> numbers.txt
+hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                  </div>
+                </div>
 
-                <p className="text-gray-400 text-sm mt-3 mb-2">Result:</p>
+                <p className="text-gray-400 text-sm mt-4 mb-2">Result:</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
 b59c67bf196a4758191e42f76670ceba:luna2020
 Status: Cracked</pre>
