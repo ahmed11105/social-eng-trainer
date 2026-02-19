@@ -23,6 +23,14 @@ class SeededRandom {
   boolean(prob: number = 0.5): boolean {
     return this.next() < prob;
   }
+  shuffle<T>(arr: T[]): T[] {
+    const result = [...arr];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(this.next() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
 }
 
 /**
@@ -59,6 +67,24 @@ export function composeTweet(persona: RichPersona, type: string, seed: number): 
     case 'recent_event':
       tweet = composeRecentEventTweet(persona, rng);
       break;
+    case 'reply_to_friend':
+      tweet = composeReplyTweet(persona, rng);
+      break;
+    case 'reaction':
+      tweet = composeReactionTweet(persona, rng);
+      break;
+    case 'boring_observation':
+      tweet = composeBoringTweet(persona, rng);
+      break;
+    case 'niche_interest':
+      tweet = composeNicheTweet(persona, rng);
+      break;
+    case 'imperfect_moment':
+      tweet = composeImperfectTweet(persona, rng);
+      break;
+    case 'continuity_reference':
+      tweet = composeContinuityTweet(persona, rng);
+      break;
     default:
       tweet = composeMundaneTweet(persona, rng);
   }
@@ -75,31 +101,34 @@ function composePetClueTweet(persona: RichPersona, rng: SeededRandom): string {
   const petName = persona.pet.name;
   const petType = persona.pet.type;
 
-  // Write naturally based on persona's voice
+  // Write naturally based on persona's voice - more variety
   const structures = [
-    `cant believe its been ${years} years since i got ${petName}`,
-    `${years} years with ${petName} today`,
-    `my ${petType} ${petName} is ${years} years old now`,
-    `${petName} has been in my life for ${years} years`,
-    `adopted ${petName} ${years} years ago and best decision ever`,
+    `${rng.pick(['cant believe', 'crazy that', 'wild that'])} its been ${years} years since i ${rng.pick(['got', 'adopted', 'brought home'])} ${petName}`,
+    `${years} years with ${petName} ${rng.pick(['today', 'and counting', 'already', 'now'])}`,
+    `my ${petType} ${petName} ${rng.pick([`turned ${years}`, `is ${years} now`, `is ${years} years old`])}`,
+    `${petName} has been in my life for ${years} years ${rng.pick(['now', 'already', ''])}`.trim(),
+    `adopted ${petName} ${rng.pick([`${years} years ago`, `back in ${persona.pet.adoptionYear}`, `in ${persona.pet.adoptionYear}`])} ${rng.pick(['and best decision ever', 'best decision', ''])}`.trim(),
+    `${petName}'s ${rng.pick(['adoption', 'gotcha'])} ${rng.pick(['day', 'anniversary'])} ${rng.pick(['is coming up', 'was'])} ${rng.pick([`${years} years`, 'and its been ' + years + ' years'])}`,
+    `been ${years} years since ${petName} ${rng.pick(['came into my life', 'joined the family', 'became mine'])}`,
   ];
 
   let text = rng.pick(structures);
 
-  // Add ending based on persona
-  if (rng.boolean(0.6)) {
+  // Add ending based on persona (less frequently)
+  if (rng.boolean(0.4)) {
     const endings = [
       `. best ${petType} ever`,
       `! love this ${petType} so much`,
-      `. couldnt imagine life without them`,
-      `! ${persona.pet.personality} and perfect`,
+      `. ${rng.pick(['couldnt', 'cant'])} imagine life without ${rng.pick(['them', petName])}`,
+      `. ${persona.pet.personality} and perfect`,
+      `. ${rng.pick(['still', 'always'])} ${persona.pet.personality}`,
     ];
     text += rng.pick(endings);
   }
 
   // Add emoji if persona uses them
-  if (persona.voice.emojiFrequency !== 'never' && rng.boolean(0.7)) {
-    text += ' ' + rng.pick(['🐾💙', '💙', '🥺', '🐾']);
+  if (persona.voice.emojiFrequency !== 'never' && rng.boolean(0.5)) {
+    text += ' ' + rng.pick(['🐾', '💙', '🥺', '❤️', '🐕', '🐈']);
   }
 
   return text;
@@ -108,13 +137,19 @@ function composePetClueTweet(persona: RichPersona, rng: SeededRandom): string {
 function composeLocationTweet(persona: RichPersona, rng: SeededRandom): string {
   const location = persona.location;
 
-  const feelings = ['love', 'miss', 'hate', 'appreciate'];
-  const aspects = ['rn', 'today', 'vibes', 'energy', 'weather'];
+  const formats = [
+    `${rng.pick(['love', 'miss', 'hate', 'appreciate'])} ${location} ${rng.pick(['rn', 'today', 'vibes', 'energy', 'weather', 'so much'])}`,
+    `${location} ${rng.pick(['weather', 'traffic', 'vibes'])} ${rng.pick(['is', 'today is', 'right now is'])} ${rng.pick(['incredible', 'terrible', 'perfect', 'awful', 'unpredictable'])}`,
+    `${rng.pick(['another', 'typical', 'beautiful', 'rough'])} day in ${location}`,
+    `${rng.pick(['never leaving', 'stuck in', 'grateful for', 'tired of'])} ${location}`,
+    `${location} ${rng.pick(['people', 'drivers', 'folks'])} ${rng.pick(['are something else', 'know what I mean', 'hit different'])}`,
+    `${rng.pick(['the', 'this'])} ${location} ${rng.pick(['traffic', 'weather', 'vibe', 'scene'])} ${rng.pick(['is unmatched', 'never gets old', 'is exhausting'])}`,
+  ];
 
-  let text = `${rng.pick(feelings)} ${location} ${rng.pick(aspects)}`;
+  let text = rng.pick(formats);
 
-  if (persona.voice.emojiFrequency === 'frequent') {
-    text += ' ' + rng.pick(['💙', '✨', '🌆', '']);
+  if (persona.voice.emojiFrequency === 'frequent' && rng.boolean(0.5)) {
+    text += ' ' + rng.pick(['💙', '✨', '🌆', '☀️', '🌧️']);
   }
 
   return text.trim();
@@ -124,17 +159,24 @@ function composeWorkTweet(persona: RichPersona, rng: SeededRandom): string {
   const frustration = rng.pick(persona.occupation.frustrations);
   const enjoys = rng.pick(persona.occupation.enjoys);
 
-  if (rng.boolean()) {
-    // Frustration tweet
+  if (rng.boolean(0.6)) {
+    // Frustration tweet (more common)
     const formats = [
-      `${frustration} ${rng.pick(['is killing me', 'all day', 'for hours'])}`,
-      `spent my whole day ${rng.pick(['dealing with', 'on'])} ${frustration}`,
-      `why is ${frustration} ${rng.pick(['always', 'the worst part'])}`,
+      `${frustration} ${rng.pick(['is killing me', 'all day', 'for hours', 'again', 'why'])}`,
+      `spent my ${rng.pick(['whole', 'entire'])} day ${rng.pick(['dealing with', 'on', 'fixing'])} ${frustration}`,
+      `${rng.pick(['why is', 'when will', 'how is'])} ${frustration} ${rng.pick(['always like this', 'the worst part', 'still a problem', 'never ending'])}`,
+      `${frustration} ${rng.pick(['for the', 'on the'])} ${rng.int(3, 5)}${rng.pick(['rd', 'th', 'nd'])} time ${rng.pick(['this week', 'today', 'this month'])}`,
+      `${rng.pick(['another day of', 'back to', 'more'])} ${frustration} ${rng.pick(['unfortunately', 'apparently', ''])}`.trim(),
     ];
     return rng.pick(formats);
   } else {
-    // Enjoyment tweet
-    return `${enjoys} ${rng.pick(['today and it was good', 'is the best part', 'hits different'])}`;
+    // Enjoyment or mundane work tweet
+    const formats = [
+      `${enjoys} ${rng.pick(['today and it was good', 'is the best part', 'hits different', 'actually went well'])}`,
+      `${rng.pick(['finally', 'actually', 'managed to'])} ${rng.pick(['finished', 'completed', 'wrapped up'])} ${rng.pick(['that project', 'this task', 'what I was working on'])}`,
+      `${rng.pick(['productive', 'decent', 'long', 'exhausting'])} day at ${rng.pick(['work', 'the office', persona.occupation.workplace])}`,
+    ];
+    return rng.pick(formats);
   }
 }
 
@@ -153,16 +195,19 @@ function composeHobbyTweet(persona: RichPersona, rng: SeededRandom): string {
 function composeMundaneTweet(persona: RichPersona, rng: SeededRandom): string {
   // Use persona's actual daily life details
   const topics = [
-    () => `${persona.wakeTime !== 'whenever' ? 'woke up at ' + persona.wakeTime : 'woke up'} ${rng.pick(['naturally', 'for no reason', 'way too early'])}`,
+    () => `${persona.wakeTime !== 'whenever' ? 'woke up at ' + persona.wakeTime : 'woke up'} ${rng.pick(['naturally', 'for no reason', 'way too early', 'and already tired', 'somehow'])}`,
     () => {
       const beverage = persona.coffeeHabit === 'tea person actually' ? 'tea' :
                       persona.coffeeHabit.includes('coffee') ? 'coffee' :
                       persona.coffeeHabit.includes('energy') ? 'energy drink' : 'coffee';
-      return `${beverage} ${rng.pick(['is life', `#${rng.int(3, 6)} today`, 'keeping me alive'])}`;
+      return `${beverage} ${rng.pick(['is life', `#${rng.int(3, 6)} today`, 'keeping me alive', 'run', 'is necessary'])}`;
     },
-    () => `${persona.mealPatterns}. ${rng.pick(['tired of it', 'works for now', 'same routine honestly'])}`,
-    () => `my ${rng.pick(['phone', 'laptop', 'headphones'])} ${rng.pick(['died', 'is dying', 'at 1%'])} ${rng.pick(['again', 'of course', ''])}`.trim(),
-    () => `${rng.int(20, 200)} ${rng.pick(['unread', 'unopened'])} ${rng.pick(['emails', 'messages'])}. ${rng.pick(['ignoring all of them', 'not looking', 'will deal with later'])}`,
+    () => `${persona.mealPatterns} ${rng.pick(['and tired of it', 'works for now', 'same routine', 'apparently', ''])}`.trim(),
+    () => `my ${rng.pick(['phone', 'laptop', 'headphones', 'charger', 'battery'])} ${rng.pick(['died', 'is dying', 'at 1%', 'broke', 'stopped working'])} ${rng.pick(['again', 'of course', 'naturally', ''])}`.trim(),
+    () => `${rng.int(20, 200)} ${rng.pick(['unread', 'unopened', 'pending'])} ${rng.pick(['emails', 'messages', 'notifications'])}${rng.pick(['. ignoring all of them', '. not dealing with that', '. will get to them eventually', ' and counting'])}`,
+    () => `${rng.pick(['traffic', 'commute', 'drive'])} ${rng.pick(['was terrible', 'took forever', 'was awful', 'sucked'])} ${rng.pick(['today', 'this morning', 'as usual'])}`,
+    () => `${rng.pick(['the line at', 'wait at', 'how long'])} ${rng.pick(['this coffee shop', 'the store', 'this place'])} ${rng.pick(['is insane', 'is ridiculous', 'why'])}`,
+    () => `${rng.pick(['forgot', 'left', 'can\'t find'])} my ${rng.pick(['keys', 'wallet', 'phone', 'water bottle'])} ${rng.pick(['again', 'somewhere', 'and now late'])}`,
   ];
 
   return rng.pick(topics)();
@@ -207,6 +252,80 @@ function composeRecentEventTweet(persona: RichPersona, rng: SeededRandom): strin
   } else {
     return `${event.event} ${rng.pick(['last week', 'recently', 'the other day'])} and ${rng.pick(['it was', 'feeling'])} ${event.emotion}`;
   }
+}
+
+function composeReplyTweet(persona: RichPersona, rng: SeededRandom): string {
+  const friend = rng.pick(persona.friendCircle);
+
+  const replyFormats = [
+    `${friend.handle} ${rng.pick(['omg yes', 'wait what', 'lmao same', 'for real', 'I know right', 'exactly', 'this is so true'])}`,
+    `${friend.handle} ${rng.pick(['are you serious', 'no way', 'stop it', 'you\'re kidding', 'wait really'])}`,
+    `${friend.handle} ${rng.pick(['send me the link', 'I need to see this', 'show me', 'tell me more'])}`,
+    `${friend.handle} ${rng.pick(['yeah I\'m down', 'sounds good', 'let\'s do it', 'I\'m in', 'count me in'])}`,
+    `${friend.handle} ${rng.pick(['miss you', 'we need to catch up', 'let\'s hang soon', 'coffee soon?'])}`,
+    `${friend.handle} ${rng.pick(['congrats', 'so happy for you', 'proud of you', 'amazing news'])}`,
+  ];
+
+  return rng.pick(replyFormats);
+}
+
+function composeReactionTweet(persona: RichPersona, rng: SeededRandom): string {
+  const reactions = [
+    `${rng.pick(['just watched', 'finished watching', 'saw'])} ${rng.pick(['that episode', 'the finale', 'the new episode'])} and ${rng.pick(['wow', 'I have thoughts', 'I\'m not okay', 'what just happened', 'need to process'])}`,
+    `${rng.pick(['the timeline', 'everyone', 'people'])} ${rng.pick(['is being so weird', 'needs to calm down', 'is wilding', 'today is unhinged'])}`,
+    `${rng.pick(['why', 'how', 'when'])} did ${rng.pick(['this become acceptable', 'we normalize this', 'this become a thing', 'people start doing this'])}`,
+    `${rng.pick(['woke up to', 'just saw', 'opened the app to'])} ${rng.pick(['chaos', 'drama', 'discourse', 'the worst takes'])}`,
+  ];
+
+  return rng.pick(reactions);
+}
+
+function composeBoringTweet(persona: RichPersona, rng: SeededRandom): string {
+  const boringObservations = [
+    `${rng.pick(['need to', 'should probably', 'really need to'])} ${rng.pick(['do laundry', 'clean my room', 'grocery shop', 'organize my desk', 'charge my phone'])}`,
+    `${rng.pick(['forgot to', 'need to remember to', 'just remembered I need to'])} ${rng.pick(['pay a bill', 'call back', 'respond to that email', 'return that thing'])}`,
+    `${rng.pick(['the', 'my'])} ${rng.pick(['wifi', 'internet', 'power'])} ${rng.pick(['went out', 'is down', 'keeps dropping'])} ${rng.pick(['again', 'for some reason', ''])}`.trim(),
+    `${rng.pick(['ran out of', 'out of', 'need to buy'])} ${rng.pick(['milk', 'coffee', 'bread', 'shampoo', 'toothpaste'])}`,
+    `${rng.pick(['finally', 'just', 'about to'])} ${rng.pick(['fold', 'put away', 'deal with'])} ${rng.pick(['laundry', 'dishes', 'that pile of stuff'])} ${rng.pick(['from last week', 'that\'s been sitting there', ''])}`.trim(),
+  ];
+
+  return rng.pick(boringObservations);
+}
+
+function composeNicheTweet(persona: RichPersona, rng: SeededRandom): string {
+  const interest = rng.pick(persona.interests);
+
+  const nicheFormats = [
+    `${rng.pick(['been deep diving into', 'spent hours researching', 'can\'t stop reading about', 'fell down a rabbit hole about'])} ${interest.name} ${rng.pick(['and it\'s fascinating', 'and now I\'m obsessed', 'for no reason', ''])}`.trim(),
+    `${rng.pick(['the', 'that'])} ${interest.name} ${rng.pick(['community', 'scene', 'discourse', 'drama'])} is ${rng.pick(['wild', 'unmatched', 'something else', 'fascinating'])}`,
+    `${rng.pick(['finally', 'just', 'managed to'])} ${rng.pick(['finished', 'completed', 'figured out'])} ${rng.pick(['that thing', 'the project', 'what I was working on'])} ${rng.pick(['for', 'in'])} ${interest.name}`,
+    `${interest.name} ${rng.pick(['people', 'fans', 'enthusiasts'])} ${rng.pick(['will understand', 'know what I mean', 'get it'])}`,
+  ];
+
+  return rng.pick(nicheFormats);
+}
+
+function composeImperfectTweet(persona: RichPersona, rng: SeededRandom): string {
+  const imperfectMoments = [
+    `${rng.pick(['just spilled', 'dropped', 'knocked over'])} ${rng.pick(['my coffee', 'my drink', 'water'])} ${rng.pick(['all over', 'on'])} ${rng.pick(['my desk', 'my laptop', 'myself', 'the floor'])}`,
+    `${rng.pick(['forgot', 'can\'t remember', 'lost'])} ${rng.pick(['what I was', 'where I put', 'why I'])} ${rng.pick(['going to say', 'my keys', 'walked in here', 'came upstairs'])}`,
+    `${rng.pick(['sent', 'almost sent', 'accidentally sent'])} ${rng.pick(['that', 'a message', 'an email'])} to ${rng.pick(['the wrong person', 'the wrong chat', 'my boss instead'])}`,
+    `${rng.pick(['been', 'spent'])} ${rng.int(10, 45)} minutes ${rng.pick(['looking for', 'searching for', 'trying to find'])} ${rng.pick(['my phone', 'my keys', 'my wallet', 'something'])} ${rng.pick(['and it was in my hand', 'and it was right there', 'and it was in my pocket'])}`,
+    `${rng.pick(['wore', 'put on', 'realized I\'m wearing'])} ${rng.pick(['mismatched socks', 'my shirt inside out', 'two different shoes', 'this backwards'])} ${rng.pick(['all day', 'and nobody told me', 'to work', ''])}`.trim(),
+  ];
+
+  return rng.pick(imperfectMoments);
+}
+
+function composeContinuityTweet(persona: RichPersona, rng: SeededRandom): string {
+  const continuityFormats = [
+    `update: ${rng.pick(['did not', 'still haven\'t', 'forgot to', 'never'])} ${rng.pick(['do that thing', 'fix this', 'deal with that', 'follow through'])}`,
+    `${rng.pick(['remember when', 'remember that time', 'thinking about when'])} I ${rng.pick(['said', 'posted about', 'mentioned'])} ${rng.pick(['that thing', 'doing this', 'changing that'])}? ${rng.pick(['yeah that didn\'t happen', 'still haven\'t', 'gave up on that', 'nevermind'])}`,
+    `${rng.pick(['day', 'week', 'month'])} ${rng.int(2, 30)} of ${rng.pick(['trying to', 'attempting to', 'working on'])} ${rng.pick(['fix my sleep schedule', 'exercise regularly', 'eat better', 'be productive'])}`,
+    `${rng.pick(['still', 'currently', 'been'])} ${rng.pick(['thinking about', 'processing', 'dealing with', 'recovering from'])} ${rng.pick(['that conversation', 'what happened', 'yesterday', 'earlier today'])}`,
+  ];
+
+  return rng.pick(continuityFormats);
 }
 
 /**
@@ -279,7 +398,7 @@ function introduceRandomTypo(text: string): string {
 }
 
 /**
- * Generate a full set of tweets for a persona
+ * Generate a full set of tweets for a persona (12-16 tweets)
  */
 export function composeTweetSet(persona: RichPersona, seed: number): string[] {
   const tweets: string[] = [];
@@ -291,7 +410,7 @@ export function composeTweetSet(persona: RichPersona, seed: number): string[] {
   // MUST include: Location mention
   tweets.push(composeTweet(persona, 'location_clue', seed + 2));
 
-  // Mix of other tweets based on persona
+  // Mix of other tweets based on persona - 10-14 additional tweets
   const tweetTypes = [
     'work_frustration',
     'hobby',
@@ -300,10 +419,20 @@ export function composeTweetSet(persona: RichPersona, seed: number): string[] {
     'social',
     'emotional',
     'recent_event',
+    'reply_to_friend',
+    'reply_to_friend',
+    'reaction',
+    'boring_observation',
+    'niche_interest',
+    'imperfect_moment',
+    'continuity_reference',
   ];
 
-  for (let i = 0; i < tweetTypes.length; i++) {
-    tweets.push(composeTweet(persona, tweetTypes[i], seed + i + 3));
+  // Randomly select 10-14 tweets from the types
+  const selectedTypes = rng.shuffle(tweetTypes).slice(0, rng.int(10, 14));
+
+  for (let i = 0; i < selectedTypes.length; i++) {
+    tweets.push(composeTweet(persona, selectedTypes[i], seed + i + 3));
   }
 
   // Shuffle (but keep clue tweets findable)

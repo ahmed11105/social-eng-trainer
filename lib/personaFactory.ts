@@ -1,12 +1,28 @@
 /**
  * Persona Factory - Generates deeply detailed fictional personas
  * Each persona is unique enough that tweets derived from it will be unique
+ * Uses archetype-based generation for maximum realism and diversity
  */
 
 import { faker } from '@faker-js/faker';
 
+export type Archetype =
+  | 'corporate_professional'
+  | 'casual_adult'
+  | 'internet_native'
+  | 'hobby_enthusiast'
+  | 'parent_family'
+  | 'student_young_adult'
+  | 'creative_artist'
+  | 'tech_engineering'
+  | 'healthcare_worker'
+  | 'local_community'
+  | 'opinionated_commentator'
+  | 'quiet_low_activity';
+
 export interface RichPersona {
   // Core identity
+  archetype: Archetype;
   name: string;
   age: number;
   occupation: {
@@ -17,9 +33,10 @@ export interface RichPersona {
     frustrations: string[];
   };
   location: string;
+  bio: string; // Generated bio based on archetype
 
   // Living situation
-  housing: string; // 'apartment alone', 'house with roommates', etc
+  housing: string;
   neighborhood: string;
   commute: string;
 
@@ -43,6 +60,7 @@ export interface RichPersona {
   relationshipStatus: string;
   friendCircle: Array<{
     handle: string;
+    name: string;
     relationship: string;
     interactionStyle: string;
   }>;
@@ -51,7 +69,7 @@ export interface RichPersona {
   // Voice characteristics
   voice: {
     punctuation: 'minimal' | 'normal' | 'excessive';
-    capitalization: 'lowercase' | 'normal' | 'Title Case';
+    capitalization: 'lowercase' | 'normal' | 'mixed';
     emojiFrequency: 'never' | 'rare' | 'occasional' | 'frequent';
     slangLevel: 'none' | 'some' | 'heavy';
     typoTendency: 'careful' | 'occasional' | 'frequent';
@@ -82,27 +100,324 @@ export interface RichPersona {
 }
 
 /**
- * Generate a complete, realistic persona
+ * Generate age appropriate for archetype
+ */
+function generateAgeForArchetype(archetype: Archetype): number {
+  switch (archetype) {
+    case 'student_young_adult':
+      return faker.number.int({ min: 19, max: 25 });
+    case 'internet_native':
+      return faker.number.int({ min: 20, max: 27 });
+    case 'parent_family':
+      return faker.number.int({ min: 28, max: 45 });
+    case 'corporate_professional':
+      return faker.number.int({ min: 27, max: 42 });
+    default:
+      return faker.number.int({ min: 24, max: 40 });
+  }
+}
+
+/**
+ * Generate occupation based on archetype
+ */
+function generateOccupationForArchetype(archetype: Archetype) {
+  const occupationsByArchetype: Record<Archetype, any[]> = {
+    corporate_professional: [
+      { title: 'Account Manager', workplace: faker.company.name(), interests: ['client relationships', 'sales targets', 'networking'], frustrations: ['long meetings', 'competing priorities', 'email overload'] },
+      { title: 'Sr. Consultant', workplace: faker.company.name() + ' Consulting', interests: ['strategy work', 'presentations', 'travel perks'], frustrations: ['constant travel', 'tight deadlines', 'scope changes'] },
+      { title: 'Marketing Director', workplace: faker.company.name(), interests: ['campaign planning', 'data analysis', 'brand building'], frustrations: ['budget constraints', 'stakeholder management', 'last-minute changes'] },
+      { title: 'Product Manager', workplace: faker.company.name(), interests: ['roadmap planning', 'user feedback', 'launches'], frustrations: ['conflicting priorities', 'technical debt', 'stakeholder alignment'] },
+    ],
+    casual_adult: [
+      { title: 'Office Administrator', workplace: faker.company.name(), interests: ['organization', 'coffee breaks', 'helping coworkers'], frustrations: ['printer jams', 'scheduling conflicts', 'budget cuts'] },
+      { title: 'Retail Manager', workplace: faker.company.name(), interests: ['inventory organization', 'employee development', 'sales goals'], frustrations: ['difficult customers', 'staffing issues', 'weekend shifts'] },
+      { title: 'Customer Service Rep', workplace: faker.company.name(), interests: ['problem solving', 'helping people', 'quiet days'], frustrations: ['angry customers', 'metrics', 'repetitive questions'] },
+      { title: 'Administrative Assistant', workplace: faker.company.name(), interests: ['staying organized', 'office culture', 'efficient workflows'], frustrations: ['last-minute requests', 'unclear instructions', 'being undervalued'] },
+    ],
+    internet_native: [
+      { title: 'Video Editor', workplace: 'freelance', interests: ['editing software', 'creative projects', 'online communities'], frustrations: ['client revisions', 'render times', 'unclear briefs'] },
+      { title: 'Social Media Coordinator', workplace: faker.company.name(), interests: ['content creation', 'engagement metrics', 'trends'], frustrations: ['algorithm changes', 'comment moderation', 'unrealistic expectations'] },
+      { title: 'Content Creator', workplace: 'self-employed', interests: ['video editing', 'community building', 'creative freedom'], frustrations: ['burnout', 'algorithm changes', 'inconsistent income'] },
+      { title: 'Freelance Designer', workplace: 'freelance', interests: ['creative work', 'flexible schedule', 'side projects'], frustrations: ['difficult clients', 'unpredictable income', 'self-promotion'] },
+    ],
+    hobby_enthusiast: [
+      { title: 'Software Developer', workplace: faker.company.name(), interests: ['side projects', 'learning new tech', 'conferences'], frustrations: ['legacy code', 'meetings', 'unclear requirements'] },
+      { title: 'Accountant', workplace: faker.company.name(), interests: ['number accuracy', 'organization', 'tax season completion'], frustrations: ['tax season stress', 'client disorganization', 'regulation changes'] },
+      { title: 'Librarian', workplace: faker.location.city() + ' Public Library', interests: ['book recommendations', 'helping patrons', 'quiet reading time'], frustrations: ['budget cuts', 'system outages', 'loud patrons'] },
+    ],
+    parent_family: [
+      { title: 'Elementary Teacher', workplace: faker.location.city() + ' Elementary', interests: ['student progress', 'lesson planning', 'summer break'], frustrations: ['parent emails', 'admin work', 'lack of supplies'] },
+      { title: 'HR Specialist', workplace: faker.company.name(), interests: ['employee relations', 'work-life balance', 'company culture'], frustrations: ['difficult conversations', 'compliance paperwork', 'being the bad guy'] },
+      { title: 'Real Estate Agent', workplace: faker.company.name() + ' Realty', interests: ['helping families', 'closing deals', 'flexible schedule'], frustrations: ['weekend showings', 'demanding clients', 'market fluctuations'] },
+    ],
+    student_young_adult: [
+      { title: 'College Student', workplace: faker.location.city() + ' University', interests: ['learning', 'campus life', 'avoiding assignments'], frustrations: ['exams', 'group projects', 'broke student life'] },
+      { title: 'Grad Student', workplace: faker.location.city() + ' University', interests: ['research', 'teaching', 'academic community'], frustrations: ['advisor meetings', 'funding stress', 'imposter syndrome'] },
+      { title: 'Barista', workplace: faker.company.name() + ' Coffee', interests: ['latte art', 'regular customers', 'free coffee'], frustrations: ['early mornings', 'entitled customers', 'minimum wage'] },
+      { title: 'Retail Associate', workplace: faker.company.name(), interests: ['employee discount', 'coworker friendships', 'easy shifts'], frustrations: ['rude customers', 'standing all day', 'unpredictable schedule'] },
+    ],
+    creative_artist: [
+      { title: 'Graphic Designer', workplace: 'freelance', interests: ['typography', 'color theory', 'creative freedom'], frustrations: ['client feedback', 'scope creep', 'deadlines'] },
+      { title: 'Illustrator', workplace: 'self-employed', interests: ['drawing', 'commission work', 'art community'], frustrations: ['art block', 'underpricing', 'exposure requests'] },
+      { title: 'Photographer', workplace: 'freelance', interests: ['composition', 'editing', 'creative projects'], frustrations: ['difficult clients', 'equipment costs', 'inconsistent work'] },
+      { title: 'Writer', workplace: 'freelance', interests: ['storytelling', 'research', 'editing'], frustrations: ['writer\'s block', 'rejection', 'low pay'] },
+    ],
+    tech_engineering: [
+      { title: 'Software Engineer', workplace: faker.company.name(), interests: ['coding', 'system design', 'new technologies'], frustrations: ['legacy code', 'unclear requirements', 'too many meetings'] },
+      { title: 'DevOps Engineer', workplace: faker.company.name(), interests: ['automation', 'infrastructure', 'optimization'], frustrations: ['on-call rotations', 'production incidents', 'tech debt'] },
+      { title: 'Data Analyst', workplace: faker.company.name(), interests: ['finding insights', 'visualization', 'clean data'], frustrations: ['messy data', 'unclear questions', 'data quality issues'] },
+      { title: 'IT Support Specialist', workplace: faker.company.name(), interests: ['problem solving', 'helping users', 'learning systems'], frustrations: ['user error', 'ticket volume', 'being blamed'] },
+    ],
+    healthcare_worker: [
+      { title: 'Registered Nurse', workplace: faker.location.city() + ' Hospital', interests: ['patient care', 'coworker support', 'learning'], frustrations: ['understaffing', 'long shifts', 'difficult patients'] },
+      { title: 'Physical Therapist', workplace: faker.company.name() + ' Clinic', interests: ['helping recovery', 'patient progress', 'movement science'], frustrations: ['insurance paperwork', 'no-shows', 'documentation burden'] },
+      { title: 'Medical Assistant', workplace: faker.company.name() + ' Medical', interests: ['patient interaction', 'routine', 'helping people'], frustrations: ['long hours', 'difficult patients', 'administrative work'] },
+    ],
+    local_community: [
+      { title: 'Small Business Owner', workplace: 'self-employed', interests: ['serving community', 'independence', 'regular customers'], frustrations: ['unpredictable revenue', 'long hours', 'competition'] },
+      { title: 'Elementary Teacher', workplace: faker.location.city() + ' Elementary', interests: ['teaching kids', 'community impact', 'summers off'], frustrations: ['pay', 'parent complaints', 'admin work'] },
+      { title: 'Postal Worker', workplace: 'USPS', interests: ['routine', 'being outside', 'knowing neighbors'], frustrations: ['weather', 'dogs', 'package volume'] },
+    ],
+    opinionated_commentator: [
+      { title: 'Journalist', workplace: faker.company.name() + ' News', interests: ['reporting', 'investigation', 'public discourse'], frustrations: ['deadlines', 'editorial constraints', 'public backlash'] },
+      { title: 'Policy Analyst', workplace: faker.company.name() + ' Institute', interests: ['research', 'writing reports', 'public policy'], frustrations: ['political gridlock', 'funding', 'being misquoted'] },
+      { title: 'Teacher', workplace: faker.location.city() + ' High School', interests: ['education', 'student growth', 'curriculum'], frustrations: ['standardized testing', 'politics in education', 'lack of resources'] },
+    ],
+    quiet_low_activity: [
+      { title: 'Data Entry Clerk', workplace: faker.company.name(), interests: ['routine work', 'accuracy', 'quiet time'], frustrations: ['repetitive tasks', 'eye strain', 'tight deadlines'] },
+      { title: 'Lab Technician', workplace: faker.company.name() + ' Labs', interests: ['precision work', 'research', 'quiet environment'], frustrations: ['equipment failures', 'contamination', 'long processes'] },
+      { title: 'Archivist', workplace: faker.location.city() + ' Museum', interests: ['preservation', 'organization', 'historical research'], frustrations: ['limited budget', 'physical demands', 'climate control issues'] },
+    ],
+  };
+
+  return faker.helpers.arrayElement(occupationsByArchetype[archetype]);
+}
+
+/**
+ * Generate voice characteristics based on archetype
+ */
+function generateVoiceForArchetype(archetype: Archetype) {
+  const voiceProfiles: Record<Archetype, any> = {
+    corporate_professional: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: faker.helpers.arrayElement(['never', 'rare'] as const),
+      slangLevel: 'none',
+      typoTendency: 'careful',
+      sentenceLength: faker.helpers.arrayElement(['mixed', 'rambling'] as const),
+      recurringPhrases: faker.helpers.arrayElements(['Congrats', 'Looking forward', 'Great to see', 'Thanks for'], faker.number.int({ min: 1, max: 2 })),
+    },
+    casual_adult: {
+      punctuation: faker.helpers.arrayElement(['minimal', 'normal'] as const),
+      capitalization: faker.helpers.arrayElement(['normal', 'mixed'] as const),
+      emojiFrequency: faker.helpers.arrayElement(['rare', 'occasional'] as const),
+      slangLevel: faker.helpers.arrayElement(['none', 'some'] as const),
+      typoTendency: 'occasional',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['lol', 'honestly', 'literally', 'omg'], faker.number.int({ min: 1, max: 3 })),
+    },
+    internet_native: {
+      punctuation: 'minimal',
+      capitalization: 'lowercase',
+      emojiFrequency: faker.helpers.arrayElement(['occasional', 'frequent'] as const),
+      slangLevel: 'heavy',
+      typoTendency: faker.helpers.arrayElement(['occasional', 'frequent'] as const),
+      sentenceLength: 'short',
+      recurringPhrases: faker.helpers.arrayElements(['ngl', 'fr', 'lmao', 'tbh', 'rn', 'omg', 'literally'], faker.number.int({ min: 3, max: 5 })),
+    },
+    hobby_enthusiast: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: faker.helpers.arrayElement(['rare', 'occasional'] as const),
+      slangLevel: 'some',
+      typoTendency: 'occasional',
+      sentenceLength: faker.helpers.arrayElement(['mixed', 'rambling'] as const),
+      recurringPhrases: faker.helpers.arrayElements(['honestly', 'finally', 'love this'], faker.number.int({ min: 1, max: 2 })),
+    },
+    parent_family: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: 'occasional',
+      slangLevel: 'none',
+      typoTendency: 'occasional',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['Exhausted', 'So proud', 'Can\'t believe', 'Anyone else'], faker.number.int({ min: 1, max: 2 })),
+    },
+    student_young_adult: {
+      punctuation: faker.helpers.arrayElement(['minimal', 'normal'] as const),
+      capitalization: faker.helpers.arrayElement(['lowercase', 'normal', 'mixed'] as const),
+      emojiFrequency: faker.helpers.arrayElement(['occasional', 'frequent'] as const),
+      slangLevel: faker.helpers.arrayElement(['some', 'heavy'] as const),
+      typoTendency: 'occasional',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['lol', 'omg', 'literally', 'tbh', 'ngl'], faker.number.int({ min: 2, max: 4 })),
+    },
+    creative_artist: {
+      punctuation: faker.helpers.arrayElement(['minimal', 'normal', 'excessive'] as const),
+      capitalization: faker.helpers.arrayElement(['normal', 'mixed'] as const),
+      emojiFrequency: faker.helpers.arrayElement(['occasional', 'frequent'] as const),
+      slangLevel: 'some',
+      typoTendency: 'occasional',
+      sentenceLength: faker.helpers.arrayElement(['mixed', 'rambling'] as const),
+      recurringPhrases: faker.helpers.arrayElements(['ugh', 'love this', 'honestly', 'so tired'], faker.number.int({ min: 1, max: 3 })),
+    },
+    tech_engineering: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: faker.helpers.arrayElement(['never', 'rare'] as const),
+      slangLevel: 'some',
+      typoTendency: 'careful',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['finally', 'honestly', 'lol'], faker.number.int({ min: 1, max: 2 })),
+    },
+    healthcare_worker: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: 'rare',
+      slangLevel: 'some',
+      typoTendency: 'occasional',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['Exhausted', 'Long shift', 'Finally home'], faker.number.int({ min: 1, max: 2 })),
+    },
+    local_community: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: 'occasional',
+      slangLevel: 'none',
+      typoTendency: 'careful',
+      sentenceLength: 'mixed',
+      recurringPhrases: faker.helpers.arrayElements(['Love seeing', 'Great to', 'Thanks to', 'Proud of'], faker.number.int({ min: 1, max: 2 })),
+    },
+    opinionated_commentator: {
+      punctuation: faker.helpers.arrayElement(['normal', 'excessive'] as const),
+      capitalization: 'normal',
+      emojiFrequency: 'never',
+      slangLevel: 'none',
+      typoTendency: 'careful',
+      sentenceLength: 'rambling',
+      recurringPhrases: faker.helpers.arrayElements(['Honestly', 'The fact that', 'It\'s absurd that', 'We need to'], faker.number.int({ min: 1, max: 3 })),
+    },
+    quiet_low_activity: {
+      punctuation: 'normal',
+      capitalization: 'normal',
+      emojiFrequency: 'never',
+      slangLevel: 'none',
+      typoTendency: 'careful',
+      sentenceLength: 'short',
+      recurringPhrases: [],
+    },
+  };
+
+  return voiceProfiles[archetype];
+}
+
+/**
+ * Generate bio based on archetype and persona details
+ */
+function generateBio(archetype: Archetype, occupation: any, location: string, pet: any): string {
+  const bioTemplates: Record<Archetype, string[]> = {
+    corporate_professional: [
+      `${occupation.title} @ ${occupation.workplace} | ${location} | Views are my own`,
+      `${occupation.title} | ${location} based | ${pet.type} dad/mom`,
+      `Sr. ${occupation.title} | ${location} | ${pet.name}'s human`,
+      `${occupation.title} @ ${occupation.workplace} | MBA | ${location}`,
+    ],
+    casual_adult: [
+      `${occupation.title}. ${location} based. ${pet.type} mom to ${pet.name}`,
+      `${occupation.title}. Coffee dependent. ${location}.`,
+      `${location} | ${occupation.title} | ${pet.type} parent 🐾`,
+      `Just trying to survive. ${occupation.title}. ${location}.`,
+    ],
+    internet_native: [
+      `${faker.number.int({ min: 20, max: 27 })} | ${occupation.title.toLowerCase()} | ${location.toLowerCase()} | void screaming`,
+      `${occupation.title.toLowerCase()} | chronically online | ${pet.name.toLowerCase()}'s human`,
+      `${location.toLowerCase()} based | ${occupation.title.toLowerCase()} | professional mess`,
+      `${occupation.title.toLowerCase()} | ${faker.number.int({ min: 20, max: 27 })} | ${location.toLowerCase()} | chaotic energy`,
+    ],
+    hobby_enthusiast: [
+      `${occupation.title} | ${location} | Passionate about ${faker.helpers.arrayElement(['hiking', 'photography', 'cooking', 'reading'])}`,
+      `${occupation.title}. ${location}. Weekend ${faker.helpers.arrayElement(['hiker', 'photographer', 'gamer', 'cook'])}.`,
+      `${location} based ${occupation.title}. ${pet.type} lover. Hobby collector.`,
+    ],
+    parent_family: [
+      `${occupation.title} | Parent to ${faker.number.int({ min: 1, max: 3 })} | ${location}`,
+      `Mom/Dad | ${occupation.title} | ${location} | Coffee powered`,
+      `${occupation.title}. Parent. ${location}. Tired always.`,
+    ],
+    student_young_adult: [
+      `${occupation.title} @ ${occupation.workplace} | ${faker.number.int({ min: 19, max: 25 })} | ${location}`,
+      `college student | ${location} | perpetually tired`,
+      `${occupation.workplace} | ${location} | broke but vibing`,
+    ],
+    creative_artist: [
+      `${occupation.title} | ${location} | commissions ${faker.helpers.arrayElement(['open', 'closed', 'DM for info'])}`,
+      `freelance ${occupation.title.toLowerCase()} | ${location} based | coffee dependent`,
+      `${occupation.title}. ${location}. Making things.`,
+    ],
+    tech_engineering: [
+      `${occupation.title} @ ${occupation.workplace} | ${location} | ${pet.name}'s human`,
+      `Software engineer. ${location}. Debugger of code and life.`,
+      `${occupation.title} | ${location} based | mechanical keyboard enthusiast`,
+    ],
+    healthcare_worker: [
+      `${occupation.title} | ${location} | ${occupation.workplace}`,
+      `${occupation.title}. ${location}. Saving lives and sanity.`,
+      `RN @ ${occupation.workplace} | ${location} | ${pet.type} mom/dad`,
+    ],
+    local_community: [
+      `${occupation.title} | Proud ${location} resident | Community advocate`,
+      `${location} local | ${occupation.title} | Supporting our community`,
+      `Born and raised ${location} | ${occupation.title}`,
+    ],
+    opinionated_commentator: [
+      `${occupation.title} | ${location} | Opinions my own and often strong`,
+      `${occupation.title}. ${location}. Thoughts on politics, policy, life.`,
+      `${occupation.title} | ${location} | Speaking truth to power`,
+    ],
+    quiet_low_activity: [
+      `${occupation.title} | ${location}`,
+      `${location} based ${occupation.title}`,
+      `${occupation.title}. ${location}.`,
+    ],
+  };
+
+  return faker.helpers.arrayElement(bioTemplates[archetype])
+    .replace('dad/mom', faker.helpers.arrayElement(['dad', 'mom']))
+    .replace('Mom/Dad', faker.helpers.arrayElement(['Mom', 'Dad']))
+    .replace('mom/dad', faker.helpers.arrayElement(['mom', 'dad']));
+}
+
+/**
+ * Generate a complete, realistic persona based on archetype
  */
 export function generatePersona(seed: number): RichPersona {
   faker.seed(seed);
 
-  const firstName = faker.person.firstName();
-  const age = faker.number.int({ min: 22, max: 45 });
-
-  // Generate occupation with depth
-  const occupations = [
-    { title: 'software developer', workplace: faker.company.name(), interests: ['coding late night', 'mechanical keyboards', 'coffee', 'debugging'], frustrations: ['meetings', 'legacy code', 'unclear requirements'] },
-    { title: 'graphic designer', workplace: 'freelance', interests: ['typography', 'color theory', 'procrastination', 'coffee shops'], frustrations: ['client revisions', 'scope creep', 'imposter syndrome'] },
-    { title: 'teacher', workplace: faker.company.name() + ' School', interests: ['lesson planning', 'student progress', 'summers off'], frustrations: ['grading', 'admin work', 'budget cuts'] },
-    { title: 'barista', workplace: faker.company.name() + ' Coffee', interests: ['latte art', 'trying new beans', 'regulars'], frustrations: ['rushes', 'entitled customers', 'closing shifts'] },
-    { title: 'retail worker', workplace: faker.company.name(), interests: ['organizing displays', 'employee discounts'], frustrations: ['customers', 'standing all day', 'weekends'] },
-    { title: 'grad student', workplace: faker.company.name() + ' University', interests: ['research', 'conferences', 'avoiding thesis'], frustrations: ['advisor meetings', 'imposter syndrome', 'funding'] },
-    { title: 'nurse', workplace: faker.company.name() + ' Hospital', interests: ['helping people', 'coworker banter'], frustrations: ['long shifts', 'difficult patients', 'paperwork'] },
-    { title: 'delivery driver', workplace: faker.company.name(), interests: ['podcasts', 'good tips', 'quiet routes'], frustrations: ['traffic', 'parking', 'rude customers'] },
+  // Step 1: Select archetype
+  const archetypes: Archetype[] = [
+    'corporate_professional',
+    'casual_adult',
+    'internet_native',
+    'hobby_enthusiast',
+    'parent_family',
+    'student_young_adult',
+    'creative_artist',
+    'tech_engineering',
+    'healthcare_worker',
+    'local_community',
+    'opinionated_commentator',
+    'quiet_low_activity',
   ];
 
-  const occupation = faker.helpers.arrayElement(occupations);
+  const archetype = faker.helpers.arrayElement(archetypes);
+
+  // Step 2: Generate age appropriate for archetype
+  const age = generateAgeForArchetype(archetype);
+
+  const firstName = faker.person.firstName();
+
+  // Step 3: Generate occupation based on archetype
+  const occupation = generateOccupationForArchetype(archetype);
 
   // Generate interests with depth
   const hobbies = ['reading', 'gaming', 'cooking', 'hiking', 'photography', 'writing', 'drawing', 'music', 'gardening', 'crafts'];
@@ -132,18 +447,8 @@ export function generatePersona(seed: number): RichPersona {
     ]),
   };
 
-  // Voice characteristics
-  const voice = {
-    punctuation: faker.helpers.arrayElement(['minimal', 'normal', 'excessive'] as const),
-    capitalization: faker.helpers.arrayElement(['lowercase', 'normal'] as const),
-    emojiFrequency: faker.helpers.arrayElement(['never', 'rare', 'occasional', 'frequent'] as const),
-    slangLevel: faker.helpers.arrayElement(['none', 'some', 'heavy'] as const),
-    typoTendency: faker.helpers.arrayElement(['careful', 'occasional', 'frequent'] as const),
-    sentenceLength: faker.helpers.arrayElement(['short', 'mixed', 'rambling'] as const),
-    recurringPhrases: faker.helpers.arrayElements([
-      'ngl', 'fr', 'lol', 'tbh', 'honestly', 'literally', 'rn', 'idk', 'lmao',
-    ], faker.number.int({ min: 2, max: 4 })),
-  };
+  // Voice characteristics based on archetype
+  const voice = generateVoiceForArchetype(archetype);
 
   // Recent events that create tweet fodder
   const recentEvents = [];
@@ -171,17 +476,29 @@ export function generatePersona(seed: number): RichPersona {
   const friendCircle = [
     {
       handle: '@' + faker.internet.username().toLowerCase(),
-      relationship: 'college friend',
+      name: faker.person.firstName(),
+      relationship: faker.helpers.arrayElement(['college friend', 'high school friend', 'friend from work', 'old roommate']),
       interactionStyle: 'frequent banter',
     },
     {
       handle: '@' + faker.internet.username().toLowerCase(),
-      relationship: 'coworker',
+      name: faker.person.firstName(),
+      relationship: faker.helpers.arrayElement(['coworker', 'work friend', 'colleague']),
       interactionStyle: 'occasional tags',
+    },
+    {
+      handle: '@' + faker.internet.username().toLowerCase(),
+      name: faker.person.firstName(),
+      relationship: faker.helpers.arrayElement(['gym buddy', 'neighbor', 'friend', 'mutual']),
+      interactionStyle: 'occasional interaction',
     },
   ];
 
+  // Generate bio
+  const bio = generateBio(archetype, occupation, faker.location.city(), pet);
+
   return {
+    archetype,
     name: firstName,
     age,
     occupation: {
@@ -192,6 +509,7 @@ export function generatePersona(seed: number): RichPersona {
       frustrations: occupation.frustrations,
     },
     location: faker.location.city(),
+    bio,
 
     housing: faker.helpers.arrayElement([
       'apartment alone',
