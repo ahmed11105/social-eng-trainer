@@ -185,7 +185,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       elapsedTime: 0,
       isRunning: true,
       roundCompleted: false,
-      hasPosted: false,
       currentViewIndex: prev.profileHistory.length, // Stay on current view index
     }));
   };
