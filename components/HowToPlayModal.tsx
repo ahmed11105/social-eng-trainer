@@ -9,10 +9,10 @@ interface HowToPlayModalProps {
 export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 border border-green-500/30 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-gray-900 border-b border-green-500/30 p-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-green-400">How to Play</h2>
+          <h2 className="text-2xl font-bold text-green-400">How to Play: Dictionary Attack Training</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -28,140 +28,118 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
           <div>
             <h3 className="text-xl font-semibold text-green-400 mb-2">🎯 The Goal</h3>
             <p className="text-gray-300">
-              Crack the target's password using OSINT (open source intelligence) from their Twitter profile,
-              then log in and make a post.
+              Learn to perform a <strong>dictionary attack</strong> by gathering OSINT (open source intelligence) from a Twitter profile,
+              building a custom wordlist, and using command-line tools to crack MD5 hashes.
             </p>
           </div>
 
           {/* What You Need */}
           <div>
             <h3 className="text-xl font-semibold text-green-400 mb-3">🛠️ What You Need</h3>
-            <div className="bg-gray-800/50 border border-gray-700 rounded p-4 space-y-2">
-              <p className="text-gray-300 font-medium">Option 1 (Easiest):</p>
-              <p className="text-gray-400 text-sm ml-4">
-                • No installation needed - use an online MD5 decoder
-              </p>
-
-              <p className="text-gray-300 font-medium mt-3">Option 2 (CLI Tools):</p>
-              <p className="text-gray-400 text-sm ml-4">
-                • Hashcat or John the Ripper (for offline cracking)
-              </p>
-              <p className="text-gray-400 text-sm ml-4">
-                • Python or Node.js (for building wordlists)
-              </p>
-            </div>
-          </div>
-
-          {/* Step by Step */}
-          <div>
-            <h3 className="text-xl font-semibold text-green-400 mb-3">📋 Step-by-Step Guide</h3>
-            <div className="space-y-4">
-              {/* Step 1 */}
-              <div className="bg-gray-800/50 border border-gray-700 rounded p-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-green-500/20 text-green-400 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
-                    1
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Gather Information</h4>
-                    <p className="text-gray-400 text-sm">
-                      Look through their bio, location, and tweets. Find:
-                    </p>
-                    <ul className="text-gray-400 text-sm ml-4 mt-1 space-y-1">
-                      <li>• Pet name (usually mentioned in tweets)</li>
-                      <li>• Pet adoption year (look for dates like "got him in 2019")</li>
-                      <li>• Their location or other personal details</li>
-                    </ul>
-                  </div>
-                </div>
+            <div className="bg-gray-800/50 border border-gray-700 rounded p-4 space-y-3">
+              <div>
+                <p className="text-gray-300 font-medium">Required Tools:</p>
+                <ul className="text-gray-400 text-sm ml-4 mt-2 space-y-1">
+                  <li>• <strong className="text-green-400">Hashcat</strong> (password cracking tool)</li>
+                  <li>• A terminal or command prompt</li>
+                  <li>• A text editor to create wordlists</li>
+                </ul>
               </div>
+              <div className="bg-gray-900 p-3 rounded">
+                <p className="text-gray-400 text-sm font-medium mb-1">Install Hashcat:</p>
+                <pre className="text-green-400 text-xs overflow-x-auto">
+# macOS/Linux
+brew install hashcat
 
-              {/* Step 2 */}
-              <div className="bg-gray-800/50 border border-gray-700 rounded p-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-green-500/20 text-green-400 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
-                    2
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Build Password Guesses</h4>
-                    <p className="text-gray-400 text-sm">
-                      Common patterns: <code className="bg-gray-900 px-2 py-0.5 rounded text-green-400">petname + year</code>
-                    </p>
-                    <p className="text-gray-400 text-sm mt-1">
-                      Example: If pet is "Max" adopted in 2019 → try <code className="bg-gray-900 px-2 py-0.5 rounded text-green-400">max2019</code>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="bg-gray-800/50 border border-gray-700 rounded p-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-green-500/20 text-green-400 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
-                    3
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Crack the Hash</h4>
-                    <p className="text-gray-400 text-sm mb-2">
-                      Copy the MD5 hash shown on the profile page.
-                    </p>
-                    <p className="text-gray-400 text-sm font-medium">Quick Method:</p>
-                    <p className="text-gray-400 text-sm ml-4">
-                      Use an online MD5 cracker like <span className="text-green-400">crackstation.net</span> or <span className="text-green-400">md5decrypt.net</span>
-                    </p>
-                    <p className="text-gray-400 text-sm font-medium mt-2">CLI Method:</p>
-                    <pre className="bg-gray-900 p-2 rounded text-xs text-green-400 mt-1 overflow-x-auto">
-hashcat -m 0 -a 0 hash.txt wordlist.txt
-                    </pre>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 4 */}
-              <div className="bg-gray-800/50 border border-gray-700 rounded p-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-green-500/20 text-green-400 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
-                    4
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">Login & Post</h4>
-                    <p className="text-gray-400 text-sm">
-                      Click "Login", enter the username (without @) and cracked password,
-                      then make any post to complete the round!
-                    </p>
-                  </div>
-                </div>
+# Windows
+# Download from hashcat.net/hashcat</pre>
               </div>
             </div>
           </div>
 
-          {/* Example */}
+          {/* Complete Example Walkthrough */}
           <div>
-            <h3 className="text-xl font-semibold text-green-400 mb-3">💡 Example</h3>
-            <div className="bg-gray-800 border border-gray-700 rounded p-4 space-y-3">
+            <h3 className="text-xl font-semibold text-green-400 mb-3">💡 Complete Example Walkthrough</h3>
+            <div className="bg-gray-800 border border-gray-700 rounded p-4 space-y-4">
+
+              {/* Example Profile */}
               <div>
-                <p className="text-gray-400 text-sm font-medium">Profile Info:</p>
-                <div className="bg-gray-900 p-3 rounded mt-1 text-sm">
-                  <p className="text-gray-300"><span className="text-green-400">Bio:</span> Dog lover, coffee addict</p>
-                  <p className="text-gray-300"><span className="text-green-400">Tweet:</span> "Luna had her checkup today. Can't believe it's been 3 years since I adopted her in 2021!"</p>
-                  <p className="text-gray-300"><span className="text-green-400">Hash:</span> <code className="text-green-400">a1b2c3d4...</code></p>
+                <p className="text-gray-400 text-sm font-semibold mb-2">📋 Example Profile:</p>
+                <div className="bg-gray-900 p-3 rounded text-sm space-y-1">
+                  <p className="text-gray-300"><span className="text-green-400">Username:</span> @sarah_jones</p>
+                  <p className="text-gray-300"><span className="text-green-400">Bio:</span> Seattle dog mom 🐕 | Coffee enthusiast</p>
+                  <p className="text-gray-300"><span className="text-green-400">Tweet 1:</span> "Luna's 4th birthday today! 🎉"</p>
+                  <p className="text-gray-300"><span className="text-green-400">Tweet 2:</span> "Adopted this little troublemaker back in 2020. Best decision ever!"</p>
+                  <p className="text-gray-300"><span className="text-green-400">MD5 Hash:</span> <code className="text-yellow-400">b59c67bf196a4758191e42f76670ceba</code></p>
                 </div>
               </div>
 
-              <div>
-                <p className="text-gray-400 text-sm font-medium">Your Analysis:</p>
-                <div className="bg-gray-900 p-3 rounded mt-1 text-sm">
-                  <p className="text-gray-300">• Pet name: <span className="text-green-400">Luna</span></p>
-                  <p className="text-gray-300">• Adoption year: <span className="text-green-400">2021</span></p>
-                  <p className="text-gray-300">• Password guess: <span className="text-green-400">luna2021</span></p>
+              {/* Step 1: Gather Intel */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 1: Gather Intel 🔍</p>
+                <p className="text-gray-400 text-sm mb-2">From the profile, we found:</p>
+                <ul className="text-gray-300 text-sm space-y-1">
+                  <li>• Pet name: <strong className="text-green-400">Luna</strong></li>
+                  <li>• Adoption year: <strong className="text-green-400">2020</strong></li>
+                  <li>• Location: <strong className="text-green-400">Seattle</strong></li>
+                </ul>
+              </div>
+
+              {/* Step 2: Build Wordlist */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 2: Create wordlist.txt 📝</p>
+                <p className="text-gray-400 text-sm mb-2">Create a file with password guesses (one per line):</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+echo "luna2020" &gt;&gt; wordlist.txt
+echo "luna2019" &gt;&gt; wordlist.txt
+echo "luna2021" &gt;&gt; wordlist.txt
+echo "seattle2020" &gt;&gt; wordlist.txt
+echo "lunaseattle" &gt;&gt; wordlist.txt</pre>
+                <p className="text-gray-400 text-xs mt-2">💡 Try common patterns: name+year, location+year, variations</p>
+              </div>
+
+              {/* Step 3: Save the Hash */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 3: Save the Hash 💾</p>
+                <p className="text-gray-400 text-sm mb-2">Copy the MD5 hash to a file:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
+              </div>
+
+              {/* Step 4: Run Hashcat */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 4: Run Hashcat ⚡</p>
+                <p className="text-gray-400 text-sm mb-2">Launch the dictionary attack:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
+                <div className="mt-2 text-xs text-gray-400">
+                  <p>• <code className="text-green-400">-m 0</code> = MD5 mode</p>
+                  <p>• <code className="text-green-400">-a 0</code> = Dictionary attack</p>
+                  <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
+                  <p>• <code className="text-green-400">wordlist.txt</code> = Your wordlist</p>
                 </div>
               </div>
 
-              <div>
-                <p className="text-gray-400 text-sm font-medium">Result:</p>
-                <div className="bg-green-900/20 border border-green-500/30 p-3 rounded mt-1">
-                  <p className="text-green-400 text-sm">✓ Hash cracked! Password: luna2021</p>
-                </div>
+              {/* Step 5: View Results */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 5: Get the Password ✅</p>
+                <p className="text-gray-400 text-sm mb-2">Check hashcat output:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+b59c67bf196a4758191e42f76670ceba:luna2020
+
+Status: Cracked</pre>
+                <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: luna2020</p>
+              </div>
+
+              {/* Step 6: Login */}
+              <div className="border-l-4 border-green-500 pl-4">
+                <p className="text-white font-semibold mb-2">Step 6: Login & Complete 🎯</p>
+                <ul className="text-gray-400 text-sm space-y-1">
+                  <li>• Click the <strong className="text-green-400">Login</strong> button</li>
+                  <li>• Username: <code className="text-green-400">sarah_jones</code> (no @)</li>
+                  <li>• Password: <code className="text-green-400">luna2020</code></li>
+                  <li>• Make a post to complete the round!</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -170,11 +148,21 @@ hashcat -m 0 -a 0 hash.txt wordlist.txt
           <div>
             <h3 className="text-xl font-semibold text-green-400 mb-3">💡 Pro Tips</h3>
             <ul className="text-gray-400 text-sm space-y-2">
-              <li>• Passwords are always lowercase</li>
-              <li>• Look for tweets mentioning years or dates</li>
-              <li>• Pet names are almost always in the tweets</li>
-              <li>• Try variations: name+year, location+year, name+location</li>
+              <li>• <strong>Passwords are always lowercase</strong> - convert everything to lowercase in your wordlist</li>
+              <li>• Read all tweets carefully - years and names are hidden in casual mentions</li>
+              <li>• Common patterns: petname+year, petname+location, firstname+year</li>
+              <li>• Build a robust wordlist with 20-30 guesses for each profile</li>
+              <li>• Use variations: try the year before and after the adoption year</li>
             </ul>
+          </div>
+
+          {/* Alternative: Quick Method */}
+          <div className="bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
+            <p className="text-yellow-400 font-semibold mb-2">🚀 Quick Method (Less Learning)</p>
+            <p className="text-gray-400 text-sm">
+              If you don't want to set up Hashcat, you can use online MD5 crackers like crackstation.net,
+              but you'll miss out on learning dictionary attack fundamentals!
+            </p>
           </div>
         </div>
 

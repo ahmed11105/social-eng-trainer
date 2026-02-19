@@ -19,22 +19,24 @@ test('How to Play button and modal', async ({ page }) => {
   // Check for key sections
   await expect(page.locator('text=The Goal')).toBeVisible();
   await expect(page.locator('text=What You Need')).toBeVisible();
-  await expect(page.locator('text=Step-by-Step Guide')).toBeVisible();
-  await expect(page.locator('h3:has-text("💡 Example")')).toBeVisible();
+  await expect(page.locator('h3:has-text("💡 Complete Example Walkthrough")')).toBeVisible();
   await expect(page.locator('text=Pro Tips')).toBeVisible();
 
-  // Check for the step numbers
-  await expect(page.locator('text=Gather Information')).toBeVisible();
-  await expect(page.locator('text=Build Password Guesses')).toBeVisible();
-  await expect(page.locator('text=Crack the Hash')).toBeVisible();
-  await expect(page.locator('text=Login & Post')).toBeVisible();
+  // Check for tutorial steps
+  await expect(page.locator('text=Gather Intel')).toBeVisible();
+  await expect(page.locator('text=Create wordlist.txt')).toBeVisible();
+  await expect(page.locator('text=Run Hashcat')).toBeVisible();
+  await expect(page.locator('text=Login & Complete')).toBeVisible();
+
+  // Check for hashcat command
+  await expect(page.locator('text=hashcat -m 0 -a 0 hash.txt wordlist.txt')).toBeVisible();
 
   // Scroll down to see the example section
-  await page.locator('h3:has-text("💡 Example")').scrollIntoViewIfNeeded();
+  await page.locator('h3:has-text("💡 Complete Example Walkthrough")').scrollIntoViewIfNeeded();
 
-  // Check example section
-  await expect(page.locator('text=Luna').first()).toBeVisible();
-  await expect(page.locator('text=luna2021').first()).toBeVisible();
+  // Check example profile
+  await expect(page.locator('text=@sarah_jones').first()).toBeVisible();
+  await expect(page.locator('text=luna2020').first()).toBeVisible();
 
   // Close the modal by clicking the close button
   await page.locator('button[aria-label="Close"]').click();
