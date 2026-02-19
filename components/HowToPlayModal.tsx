@@ -142,27 +142,34 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
 
               {/* Step 4: Run Hashcat */}
               <div className="border-l-4 border-green-500 pl-4">
-                <p className="text-white font-semibold mb-2">Step 4: Run Hashcat ⚡</p>
+                <p className="text-white font-semibold mb-3">Step 4: Run Hashcat ⚡</p>
 
-                <p className="text-gray-400 text-sm mb-2">If you used Option A (manual combinations):</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
-                <div className="mt-2 mb-3 text-xs text-gray-400">
-                  <p>• <code className="text-green-400">-a 0</code> = Straight dictionary attack (tries each line as-is)</p>
-                </div>
+                {/* Side by side options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Option A */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
+                    <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                    <div className="mt-2 text-xs text-gray-400">
+                      <p>• <code className="text-green-400">-a 0</code> = Dictionary mode</p>
+                    </div>
+                  </div>
 
-                <p className="text-gray-400 text-sm mb-2">If you used Option B (keywords in separate files):</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-hashcat -m 0 -a 1 hash.txt words.txt numbers.txt</pre>
-                <div className="mt-2 text-xs text-gray-400">
-                  <p>• <code className="text-green-400">-a 1</code> = Combinator attack (tries word1+word2 from both files)</p>
-                  <p>• Automatically tries: luna2019, luna2020, luna2021, seattle2019, etc.</p>
+                  {/* Option B */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
+                    <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                    <div className="mt-2 text-xs text-gray-400">
+                      <p>• <code className="text-green-400">-a 1</code> = Combinator mode</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
-                  <p className="font-medium text-green-400 mb-1">Both modes explained:</p>
                   <p>• <code className="text-green-400">-m 0</code> = MD5 hash type</p>
-                  <p>• <code className="text-green-400">hash.txt</code> = File containing the hash</p>
+                  <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
                 </div>
               </div>
 
