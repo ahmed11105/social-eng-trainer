@@ -45,14 +45,21 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
                   <li>• A text editor to create wordlists</li>
                 </ul>
               </div>
-              <div className="bg-gray-900 p-3 rounded">
-                <p className="text-gray-400 text-sm font-medium mb-1">Install Hashcat:</p>
-                <pre className="text-green-400 text-xs overflow-x-auto">
-# macOS/Linux
-brew install hashcat
 
-# Windows
-# Download from hashcat.net/hashcat</pre>
+              {/* macOS/Linux Installation */}
+              <div className="bg-gray-900 p-3 rounded">
+                <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                  <span>🍎</span> macOS / <span>🐧</span> Linux
+                </p>
+                <pre className="text-green-400 text-xs overflow-x-auto">brew install hashcat</pre>
+              </div>
+
+              {/* Windows Installation */}
+              <div className="bg-gray-900 p-3 rounded">
+                <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                  <span>🪟</span> Windows
+                </p>
+                <p className="text-gray-400 text-xs">Download from <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">hashcat.net/hashcat</a></p>
               </div>
             </div>
           </div>
@@ -90,12 +97,18 @@ brew install hashcat
                 <p className="text-white font-semibold mb-2">Step 2: Create wordlist.txt 📝</p>
                 <p className="text-gray-400 text-sm mb-2">Create a file with password guesses (one per line):</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-echo "luna2020" &gt;&gt; wordlist.txt
-echo "luna2019" &gt;&gt; wordlist.txt
-echo "luna2021" &gt;&gt; wordlist.txt
-echo "seattle2020" &gt;&gt; wordlist.txt
-echo "lunaseattle" &gt;&gt; wordlist.txt</pre>
-                <p className="text-gray-400 text-xs mt-2">💡 Try common patterns: name+year, location+year, variations</p>
+cat &gt; wordlist.txt &lt;&lt;EOF
+luna2019
+luna2021
+luna2022
+seattle2019
+seattle2021
+lunaseattle
+seattleluna
+luna
+EOF</pre>
+                <p className="text-gray-400 text-xs mt-2">💡 Build variations - the actual password might not be your first guess!</p>
+                <p className="text-gray-400 text-xs mt-1">Common patterns: name+year, location+year, year variations (±1-2 years)</p>
               </div>
 
               {/* Step 3: Save the Hash */}
@@ -122,13 +135,22 @@ hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
 
               {/* Step 5: View Results */}
               <div className="border-l-4 border-green-500 pl-4">
-                <p className="text-white font-semibold mb-2">Step 5: Get the Password ✅</p>
-                <p className="text-gray-400 text-sm mb-2">Check hashcat output:</p>
+                <p className="text-white font-semibold mb-2">Step 5: Check Results & Iterate 🔄</p>
+                <p className="text-gray-400 text-sm mb-2">First attempt - no match found:</p>
+                <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
+Exhausted
+Status: Not cracked</pre>
+                <p className="text-gray-400 text-sm mt-3 mb-2">Think again! Adoption year was 2020. Add it to wordlist:</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-b59c67bf196a4758191e42f76670ceba:luna2020
+echo "luna2020" &gt;&gt; wordlist.txt</pre>
+                <p className="text-gray-400 text-sm mt-2 mb-2">Run hashcat again:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+hashcat -m 0 -a 0 hash.txt wordlist.txt
 
+b59c67bf196a4758191e42f76670ceba:luna2020
 Status: Cracked</pre>
                 <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: luna2020</p>
+                <p className="text-gray-400 text-xs mt-2">💡 Dictionary attacks often require iteration and refinement!</p>
               </div>
 
               {/* Step 6: Login */}
