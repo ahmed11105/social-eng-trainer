@@ -11,7 +11,7 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gray-900 border-b border-green-500/30 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-gray-900 border-b border-green-500/30 p-4 flex items-center justify-between z-10">
           <h2 className="text-2xl font-bold text-green-400">How to Play: Dictionary Attack Training</h2>
           <button
             onClick={onClose}
@@ -270,7 +270,7 @@ Status: Cracked</pre>
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-gray-900 border-t border-green-500/30 p-4">
+        <div className="sticky bottom-0 bg-gray-900 border-t border-green-500/30 p-4 z-10">
           <button
             onClick={onClose}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors"
