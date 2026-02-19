@@ -54,106 +54,103 @@ export default function LoginForm() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto mt-20 p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Login Form */}
-          <div className="md:col-span-2 bg-gray-900 rounded-2xl p-8">
-            <h1 className="text-3xl font-bold mb-2">Login</h1>
-            <p className="text-gray-400 mb-6">Enter the credentials you cracked!</p>
+      {/* Background pattern */}
+      <div className="fixed inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `repeating-linear-gradient(45deg, #10b981 0, #10b981 1px, transparent 0, transparent 50%),
+                           repeating-linear-gradient(-45deg, #10b981 0, #10b981 1px, transparent 0, transparent 50%)`,
+          backgroundSize: '20px 20px',
+          backgroundPosition: '0 0, 10px 10px'
+        }}
+      />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Username</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter username"
-                  className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter cracked password"
-                  className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div className="bg-black p-4 rounded-lg border border-gray-800">
-                <p className="text-xs text-gray-500 mb-2">Target MD5 Hash:</p>
-                <code className="text-xs text-green-400 break-all">{currentProfile.passwordHash}</code>
-              </div>
-
-              {error && (
-                <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg text-sm">
-                  {error}
-                  {failedAttempts > 0 && (
-                    <p className="text-xs mt-1 text-red-300">Attempts: {failedAttempts}</p>
-                  )}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full py-3 bg-blue-500 text-white rounded-full font-bold hover:bg-blue-600 transition-colors"
-              >
-                Login
-              </button>
-            </form>
-
-            <div className="mt-6 p-4 bg-black rounded-lg border border-gray-800">
-              <p className="text-xs text-gray-400">
-                <strong>How to crack:</strong><br/>
-                1. Analyze the profile for clues<br/>
-                2. Build a wordlist with possible passwords<br/>
-                3. Use hashcat: <code className="text-green-400">hashcat -m 0 -a 0 hash.txt wordlist.txt</code><br/>
-                4. Enter the cracked password here!
-              </p>
+      <div className="relative max-w-md mx-auto mt-20">
+        {/* Post-it username reminder */}
+        {!showHint && (
+          <div className="absolute -top-6 -right-6 z-10 transform rotate-6 hover:rotate-12 transition-transform">
+            <div className="bg-yellow-200 text-black p-3 shadow-lg" style={{
+              boxShadow: '4px 4px 8px rgba(0,0,0,0.2)',
+              fontFamily: 'Comic Sans MS, cursive'
+            }}>
+              <div className="text-xs font-bold mb-1">Username 📌</div>
+              <div className="font-mono text-sm">@{currentProfile.profile.username}</div>
+              <div className="text-xs text-gray-700 mt-1">(no @ when logging in)</div>
             </div>
           </div>
+        )}
 
-          {/* Username Reminder Sidebar */}
-          <div className="space-y-4">
-            <div className="bg-green-900/20 border border-green-500/30 rounded-2xl p-6">
-              <h3 className="text-lg font-bold text-green-400 mb-3">💡 Reminder</h3>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-400 mb-1">Username:</p>
-                  <p className="text-white font-mono bg-black/50 p-2 rounded border border-green-500/30">
-                    @{currentProfile.profile.username}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">No @ symbol when logging in</p>
-                </div>
+        {/* Hint sticky note (replaces post-it when hint is shown) */}
+        {showHint && (
+          <div className="absolute -top-6 -right-6 z-10 transform rotate-6 hover:rotate-12 transition-transform">
+            <div className="bg-blue-200 text-black p-3 shadow-lg max-w-xs" style={{
+              boxShadow: '4px 4px 8px rgba(0,0,0,0.2)',
+              fontFamily: 'Comic Sans MS, cursive'
+            }}>
+              <div className="text-xs font-bold mb-2">🔍 Hints</div>
+              {currentProfile.clues.map((clue, i) => (
+                <div key={i} className="text-xs mb-1">• {clue}</div>
+              ))}
+              <div className="text-xs font-bold mt-2 text-blue-900">
+                Pattern: {currentProfile.password.toLowerCase()}
               </div>
             </div>
+          </div>
+        )}
 
-            {showHint && (
-              <div className="bg-blue-900/20 border border-blue-500/30 rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-blue-400 mb-3">🔍 Password Hint</h3>
-                <p className="text-sm text-gray-300 mb-2">Look for these clues in the profile:</p>
-                <ul className="text-xs text-gray-400 space-y-1">
-                  {currentProfile.clues.map((clue, i) => (
-                    <li key={i}>• {clue}</li>
-                  ))}
-                </ul>
-                <p className="text-xs text-green-400 mt-3">
-                  Password pattern: {currentProfile.password.toLowerCase()}
-                </p>
+        {/* Login form */}
+        <div className="bg-gray-900 rounded-2xl p-8 shadow-2xl border border-gray-800">
+          <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            Login
+          </h1>
+          <p className="text-gray-400 mb-6 text-center">Enter the credentials you cracked!</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+                className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                autoFocus
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter cracked password"
+                className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+              />
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-900/50 border border-red-700 rounded-lg text-sm">
+                {error}
+                {failedAttempts > 0 && (
+                  <p className="text-xs mt-1 text-red-300">Attempts: {failedAttempts}</p>
+                )}
               </div>
             )}
-          </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              Login
+            </button>
+          </form>
         </div>
       </div>
 
       {/* Hint Offer Modal */}
       {showHintOffer && !showHint && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-blue-500/30 rounded-lg max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-gray-900 border border-blue-500/30 rounded-lg max-w-md w-full p-6 animate-scale-in">
             <h2 className="text-xl font-bold text-blue-400 mb-3">Need a Hint?</h2>
             <p className="text-gray-300 mb-6">
               You've tried {failedAttempts} times. Would you like a hint to help crack this password?

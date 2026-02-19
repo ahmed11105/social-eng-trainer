@@ -7,6 +7,22 @@ interface TweetProps extends TweetType {
   profile: Profile;
 }
 
+// Parse tweet text to make @mentions blue
+function parseTextWithMentions(text: string) {
+  const parts = text.split(/(@\w+)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('@')) {
+      return (
+        <span key={index} className="text-blue-400 hover:underline cursor-pointer">
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
 export default function Tweet({ text, date, likes, retweets, replies = 0, media, onDelete, profile }: TweetProps) {
   return (
     <div className="border-b border-gray-800 p-4 hover:bg-gray-900 transition">
@@ -25,7 +41,7 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
             <span className="text-gray-500">·</span>
             <span className="text-gray-500">{date}</span>
           </div>
-          <p className="mt-2 text-white" data-testid="tweet-text">{text}</p>
+          <p className="mt-2 text-white" data-testid="tweet-text">{parseTextWithMentions(text)}</p>
           {media && (
             <div className="mt-3 rounded-2xl overflow-hidden bg-gray-800 border border-gray-700">
               <img
