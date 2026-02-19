@@ -71,11 +71,11 @@ test.describe('Archetype-Based Profile Generation', () => {
       const hasPetClue = tweets.some(t => /\d{4}/.test(t) && (t.toLowerCase().includes('adopt') || t.toLowerCase().includes('year') || t.toLowerCase().includes('got')));
       expect(hasPetClue).toBeTruthy();
 
-      // Click Next Round button if not last round
+      // Clear localStorage and reload to get a new profile
       if (round < 9) {
-        const nextButton = page.locator('button:has-text("Next Round"), button:has-text("Start New Round")');
-        await nextButton.click();
-        await page.waitForTimeout(500); // Wait for profile to update
+        await page.evaluate(() => localStorage.clear());
+        await page.reload();
+        await page.waitForTimeout(500); // Wait for new profile to load
       }
     }
 
@@ -158,9 +158,10 @@ test.describe('Archetype-Based Profile Generation', () => {
         console.log('✓ Mostly lowercase style');
       }
 
-      // Click next if not last
+      // Clear localStorage and reload for next profile
       if (i < 4) {
-        await page.locator('button:has-text("Next Round"), button:has-text("Start New Round")').click();
+        await page.evaluate(() => localStorage.clear());
+        await page.reload();
         await page.waitForTimeout(500);
       }
     }

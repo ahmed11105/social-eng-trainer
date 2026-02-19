@@ -125,9 +125,11 @@ function composePetClueTweet(persona: RichPersona, rng: SeededRandom): string {
     text += rng.pick(endings);
   }
 
-  // Add emoji if persona uses them
+  // Add emoji if persona uses them - USE CORRECT PET TYPE
   if (persona.voice.emojiFrequency !== 'never' && rng.boolean(0.5)) {
-    text += ' ' + rng.pick(['🐾', '💙', '🥺', '❤️', '🐕', '🐈']);
+    const petEmoji = petType === 'dog' ? '🐕' : '🐈';
+    const genericEmojis = ['🐾', '💙', '🥺', '❤️'];
+    text += ' ' + rng.pick([...genericEmojis, petEmoji]);
   }
 
   return text;
@@ -416,14 +418,15 @@ function applyVoice(text: string, voice: RichPersona['voice'], rng: SeededRandom
 }
 
 function introduceRandomTypo(text: string): string {
+  // Only realistic, common typos based on keyboard proximity or common mistakes
   const typos: Record<string, string> = {
-    'believe': 'beleive',
-    'realized': 'ralized',
-    'definitely': 'defintely',
-    'literally': 'literaly',
-    'weird': 'wierd',
-    'the': 'teh',
-    'and': 'adn',
+    'believe': 'beleive',      // Common spelling confusion
+    'definitely': 'definately', // Common spelling mistake
+    'literally': 'literaly',    // Missing second 'l'
+    'weird': 'wierd',           // i before e confusion
+    'the': 'teh',               // Very common keyboard slip
+    'receive': 'recieve',       // i before e confusion
+    'their': 'thier',           // Letter swap
   };
 
   for (const [correct, typo] of Object.entries(typos)) {
