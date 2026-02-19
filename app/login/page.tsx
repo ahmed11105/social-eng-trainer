@@ -1,19 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import LoginForm from '@/components/LoginForm';
 import ProgressTracker from '@/components/ProgressTracker';
+import CompletionModal from '@/components/CompletionModal';
 import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated } from '@/lib/auth';
 
 export default function LoginPage() {
-  const { hashCopied, hasPosted } = useGame();
+  const router = useRouter();
+  const { hashCopied, hasPosted, roundCompleted, elapsedTime, currentProfile, stats, isViewingHistory, viewedProfile, startNewRound, setHasPosted } = useGame();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   useEffect(() => {
     setIsLoggedIn(isAuthenticated());
   }, []);
+
+  const handleNextRound = () => {
+    // Clear auth and start new round
+    setHasPosted(false);
+    startNewRound();
+    setShowCompletionModal(false);
+    router.push('/');
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -51,9 +63,26 @@ export default function LoginPage() {
             hashCopied={hashCopied}
             isLoggedIn={isLoggedIn}
             hasPosted={hasPosted}
+            onRoundComplete={() => setShowCompletionModal(true)}
           />
         </div>
       </div>
+
+      {/* Completion Modal */}
+      {showCompletionModal && roundCompleted && currentProfile && (
+        <CompletionModal
+          timeTaken={elapsedTime}
+          password={viewedProfile?.password || currentProfile.password}
+          clues={viewedProfile?.clues || currentProfile.clues}
+          difficulty={viewedProfile?.difficulty || currentProfile.difficulty}
+          totalRounds={stats.totalRounds}
+          currentStreak={stats.currentStreak}
+          fastestTime={stats.fastestTime}
+          onNextRound={handleNextRound}
+          onClose={() => setShowCompletionModal(false)}
+          isHistorical={isViewingHistory}
+        />
+      )}
     </div>
   );
 }

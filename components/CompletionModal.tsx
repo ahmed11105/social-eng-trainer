@@ -13,6 +13,7 @@ interface CompletionModalProps {
   fastestTime: number | null;
   onNextRound: () => void;
   onClose: () => void;
+  isHistorical?: boolean;
 }
 
 export default function CompletionModal({
@@ -25,6 +26,7 @@ export default function CompletionModal({
   fastestTime,
   onNextRound,
   onClose,
+  isHistorical = false,
 }: CompletionModalProps) {
   const [showStats, setShowStats] = useState(false);
 
@@ -153,17 +155,28 @@ export default function CompletionModal({
           </details>
         </div>
 
-        {/* Next Round Button - ALWAYS VISIBLE */}
-        <button
-          onClick={onNextRound}
-          className="w-full py-3 sm:py-4 md:py-5 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600 text-white font-bold rounded-xl text-lg sm:text-xl transition-all transform hover:scale-105 shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/50 animate-pulse-slow"
-        >
-          🚀 Next Challenge
-        </button>
+        {/* Next Round Button - ALWAYS VISIBLE (unless viewing history) */}
+        {!isHistorical && (
+          <>
+            <button
+              onClick={onNextRound}
+              className="w-full py-3 sm:py-4 md:py-5 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600 text-white font-bold rounded-xl text-lg sm:text-xl transition-all transform hover:scale-105 shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/50 animate-pulse-slow"
+            >
+              🚀 Next Challenge
+            </button>
 
-        <p className="text-center text-gray-400 text-xs sm:text-sm mt-3 sm:mt-4">
-          Ready for the next mission?
-        </p>
+            <p className="text-center text-gray-400 text-xs sm:text-sm mt-3 sm:mt-4">
+              Ready for the next mission?
+            </p>
+          </>
+        )}
+
+        {/* Close message for historical view */}
+        {isHistorical && (
+          <p className="text-center text-gray-400 text-xs sm:text-sm mt-3 sm:mt-4">
+            📜 Viewing historical round - Click X to close
+          </p>
+        )}
       </div>
     </div>
   );

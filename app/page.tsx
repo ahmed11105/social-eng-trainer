@@ -111,7 +111,7 @@ export default function Home() {
         />
       </main>
 
-      <StatsPanel />
+      <StatsPanel onRoundComplete={() => setShowCompletionModal(true)} />
 
       {/* Profile Navigation */}
       <ProfileNavigationBar />
@@ -126,17 +126,18 @@ export default function Home() {
       </button>
 
       {/* Completion Modal */}
-      {showCompletionModal && roundCompleted && !isViewingHistory && (
+      {showCompletionModal && roundCompleted && (
         <CompletionModal
-          timeTaken={elapsedTime}
-          password={currentProfile.password}
-          clues={currentProfile.clues}
-          difficulty={difficulty}
+          timeTaken={isViewingHistory ? viewedProfile.completionTime || elapsedTime : elapsedTime}
+          password={viewedProfile.password}
+          clues={viewedProfile.clues}
+          difficulty={viewedProfile.difficulty}
           totalRounds={stats.totalRounds}
           currentStreak={stats.currentStreak}
           fastestTime={stats.fastestTime}
           onNextRound={handleNextRound}
           onClose={() => setShowCompletionModal(false)}
+          isHistorical={isViewingHistory}
         />
       )}
 

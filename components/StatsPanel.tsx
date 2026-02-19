@@ -7,7 +7,11 @@ import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
 import ProgressTracker from './ProgressTracker';
 
-export default function StatsPanel() {
+interface StatsPanelProps {
+  onRoundComplete?: () => void;
+}
+
+export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
   const { stats, resetGame, skipLevel, hashCopied, hasPosted } = useGame();
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -32,6 +36,7 @@ export default function StatsPanel() {
         hashCopied={hashCopied}
         isLoggedIn={isLoggedIn}
         hasPosted={hasPosted}
+        onRoundComplete={onRoundComplete}
       />
 
       {/* Stats Dashboard */}
