@@ -17,6 +17,7 @@ import { HelpCircle } from 'lucide-react';
 export default function Home() {
   const [isAuth, setIsAuth] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   const router = useRouter();
   const {
     currentProfile,
@@ -42,6 +43,13 @@ export default function Home() {
       completeRound();
     }
   }, [isAuth, hasPosted, roundCompleted, completeRound]);
+
+  // Show completion modal when round is completed
+  useEffect(() => {
+    if (roundCompleted && !isViewingHistory) {
+      setShowCompletionModal(true);
+    }
+  }, [roundCompleted, isViewingHistory]);
 
   const handleLogout = () => {
     clearAuthSession();
@@ -118,7 +126,7 @@ export default function Home() {
       </button>
 
       {/* Completion Modal */}
-      {roundCompleted && !isViewingHistory && (
+      {showCompletionModal && roundCompleted && !isViewingHistory && (
         <CompletionModal
           timeTaken={elapsedTime}
           password={currentProfile.password}
@@ -128,7 +136,18 @@ export default function Home() {
           currentStreak={stats.currentStreak}
           fastestTime={stats.fastestTime}
           onNextRound={handleNextRound}
+          onClose={() => setShowCompletionModal(false)}
         />
+      )}
+
+      {/* Floating Next Round Button (when modal is closed but round completed) */}
+      {!showCompletionModal && roundCompleted && !isViewingHistory && (
+        <button
+          onClick={handleNextRound}
+          className="fixed bottom-6 right-6 z-40 px-6 py-4 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-green-500/50 transition-all transform hover:scale-110 animate-pulse-slow"
+        >
+          🚀 Next Round
+        </button>
       )}
 
       {/* How to Play Modal */}

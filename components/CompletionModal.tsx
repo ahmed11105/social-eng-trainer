@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 
 interface CompletionModalProps {
   timeTaken: number;
@@ -11,6 +12,7 @@ interface CompletionModalProps {
   currentStreak: number;
   fastestTime: number | null;
   onNextRound: () => void;
+  onClose: () => void;
 }
 
 export default function CompletionModal({
@@ -22,6 +24,7 @@ export default function CompletionModal({
   currentStreak,
   fastestTime,
   onNextRound,
+  onClose,
 }: CompletionModalProps) {
   const [showStats, setShowStats] = useState(false);
 
@@ -63,7 +66,16 @@ export default function CompletionModal({
         ))}
       </div>
 
-      <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl p-8 max-w-lg w-full transform transition-all border-2 border-green-500/50 shadow-2xl shadow-green-500/30 animate-scale-in">
+      <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl p-8 max-w-lg w-full transform transition-all border-2 border-green-500/50 shadow-2xl shadow-green-500/30 animate-scale-in relative">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800 rounded-lg"
+          aria-label="Close"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
         {/* Success Icon */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-500/30 to-blue-500/30 rounded-full mb-4 animate-bounce">
