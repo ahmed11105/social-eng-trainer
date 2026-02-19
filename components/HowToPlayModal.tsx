@@ -94,9 +94,15 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
 
               {/* Step 2: Build Wordlist */}
               <div className="border-l-4 border-green-500 pl-4">
-                <p className="text-white font-semibold mb-2">Step 2: Create wordlist.txt 📝</p>
-                <p className="text-gray-400 text-sm mb-2">Option A: Manual combinations (easier to learn)</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+                <p className="text-white font-semibold mb-3">Step 2: Create wordlist.txt 📝</p>
+
+                {/* Side by side options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Option A */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-2">Option A: Manual Combinations</p>
+                    <p className="text-gray-400 text-xs mb-2">Easier to learn, full control</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">
 cat &gt; wordlist.txt &lt;&lt;EOF
 luna2019
 luna2021
@@ -106,8 +112,13 @@ seattle2021
 lunaseattle
 seattleluna
 EOF</pre>
-                <p className="text-gray-400 text-xs mt-3 mb-2">Option B: Keywords only (use combinator attack)</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+                  </div>
+
+                  {/* Option B */}
+                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                    <p className="text-green-400 text-sm font-semibold mb-2">Option B: Keywords Only</p>
+                    <p className="text-gray-400 text-xs mb-2">Auto-combines in Step 4</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">
 cat &gt; words.txt &lt;&lt;EOF
 luna
 seattle
@@ -119,7 +130,8 @@ cat &gt; numbers.txt &lt;&lt;EOF
 2021
 2022
 EOF</pre>
-                <p className="text-gray-400 text-xs mt-2">💡 With separate keywords, you'll use combinator mode (shown in Step 4)</p>
+                  </div>
+                </div>
               </div>
 
               {/* Step 3: Save the Hash */}
