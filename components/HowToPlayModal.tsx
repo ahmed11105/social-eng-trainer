@@ -163,7 +163,10 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
                     <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                    <div className="relative">
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                      <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
+                    </div>
                     <div className="mt-2 text-xs text-gray-400">
                       <p>• <code className="text-green-400">-a 0</code> = Dictionary mode</p>
                     </div>
@@ -173,7 +176,10 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
                     <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                    <div className="relative">
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                      <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
+                    </div>
                     <div className="mt-2 text-xs text-gray-400">
                       <p>• <code className="text-green-400">-a 1</code> = Combinator mode</p>
                     </div>
