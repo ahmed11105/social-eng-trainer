@@ -95,7 +95,7 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               {/* Step 2: Build Wordlist */}
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-2">Step 2: Create wordlist.txt 📝</p>
-                <p className="text-gray-400 text-sm mb-2">Create a file with password guesses (one per line):</p>
+                <p className="text-gray-400 text-sm mb-2">Option A: Manual combinations (easier to learn)</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
 cat &gt; wordlist.txt &lt;&lt;EOF
 luna2019
@@ -105,10 +105,21 @@ seattle2019
 seattle2021
 lunaseattle
 seattleluna
-luna
 EOF</pre>
-                <p className="text-gray-400 text-xs mt-2">💡 Build variations - the actual password might not be your first guess!</p>
-                <p className="text-gray-400 text-xs mt-1">Common patterns: name+year, location+year, year variations (±1-2 years)</p>
+                <p className="text-gray-400 text-xs mt-3 mb-2">Option B: Keywords only (use combinator attack)</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+cat &gt; words.txt &lt;&lt;EOF
+luna
+seattle
+EOF
+
+cat &gt; numbers.txt &lt;&lt;EOF
+2019
+2020
+2021
+2022
+EOF</pre>
+                <p className="text-gray-400 text-xs mt-2">💡 With separate keywords, you'll use combinator mode (shown in Step 4)</p>
               </div>
 
               {/* Step 3: Save the Hash */}
@@ -122,14 +133,26 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
               {/* Step 4: Run Hashcat */}
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-2">Step 4: Run Hashcat ⚡</p>
-                <p className="text-gray-400 text-sm mb-2">Launch the dictionary attack:</p>
+
+                <p className="text-gray-400 text-sm mb-2">If you used Option A (manual combinations):</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
 hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
+                <div className="mt-2 mb-3 text-xs text-gray-400">
+                  <p>• <code className="text-green-400">-a 0</code> = Straight dictionary attack (tries each line as-is)</p>
+                </div>
+
+                <p className="text-gray-400 text-sm mb-2">If you used Option B (keywords in separate files):</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+hashcat -m 0 -a 1 hash.txt words.txt numbers.txt</pre>
                 <div className="mt-2 text-xs text-gray-400">
-                  <p>• <code className="text-green-400">-m 0</code> = MD5 mode</p>
-                  <p>• <code className="text-green-400">-a 0</code> = Dictionary attack</p>
-                  <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
-                  <p>• <code className="text-green-400">wordlist.txt</code> = Your wordlist</p>
+                  <p>• <code className="text-green-400">-a 1</code> = Combinator attack (tries word1+word2 from both files)</p>
+                  <p>• Automatically tries: luna2019, luna2020, luna2021, seattle2019, etc.</p>
+                </div>
+
+                <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
+                  <p className="font-medium text-green-400 mb-1">Both modes explained:</p>
+                  <p>• <code className="text-green-400">-m 0</code> = MD5 hash type</p>
+                  <p>• <code className="text-green-400">hash.txt</code> = File containing the hash</p>
                 </div>
               </div>
 
@@ -140,17 +163,24 @@ hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
                 <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
 Exhausted
 Status: Not cracked</pre>
-                <p className="text-gray-400 text-sm mt-3 mb-2">Think again! Adoption year was 2020. Add it to wordlist:</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-echo "luna2020" &gt;&gt; wordlist.txt</pre>
-                <p className="text-gray-400 text-sm mt-2 mb-2">Run hashcat again:</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-hashcat -m 0 -a 0 hash.txt wordlist.txt
+                <p className="text-gray-400 text-sm mt-3 mb-2">Think again! Adoption year was 2020.</p>
 
+                <p className="text-gray-400 text-xs mb-1"><strong>If using Option A:</strong> Add the combination manually:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+echo "luna2020" &gt;&gt; wordlist.txt
+hashcat -m 0 -a 0 hash.txt wordlist.txt</pre>
+
+                <p className="text-gray-400 text-xs mt-2 mb-1"><strong>If using Option B:</strong> Add 2020 to numbers list:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+echo "2020" &gt;&gt; numbers.txt
+hashcat -m 0 -a 1 hash.txt words.txt numbers.txt</pre>
+
+                <p className="text-gray-400 text-sm mt-3 mb-2">Result:</p>
+                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
 b59c67bf196a4758191e42f76670ceba:luna2020
 Status: Cracked</pre>
                 <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: luna2020</p>
-                <p className="text-gray-400 text-xs mt-2">💡 Dictionary attacks often require iteration and refinement!</p>
+                <p className="text-gray-400 text-xs mt-2">💡 Combinator mode (-a 1) automatically tries all combinations!</p>
               </div>
 
               {/* Step 6: Login */}
