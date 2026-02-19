@@ -50,11 +50,11 @@ export default function Profile({ profile, isAuthenticated, onLogout }: ProfileP
         </div>
         
         <div>
-          <h1 className="text-2xl font-bold">{profile.displayName}</h1>
-          <p className="text-gray-500">@{profile.username}</p>
+          <h1 className="text-2xl font-bold" data-testid="profile-display-name">{profile.displayName}</h1>
+          <p className="text-gray-500" data-testid="profile-username">@{profile.username}</p>
         </div>
-        
-        <p className="mt-3">{profile.bio}</p>
+
+        <p className="mt-3" data-testid="profile-bio">{profile.bio}</p>
         
         <div className="flex gap-4 mt-3 text-gray-500">
           <span>📍 {profile.location}</span>

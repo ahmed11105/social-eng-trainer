@@ -25,7 +25,7 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
             <span className="text-gray-500">·</span>
             <span className="text-gray-500">{date}</span>
           </div>
-          <p className="mt-2 text-white">{text}</p>
+          <p className="mt-2 text-white" data-testid="tweet-text">{text}</p>
           {media && (
             <div className="mt-3 rounded-2xl overflow-hidden bg-gray-800 border border-gray-700">
               <img

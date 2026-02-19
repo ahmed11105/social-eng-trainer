@@ -395,6 +395,9 @@ function generateTweets(archetype: PersonaArchetype, data: ProfileData, seed: nu
 export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy', seed?: number): GeneratedProfile {
   const useSeed = seed ?? (Date.now() + profileCounter++ + Math.floor(Math.random() * 1000000));
 
+  // Seed faker for consistent generation
+  faker.seed(useSeed);
+
   // Use the new realistic system
   const richPersona = generatePersona(useSeed);
   const tweetTexts = composeTweetSet(richPersona, useSeed);
@@ -415,10 +418,48 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
   const password = `${richPersona.pet.name.toLowerCase()}${richPersona.pet.adoptionYear}`;
   const passwordHash = CryptoJS.MD5(password).toString();
 
+  // Generate realistic username based on archetype
+  const generateUsername = () => {
+    switch (richPersona.archetype) {
+      case 'corporate_professional':
+      case 'healthcare_worker':
+        // Professional handles: firstname_lastname or firstnamelastname
+        return faker.helpers.arrayElement([
+          `${richPersona.name.toLowerCase()}${faker.person.lastName().toLowerCase()}`,
+          `${richPersona.name.toLowerCase()}_${faker.person.lastName().toLowerCase()}`,
+          `${richPersona.name.toLowerCase()}${faker.number.int({ min: 1, max: 99 })}`,
+        ]);
+      case 'internet_native':
+      case 'student_young_adult':
+        // Casual/creative handles
+        return faker.helpers.arrayElement([
+          `${richPersona.name.toLowerCase()}${faker.word.adjective()}`,
+          `${faker.word.adjective()}${richPersona.name.toLowerCase()}`,
+          `${richPersona.name.toLowerCase()}${faker.word.noun()}`,
+          faker.internet.username().toLowerCase(),
+        ]);
+      case 'creative_artist':
+        // Creative/aesthetic handles
+        return faker.helpers.arrayElement([
+          `${richPersona.name.toLowerCase()}creates`,
+          `${richPersona.name.toLowerCase()}art`,
+          `${faker.word.adjective()}${richPersona.name.toLowerCase()}`,
+          faker.internet.username().toLowerCase(),
+        ]);
+      default:
+        // Normal handles for everyone else
+        return faker.helpers.arrayElement([
+          faker.internet.username({ firstName: richPersona.name }).toLowerCase(),
+          `${richPersona.name.toLowerCase()}${faker.number.int({ min: 1, max: 999 })}`,
+          `${richPersona.name.toLowerCase()}_${faker.word.noun()}`,
+        ]);
+    }
+  };
+
   const profile: Profile = {
-    username: richPersona.name.toLowerCase().replace(/\s/g, '_'),
+    username: generateUsername(),
     displayName: richPersona.name,
-    bio: `${richPersona.occupation.title} in ${richPersona.location}`,
+    bio: richPersona.bio, // USE THE GENERATED BIO!
     location: richPersona.location,
     website: faker.internet.url(),
     joinedDate: `Joined ${faker.date.past({ years: 5 }).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`,

@@ -101,15 +101,14 @@ function composePetClueTweet(persona: RichPersona, rng: SeededRandom): string {
   const petName = persona.pet.name;
   const petType = persona.pet.type;
 
-  // Write naturally based on persona's voice - more variety
+  // Write naturally based on persona's voice - ALWAYS include adoption year for password clue
   const structures = [
-    `${rng.pick(['cant believe', 'crazy that', 'wild that'])} its been ${years} years since i ${rng.pick(['got', 'adopted', 'brought home'])} ${petName}`,
-    `${years} years with ${petName} ${rng.pick(['today', 'and counting', 'already', 'now'])}`,
-    `my ${petType} ${petName} ${rng.pick([`turned ${years}`, `is ${years} now`, `is ${years} years old`])}`,
-    `${petName} has been in my life for ${years} years ${rng.pick(['now', 'already', ''])}`.trim(),
-    `adopted ${petName} ${rng.pick([`${years} years ago`, `back in ${persona.pet.adoptionYear}`, `in ${persona.pet.adoptionYear}`])} ${rng.pick(['and best decision ever', 'best decision', ''])}`.trim(),
-    `${petName}'s ${rng.pick(['adoption', 'gotcha'])} ${rng.pick(['day', 'anniversary'])} ${rng.pick(['is coming up', 'was'])} ${rng.pick([`${years} years`, 'and its been ' + years + ' years'])}`,
-    `been ${years} years since ${petName} ${rng.pick(['came into my life', 'joined the family', 'became mine'])}`,
+    `${rng.pick(['cant believe', 'crazy that'])} its been ${years} years since i ${rng.pick(['got', 'adopted'])} ${petName} in ${persona.pet.adoptionYear}`,
+    `${years} years with ${petName} ${rng.pick(['today', 'now'])}. ${rng.pick(['got', 'adopted'])} ${rng.pick(['them', 'him', 'her'])} in ${persona.pet.adoptionYear}`,
+    `my ${petType} ${petName} is ${years} now. ${rng.pick(['adopted', 'got', 'brought home'])} ${persona.pet.adoptionYear}`,
+    `adopted ${petName} ${rng.pick(['back in', 'in'])} ${persona.pet.adoptionYear} ${rng.pick(['and best decision ever', 'best decision', `and its been ${years} years`])}`,
+    `${petName}'s ${rng.pick(['adoption', 'gotcha'])} ${rng.pick(['day', 'anniversary'])} was in ${persona.pet.adoptionYear}. ${years} years ${rng.pick(['already', 'now', 'and counting'])}`,
+    `been ${years} years since ${petName} ${rng.pick(['came into my life', 'joined the family'])} in ${persona.pet.adoptionYear}`,
   ];
 
   let text = rng.pick(structures);
@@ -337,6 +336,18 @@ function applyVoice(text: string, voice: RichPersona['voice'], rng: SeededRandom
   // Capitalization
   if (voice.capitalization === 'lowercase') {
     result = result.toLowerCase();
+  } else if (voice.capitalization === 'normal') {
+    // Capitalize first letter of the tweet
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    // Capitalize after sentence endings
+    result = result.replace(/([.!?]\s+)([a-z])/g, (match, p1, p2) => p1 + p2.toUpperCase());
+    // Capitalize "I"
+    result = result.replace(/\bi\b/g, 'I');
+  } else if (voice.capitalization === 'mixed') {
+    // Mixed capitalization: sometimes capitalize, sometimes not
+    if (rng.boolean(0.7)) {
+      result = result.charAt(0).toUpperCase() + result.slice(1);
+    }
   }
 
   // Add typo occasionally
