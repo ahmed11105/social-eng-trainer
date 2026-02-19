@@ -128,7 +128,7 @@ export default function Home() {
       {/* Completion Modal */}
       {showCompletionModal && roundCompleted && (
         <CompletionModal
-          timeTaken={isViewingHistory ? viewedProfile.completionTime || elapsedTime : elapsedTime}
+          timeTaken={elapsedTime}
           password={viewedProfile.password}
           clues={viewedProfile.clues}
           difficulty={viewedProfile.difficulty}
