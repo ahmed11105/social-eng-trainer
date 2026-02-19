@@ -437,7 +437,7 @@ function generateDisplayName(firstName: string, archetype: Archetype, rng: Seede
       ]);
 
     case 'internet_native':
-      // Internet native: Fancy text, symbols, online aliases, emojis
+      // Internet native: Fancy text, symbols, online aliases, emojis (occasional)
       return rng.pick([
         // Fancy Unicode text
         `${toFancyText(firstName.toLowerCase())}`,
@@ -450,70 +450,92 @@ function generateDisplayName(firstName: string, archetype: Archetype, rng: Seede
         `xX_${firstName.toLowerCase()}_Xx`,
         `${firstName.toLowerCase()}${rng.int(100, 9999)}`,
         `${firstName.toLowerCase()}.${faker.word.noun().toLowerCase()}`,
-        // Emoji heavy
-        `${firstName.toLowerCase()} ${rng.pick(['💫', '🌙', '✨', '🦋', '🌸', '💎'])}`,
-        // All lowercase aesthetic
+        // Emoji options (mixed in, not dominant)
+        `${firstName.toLowerCase()} ${rng.pick(['💫', '🌙', '🦋', '🌸'])}`,
+        `${rng.pick(['💀', '👾', '🎮', '✨'])} ${firstName.toLowerCase()}`,
+        // All lowercase aesthetic (more common)
         `${firstName.toLowerCase()}`,
-        `${firstName.toLowerCase()}${rng.pick(['', '.', '..', '...'])}`,
+        `${firstName.toLowerCase()}`,
+        `${firstName.toLowerCase()}${rng.pick(['.', '..', '...'])}`,
+        `${firstName.toLowerCase()}_${faker.word.noun().toLowerCase()}`,
       ]);
 
     case 'creative_artist':
-      // Creative: Artistic symbols, aesthetic
+      // Creative: Artistic symbols, aesthetic, occasional emojis
       return rng.pick([
         `★ ${firstName} ★`,
         `♡ ${firstName.toLowerCase()} ♡`,
-        `${firstName} ${rng.pick(['🎨', '✨', '🌙', '☆'])}`,
         `${firstName.toLowerCase()} | ${rng.pick(['artist', 'creative', 'designer'])}`,
         `${toFancyText(firstName)}`,
         firstName,
+        `${firstName}`,
+        // Occasional creative emojis
+        `${firstName} ${rng.pick(['🎨', '✨', '🌙'])}`,
+        `${rng.pick(['🎨', '✏️', '🖌️'])} ${firstName}`,
       ]);
 
     case 'tech_engineering':
-      // Tech: Underscores, tech references, lowercase
+      // Tech: Underscores, tech references, lowercase, rare emojis
       return rng.pick([
         `${firstName.toLowerCase()}_${rng.pick(['dev', 'codes', 'builds'])}`,
         `${firstName.toLowerCase()}${rng.int(10, 99)}`,
         `${firstName} | ${rng.pick(['Developer', 'Engineer', 'Tech'])}`,
         firstName,
         `${firstName.toLowerCase()}`,
+        `${firstName.toLowerCase()}`,
+        // Very occasional tech emoji
+        `${firstName} ${rng.pick(['💻', '⚡', '🔧'])}`,
       ]);
 
     case 'student_young_adult':
-      // Students: Casual, emojis, simple variations
+      // Students: Casual, occasional emojis, simple variations
       return rng.pick([
-        `${firstName} ${rng.pick(['🎓', '📚', '✌️', '💙', '✨', ''])}`,
         `${firstName.toLowerCase()}`,
         `${firstName}.`,
         firstName,
         `${firstName.toLowerCase()}${rng.int(0, 9)}`,
+        `${firstName}`,
+        // Occasional student/gen-z emojis
+        `${firstName} ${rng.pick(['🎓', '📚', '✌️', '💙'])}`,
+        `${rng.pick(['✨', '💫', '🌟'])} ${firstName}`,
       ]);
 
     case 'parent_family':
-      // Parents: Real names, family indicators
+      // Parents: Real names, family indicators, rare heart emojis
       return rng.pick([
         `${firstName} ${lastName}`,
         `${firstName} | ${rng.pick(['Mom', 'Dad', 'Parent'])}`,
         `${rng.pick(['Mom', 'Dad'])} of ${rng.int(1, 4)}`,
         firstName,
+        `${firstName}`,
+        `${firstName} ${lastName}`,
+        // Very occasional parent emoji
+        `${firstName} ${rng.pick(['❤️', '💕'])}`,
       ]);
 
     case 'casual_adult':
-      // Casual: Real names, maybe simple emoji
+      // Casual: Real names, rarely simple emoji
       return rng.pick([
         `${firstName} ${lastName}`,
-        `${firstName} ${rng.pick(['💙', '❤️', '✨', ''])}`,
         firstName,
         `${firstName} ${lastName.charAt(0)}.`,
+        `${firstName}`,
+        `${firstName} ${lastName}`,
+        // Rare casual emoji
+        `${firstName} ${rng.pick(['💙', '❤️', '✨'])}`,
       ]);
 
     case 'hobby_enthusiast':
-      // Hobby enthusiast: Name with hobby reference
-      const hobbies = ['📷', '🎮', '🎨', '🏃', '🎸', '📖', '🌱', '🍳'];
+      // Hobby enthusiast: Name with hobby reference, some with emojis
+      const hobbyEmojis = ['📷', '🎮', '🎨', '🏃', '🎸', '📖', '🌱', '🍳'];
       return rng.pick([
-        `${firstName} ${rng.pick(hobbies)}`,
         `${firstName} | ${rng.pick(['Photography', 'Gamer', 'Artist', 'Runner'])}`,
         firstName,
         `${firstName} ${lastName}`,
+        `${firstName}`,
+        // Occasional hobby emoji
+        `${firstName} ${rng.pick(hobbyEmojis)}`,
+        `${rng.pick(hobbyEmojis)} ${firstName}`,
       ]);
 
     case 'opinionated_commentator':
