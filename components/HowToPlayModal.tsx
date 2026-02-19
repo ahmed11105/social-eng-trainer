@@ -102,8 +102,7 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-2">Option A: Manual Combinations</p>
                     <p className="text-gray-400 text-xs mb-2">Easier to learn, full control</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">
-cat &gt; wordlist.txt &lt;&lt;EOF
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > wordlist.txt <<EOF
 luna2019
 luna2021
 luna2022
@@ -111,25 +110,24 @@ seattle2019
 seattle2021
 lunaseattle
 seattleluna
-EOF</pre>
+EOF`}</pre>
                   </div>
 
                   {/* Option B */}
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-2">Option B: Keywords Only</p>
                     <p className="text-gray-400 text-xs mb-2">Auto-combines in Step 4</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">
-cat &gt; words.txt &lt;&lt;EOF
+                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt <<EOF
 luna
 seattle
 EOF
 
-cat &gt; numbers.txt &lt;&lt;EOF
+cat > numbers.txt <<EOF
 2019
 2020
 2021
 2022
-EOF</pre>
+EOF`}</pre>
                   </div>
                 </div>
               </div>
