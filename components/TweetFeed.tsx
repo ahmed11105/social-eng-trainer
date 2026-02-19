@@ -71,8 +71,8 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
           <div className="flex gap-3">
             <div className="w-12 h-12 bg-gray-700 rounded-full flex-shrink-0 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces"
-                alt="Marcus Rivera"
+                src={profile.avatarUrl}
+                alt={profile.displayName}
                 className="w-full h-full object-cover"
               />
             </div>

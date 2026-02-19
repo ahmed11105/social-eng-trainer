@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
+import { isAuthenticated } from '@/lib/auth';
 import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
+import ProgressTracker from './ProgressTracker';
 
 export default function StatsPanel() {
-  const { stats, resetGame, skipLevel } = useGame();
+  const { stats, resetGame, skipLevel, hashCopied, hasPosted } = useGame();
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const isLoggedIn = isAuthenticated();
 
   const formatTime = (seconds: number | null) => {
     if (seconds === null) return '--:--';
@@ -23,6 +26,13 @@ export default function StatsPanel() {
       <div className="flex justify-center">
         <Timer />
       </div>
+
+      {/* Progress Tracker */}
+      <ProgressTracker
+        hashCopied={hashCopied}
+        isLoggedIn={isLoggedIn}
+        hasPosted={hasPosted}
+      />
 
       {/* Stats Dashboard */}
       <div className="bg-gray-900 rounded-2xl p-4">

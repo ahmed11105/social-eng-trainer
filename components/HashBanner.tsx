@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useGame } from '@/contexts/GameContext';
 
 interface HashBannerProps {
   hash: string;
@@ -9,10 +10,12 @@ interface HashBannerProps {
 
 export default function HashBanner({ hash, difficulty }: HashBannerProps) {
   const [copied, setCopied] = useState(false);
+  const { setHashCopied } = useGame();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(hash);
     setCopied(true);
+    setHashCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 

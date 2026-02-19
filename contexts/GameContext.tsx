@@ -20,6 +20,7 @@ interface GameState {
   roundCompleted: boolean;
   stats: GameStats;
   hasPosted: boolean;
+  hashCopied: boolean;
   profileHistory: GeneratedProfile[];
   currentViewIndex: number;
 }
@@ -29,6 +30,7 @@ interface GameContextType extends GameState {
   completeRound: () => void;
   updateElapsedTime: (time: number) => void;
   setHasPosted: (posted: boolean) => void;
+  setHashCopied: (copied: boolean) => void;
   resetGame: () => void;
   changeDifficulty: (difficulty: Difficulty) => void;
   skipLevel: () => void;
@@ -58,6 +60,7 @@ const INITIAL_STATE: GameState = {
   roundCompleted: false,
   stats: INITIAL_STATS,
   hasPosted: false,
+  hashCopied: false,
   profileHistory: [],
   currentViewIndex: 0,
 };
@@ -81,6 +84,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           ...parsedState,
           profileHistory: parsedState.profileHistory || [],
           currentViewIndex: parsedState.currentViewIndex ?? (parsedState.profileHistory?.length || 0),
+          hashCopied: parsedState.hashCopied ?? false,
         };
 
         setState(migratedState);
@@ -141,6 +145,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isRunning: true,
         roundCompleted: false,
         hasPosted: false,
+        hashCopied: false,
         profileHistory: newHistory,
         currentViewIndex: newHistory.length, // View the new profile
       };
@@ -174,6 +179,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState(prev => ({
       ...prev,
       currentProfile: profile,
+      hashCopied: false,
+      hasPosted: false,
       startTime: Date.now(),
       elapsedTime: 0,
       isRunning: true,
@@ -194,6 +201,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState(prev => ({
       ...prev,
       hasPosted: posted,
+    }));
+  };
+
+  const setHashCopied = (copied: boolean) => {
+    setState(prev => ({
+      ...prev,
+      hashCopied: copied,
     }));
   };
 
@@ -251,6 +265,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     completeRound,
     updateElapsedTime,
     setHasPosted,
+    setHashCopied,
     resetGame,
     changeDifficulty,
     skipLevel,

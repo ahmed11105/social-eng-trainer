@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface HowToPlayModalProps {
   onClose: () => void;
@@ -9,6 +9,7 @@ interface HowToPlayModalProps {
 
 export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
   const [isClosing, setIsClosing] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -279,6 +280,65 @@ Status: Cracked</pre>
               If you don't want to set up Hashcat, you can use online MD5 crackers like crackstation.net,
               but you'll miss out on learning dictionary attack fundamentals!
             </p>
+          </div>
+
+          {/* Common Errors */}
+          <div className="bg-red-900/20 border border-red-500/30 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setShowErrors(!showErrors)}
+              className="w-full p-4 flex items-center justify-between hover:bg-red-900/30 transition-colors"
+            >
+              <span className="text-red-400 font-semibold">⚠️ Common Errors & Troubleshooting</span>
+              {showErrors ? (
+                <ChevronUp className="w-5 h-5 text-red-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-red-400" />
+              )}
+            </button>
+
+            {showErrors && (
+              <div className="p-4 pt-0 space-y-4">
+                {/* macOS Error */}
+                <div className="bg-black/30 p-4 rounded border border-red-500/20">
+                  <h4 className="text-red-400 font-semibold mb-2">macOS: "clCreateKernel(): CL_INVALID_KERNEL_NAME"</h4>
+                  <p className="text-gray-400 text-sm mb-3">
+                    Hashcat fails to use Intel GPU on macOS. The kernel compilation fails with OpenCL.
+                  </p>
+                  <div className="bg-black/50 p-3 rounded mb-2">
+                    <p className="text-xs text-gray-400 mb-1">Solution: Force CPU mode</p>
+                    <pre className="text-green-400 text-xs overflow-x-auto">hashcat -m 0 -a 1 -D 1 hash.txt words.txt numbers.txt</pre>
+                  </div>
+                  <p className="text-xs text-gray-500">The <code className="text-green-400">-D 1</code> flag forces hashcat to use CPU instead of GPU.</p>
+                </div>
+
+                {/* Already Cracked */}
+                <div className="bg-black/30 p-4 rounded border border-red-500/20">
+                  <h4 className="text-red-400 font-semibold mb-2">"All hashes found as potfile"</h4>
+                  <p className="text-gray-400 text-sm mb-3">
+                    Hashcat already cracked this hash before and saved it.
+                  </p>
+                  <div className="bg-black/50 p-3 rounded mb-2">
+                    <p className="text-xs text-gray-400 mb-1">Solution: Show the cracked password</p>
+                    <pre className="text-green-400 text-xs overflow-x-auto">hashcat -m 0 hash.txt --show</pre>
+                  </div>
+                  <p className="text-xs text-gray-500">Or clear potfile: <code className="text-green-400">rm ~/.hashcat/hashcat.potfile</code></p>
+                </div>
+
+                {/* No matches */}
+                <div className="bg-black/30 p-4 rounded border border-red-500/20">
+                  <h4 className="text-red-400 font-semibold mb-2">"Exhausted" / No password found</h4>
+                  <p className="text-gray-400 text-sm mb-3">
+                    Your wordlist didn't contain the correct password combination.
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    • Re-read the profile and tweets carefully<br/>
+                    • Look for names, dates, locations, and years<br/>
+                    • Try combinator mode (-a 1) to auto-combine words with numbers<br/>
+                    • Ensure all passwords in your wordlist are lowercase
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
