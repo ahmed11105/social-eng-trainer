@@ -207,16 +207,22 @@ Status: Not cracked</pre>
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Fix</p>
                     <p className="text-gray-400 text-xs mb-2">Add the missing combination</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "luna2020" >> wordlist.txt
+                    <div className="relative">
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "luna2020" >> wordlist.txt
 hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                      <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
+                    </div>
                   </div>
 
                   {/* Option B */}
                   <div className="bg-gray-900 p-3 rounded border border-gray-700">
                     <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Fix</p>
                     <p className="text-gray-400 text-xs mb-2">Add 2020 to auto-combine</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "2020" >> numbers.txt
+                    <div className="relative">
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "2020" >> numbers.txt
 hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                      <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
+                    </div>
                   </div>
                 </div>
 
