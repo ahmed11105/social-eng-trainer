@@ -1,7 +1,20 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import LoginForm from '@/components/LoginForm';
+import ProgressTracker from '@/components/ProgressTracker';
+import { useGame } from '@/contexts/GameContext';
+import { isAuthenticated } from '@/lib/auth';
 
 export default function LoginPage() {
+  const { hashCopied, hasPosted } = useGame();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+  }, []);
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -30,6 +43,17 @@ export default function LoginPage() {
 
         <LoginForm />
       </main>
+
+      {/* Progress Tracker - Fixed on right side */}
+      <div className="hidden lg:block w-80 p-4">
+        <div className="sticky top-4">
+          <ProgressTracker
+            hashCopied={hashCopied}
+            isLoggedIn={isLoggedIn}
+            hasPosted={hasPosted}
+          />
+        </div>
+      </div>
     </div>
   );
 }
