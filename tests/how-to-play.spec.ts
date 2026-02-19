@@ -29,7 +29,7 @@ test('How to Play button and modal', async ({ page }) => {
   await expect(page.locator('text=Step 6: Login & Complete')).toBeVisible();
 
   // Check for cat command and hashcat command
-  await expect(page.locator('text=cat > wordlist.txt <<EOF')).toBeVisible();
+  await expect(page.locator('text=cat > wordlist.txt << EOF')).toBeVisible();
   await expect(page.locator('text=hashcat -m 0 -a 0 hash.txt wordlist.txt').first()).toBeVisible();
 
   // Scroll down to see the example section
