@@ -458,7 +458,7 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
 
   const profile: Profile = {
     username: generateUsername(),
-    displayName: richPersona.name,
+    displayName: richPersona.displayName,
     bio: richPersona.bio, // USE THE GENERATED BIO!
     location: richPersona.location,
     website: faker.internet.url(),
