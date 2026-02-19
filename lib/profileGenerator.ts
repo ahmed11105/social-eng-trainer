@@ -4,7 +4,7 @@ import { Profile, Tweet } from '@/types';
 import { PERSONA_ARCHETYPES, PersonaType, PersonaArchetype } from './personaProfiles';
 import { generateRealisticProfile as genRealisticProfile } from './realisticTweetSystem';
 import { generatePersona } from './personaFactory';
-import { composeTweetSet } from './tweetComposer';
+import { generateArchetypeTweets } from './archetypeTweets';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -398,9 +398,9 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
   // Seed faker for consistent generation
   faker.seed(useSeed);
 
-  // Use the new realistic system
+  // Use the new archetype-based tweet generation system
   const richPersona = generatePersona(useSeed);
-  const tweetTexts = composeTweetSet(richPersona, useSeed);
+  const tweetTexts = generateArchetypeTweets(richPersona, useSeed);
 
   // Convert to old format for compatibility
   const currentYear = new Date().getFullYear();
