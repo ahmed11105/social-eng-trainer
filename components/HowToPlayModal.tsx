@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { X } from 'lucide-react';
 
 interface HowToPlayModalProps {
@@ -7,14 +8,26 @@ interface HowToPlayModalProps {
 }
 
 export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 200);
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-      <div className="bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in duration-300" style={{ transformOrigin: 'bottom left' }}>
+    <div className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}>
+      <div
+        className={`bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-scale-out' : 'animate-scale-in'}`}
+        style={{ transformOrigin: 'bottom left' }}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-gray-900 border-b border-green-500/30 p-4 flex items-center justify-between z-10">
           <h2 className="text-2xl font-bold text-green-400">How to Play: Dictionary Attack Training</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-400 hover:text-white transition-colors"
             aria-label="Close"
           >
@@ -272,7 +285,7 @@ Status: Cracked</pre>
         {/* Footer */}
         <div className="sticky bottom-0 bg-gray-900 border-t border-green-500/30 p-4 z-10">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors"
           >
             Got it! Let's Play
