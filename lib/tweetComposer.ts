@@ -105,7 +105,7 @@ function composePetClueTweet(persona: RichPersona, rng: SeededRandom): string {
   const structures = [
     `${rng.pick(['cant believe', 'crazy that'])} its been ${years} years since i ${rng.pick(['got', 'adopted'])} ${petName} in ${persona.pet.adoptionYear}`,
     `${years} years with ${petName} ${rng.pick(['today', 'now'])}. ${rng.pick(['got', 'adopted'])} ${rng.pick(['them', 'him', 'her'])} in ${persona.pet.adoptionYear}`,
-    `my ${petType} ${petName} is ${years} now. ${rng.pick(['adopted', 'got', 'brought home'])} ${persona.pet.adoptionYear}`,
+    `my ${petType} ${petName} is ${years} now. ${rng.pick(['adopted', 'got', 'brought home'])} in ${persona.pet.adoptionYear}`,
     `adopted ${petName} ${rng.pick(['back in', 'in'])} ${persona.pet.adoptionYear} ${rng.pick(['and best decision ever', 'best decision', `and its been ${years} years`])}`,
     `${petName}'s ${rng.pick(['adoption', 'gotcha'])} ${rng.pick(['day', 'anniversary'])} was in ${persona.pet.adoptionYear}. ${years} years ${rng.pick(['already', 'now', 'and counting'])}`,
     `been ${years} years since ${petName} ${rng.pick(['came into my life', 'joined the family'])} in ${persona.pet.adoptionYear}`,
