@@ -54,16 +54,6 @@ export default function LoginForm() {
 
   return (
     <>
-      {/* Background pattern */}
-      <div className="fixed inset-0 opacity-5 pointer-events-none"
-        style={{
-          backgroundImage: `repeating-linear-gradient(45deg, #10b981 0, #10b981 1px, transparent 0, transparent 50%),
-                           repeating-linear-gradient(-45deg, #10b981 0, #10b981 1px, transparent 0, transparent 50%)`,
-          backgroundSize: '20px 20px',
-          backgroundPosition: '0 0, 10px 10px'
-        }}
-      />
-
       <div className="relative max-w-md mx-auto mt-20">
         {/* Post-it username reminder */}
         {!showHint && (
