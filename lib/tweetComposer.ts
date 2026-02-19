@@ -89,8 +89,8 @@ export function composeTweet(persona: RichPersona, type: string, seed: number): 
       tweet = composeMundaneTweet(persona, rng);
   }
 
-  // Apply voice characteristics
-  tweet = applyVoice(tweet, voice, rng);
+  // Apply voice characteristics with context
+  tweet = applyVoice(tweet, voice, rng, type);
 
   return tweet;
 }
@@ -330,7 +330,7 @@ function composeContinuityTweet(persona: RichPersona, rng: SeededRandom): string
 /**
  * Apply voice characteristics to transform the tweet
  */
-function applyVoice(text: string, voice: RichPersona['voice'], rng: SeededRandom): string {
+function applyVoice(text: string, voice: RichPersona['voice'], rng: SeededRandom, tweetType?: string): string {
   let result = text;
 
   // Capitalization
@@ -363,24 +363,51 @@ function applyVoice(text: string, voice: RichPersona['voice'], rng: SeededRandom
     result = result.replace(/!$/, '!!!');
   }
 
-  // Add recurring phrase occasionally - integrate more naturally
-  if (rng.boolean(0.25) && voice.recurringPhrases.length > 0) {
-    const phrase = rng.pick(voice.recurringPhrases);
-    if (!result.includes(phrase)) {
-      // Remove existing period/exclamation before adding phrase
-      result = result.replace(/[.!]+$/, '');
-      // Add phrase naturally
-      if (phrase === 'lol' || phrase === 'lmao' || phrase === 'fr') {
-        result += ' ' + phrase;
-      } else if (phrase === 'ngl' || phrase === 'tbh' || phrase === 'honestly') {
-        // Sometimes add at start, sometimes at end
-        if (rng.boolean()) {
-          result = phrase + ' ' + result;
+  // Add recurring phrase occasionally - ONLY when contextually appropriate
+  if (rng.boolean(0.15) && voice.recurringPhrases.length > 0 && tweetType) {
+    // Define which phrases work with which tweet types
+    const casualPhrases = ['lol', 'lmao', 'honestly', 'tbh', 'ngl', 'fr'];
+    const professionalPhrases = ['Great to see', 'Looking forward', 'Congrats', 'Thanks for'];
+    const anyPhrases = ['Honestly', 'The fact that', 'We need to'];
+
+    // Tweet types that work with casual phrases
+    const casualTypes = ['social', 'emotional', 'reaction', 'reply_to_friend', 'imperfect_moment', 'continuity_reference'];
+
+    // Tweet types that work with professional phrases
+    const professionalTypes = ['work_frustration'];
+
+    // Filter phrases based on tweet type
+    let allowedPhrases = voice.recurringPhrases;
+
+    if (casualTypes.includes(tweetType)) {
+      // Only use casual phrases for casual tweet types
+      allowedPhrases = voice.recurringPhrases.filter(p => casualPhrases.includes(p) || anyPhrases.includes(p));
+    } else if (professionalTypes.includes(tweetType)) {
+      // Professional phrases OK for work tweets
+      allowedPhrases = voice.recurringPhrases.filter(p => professionalPhrases.includes(p) || anyPhrases.includes(p));
+    } else {
+      // For mundane/boring/niche tweets, only use very neutral phrases or skip
+      allowedPhrases = voice.recurringPhrases.filter(p => ['honestly', 'Honestly'].includes(p));
+    }
+
+    if (allowedPhrases.length > 0) {
+      const phrase = rng.pick(allowedPhrases);
+      if (!result.includes(phrase)) {
+        // Remove existing period/exclamation before adding phrase
+        result = result.replace(/[.!]+$/, '');
+        // Add phrase naturally
+        if (phrase === 'lol' || phrase === 'lmao' || phrase === 'fr') {
+          result += ' ' + phrase;
+        } else if (phrase === 'ngl' || phrase === 'tbh' || phrase === 'honestly') {
+          // Sometimes add at start, sometimes at end
+          if (rng.boolean()) {
+            result = phrase + ' ' + result;
+          } else {
+            result += ' ' + phrase;
+          }
         } else {
           result += ' ' + phrase;
         }
-      } else {
-        result += ' ' + phrase;
       }
     }
   }
