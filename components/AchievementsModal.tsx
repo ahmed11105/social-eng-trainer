@@ -39,15 +39,23 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
 
   return (
     <div
-      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in overflow-y-auto"
-      style={{ zIndex: 10000 }}
+      className="fixed inset-0 bg-black/95 flex items-center justify-center p-4 overflow-y-auto"
+      style={{
+        zIndex: 10000,
+        animation: 'fadeIn 0.2s ease-out',
+        willChange: 'opacity'
+      }}
       onClick={(e) => {
         // Close if clicking the backdrop
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
-        className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-700 shadow-2xl animate-scale-in relative my-auto"
+        className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-700 shadow-2xl relative my-auto"
+        style={{
+          animation: 'scaleIn 0.2s ease-out',
+          willChange: 'transform, opacity'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
