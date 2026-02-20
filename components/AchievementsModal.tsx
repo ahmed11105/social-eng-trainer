@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Trophy, Lock } from 'lucide-react';
 import type { Achievement } from '@/lib/achievements';
 import { getRarityColors, calculateAchievementProgress } from '@/lib/achievements';
@@ -17,13 +18,17 @@ interface AchievementsModalProps {
 }
 
 export default function AchievementsModal({ achievements, onClose, stats }: AchievementsModalProps) {
+  const [mounted, setMounted] = React.useState(false);
+
   // Prevent body scrolling when modal is open
   useEffect(() => {
+    setMounted(true);
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, []);
+
   const unlocked = achievements.filter(a => a.unlocked).length;
   const total = achievements.length;
   const progress = (unlocked / total) * 100;
@@ -37,10 +42,11 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
 
   const rarityOrder: Achievement['rarity'][] = ['common', 'rare', 'epic', 'legendary'];
 
-  return (
+  if (!mounted) return null;
+
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in overflow-y-auto"
-      style={{ zIndex: 10000 }}
+      className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in overflow-y-auto"
       onClick={(e) => {
         // Close if clicking the backdrop
         if (e.target === e.currentTarget) onClose();
@@ -162,4 +168,6 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
