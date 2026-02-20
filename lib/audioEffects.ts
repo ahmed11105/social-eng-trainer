@@ -225,6 +225,7 @@ export function playHoverSound(volume: number = 0.2) {
 /**
  * Pitched hover sound - Clickity-clack with variable pitch for navigation
  * Same as regular hover sound but with pitch scaling
+ * Volume decreases as pitch increases to balance perceived loudness
  */
 export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   const ctx = getAudioContext();
@@ -233,7 +234,12 @@ export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   // Scale factor based on pitch (300Hz = 1.0, 900Hz = 3.0)
   const pitchScale = basePitch / 300;
 
-  // Three-layer clickity-clack with pitch scaling
+  // Inverse volume scaling: higher pitch = lower volume
+  // 300Hz = 1.0x volume, 900Hz = 0.5x volume (50% reduction at highest pitch)
+  const volumeScale = 1.0 - ((basePitch - 300) / (900 - 300)) * 0.5;
+  const adjustedVolume = volume * volumeScale;
+
+  // Three-layer clickity-clack with pitch scaling and inverse volume
 
   // Layer 1: High "click" (key press start) - scaled
   const click1 = ctx.createOscillator();
@@ -243,7 +249,7 @@ export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   click1.frequency.setValueAtTime(1800 * pitchScale, now);
   click1.frequency.exponentialRampToValueAtTime(1400 * pitchScale, now + 0.01);
 
-  gain1.gain.setValueAtTime(volume * 0.3, now);
+  gain1.gain.setValueAtTime(adjustedVolume * 0.3, now);
   gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.02);
 
   click1.connect(gain1);
@@ -265,7 +271,7 @@ export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   filter.frequency.setValueAtTime(850 * pitchScale, now);
   filter.Q.setValueAtTime(3, now);
 
-  gain2.gain.setValueAtTime(volume * 0.25, now + 0.008);
+  gain2.gain.setValueAtTime(adjustedVolume * 0.25, now + 0.008);
   gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
 
   click2.connect(filter);
@@ -283,7 +289,7 @@ export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   bass.frequency.setValueAtTime(180 * pitchScale, now + 0.01);
   bass.frequency.exponentialRampToValueAtTime(120 * pitchScale, now + 0.03);
 
-  bassGain.gain.setValueAtTime(volume * 0.2, now + 0.01);
+  bassGain.gain.setValueAtTime(adjustedVolume * 0.2, now + 0.01);
   bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
 
   bass.connect(bassGain);
