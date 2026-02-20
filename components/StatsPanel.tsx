@@ -13,10 +13,22 @@ interface StatsPanelProps {
 }
 
 export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
-  const { stats, resetGame, skipLevel, hashCopied, hasPosted, allSensitiveTweetsDeleted } = useGame();
+  const {
+    stats,
+    resetGame,
+    skipLevel,
+    hashCopied,
+    hasPosted,
+    allSensitiveTweetsDeleted,
+    viewedProfile,
+    isViewingHistory,
+  } = useGame();
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const isLoggedIn = isAuthenticated();
+
+  // If viewing a completed historical round, show all steps as complete
+  const isCompletedHistoricalRound = isViewingHistory && viewedProfile && viewedProfile.completionTime !== undefined;
 
   const formatTime = (seconds: number | null) => {
     if (seconds === null) return '--:--';
@@ -34,10 +46,10 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
 
       {/* Progress Tracker */}
       <ProgressTracker
-        hashCopied={hashCopied}
-        isLoggedIn={isLoggedIn}
-        hasPosted={hasPosted}
-        allSensitiveTweetsDeleted={allSensitiveTweetsDeleted}
+        hashCopied={isCompletedHistoricalRound || hashCopied}
+        isLoggedIn={isCompletedHistoricalRound || isLoggedIn}
+        hasPosted={isCompletedHistoricalRound || hasPosted}
+        allSensitiveTweetsDeleted={isCompletedHistoricalRound || allSensitiveTweetsDeleted}
         onRoundComplete={onRoundComplete}
       />
 
