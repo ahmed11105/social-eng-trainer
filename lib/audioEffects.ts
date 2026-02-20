@@ -430,83 +430,98 @@ export function playWhooshSound(volume: number = 0.3) {
 }
 
 /**
- * Recycle bin sound - throwing into trash with crumple
- * Swoosh followed by crumple and light clunk
+ * Recycle bin sound - gentle Mac-style trash empty sound
+ * Smooth whoosh followed by soft paper crumple and gentle poof
  */
-export function playRecycleBinSound(volume: number = 0.35) {
+export function playRecycleBinSound(volume: number = 0.3) {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
 
-  // Part 1: Swoosh (throwing motion) - descending pitch
-  const swoosh = ctx.createOscillator();
-  const swooshGain = ctx.createGain();
-  const swooshFilter = ctx.createBiquadFilter();
+  // Part 1: Gentle airy whoosh - like Mac sound
+  const bufferSize = ctx.sampleRate * 0.25;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
 
-  swoosh.type = 'sine';
-  swoosh.frequency.setValueAtTime(800, now);
-  swoosh.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+  // Generate smooth white noise for airy whoosh
+  for (let i = 0; i < bufferSize; i++) {
+    const envelope = Math.sin((i / bufferSize) * Math.PI); // Bell curve
+    data[i] = (Math.random() * 2 - 1) * envelope;
+  }
 
-  swooshFilter.type = 'lowpass';
-  swooshFilter.frequency.setValueAtTime(1200, now);
-  swooshFilter.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+  const whoosh = ctx.createBufferSource();
+  whoosh.buffer = buffer;
 
-  swooshGain.gain.setValueAtTime(volume * 0.3, now);
-  swooshGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+  const whooshFilter = ctx.createBiquadFilter();
+  whooshFilter.type = 'bandpass';
+  whooshFilter.frequency.setValueAtTime(1200, now);
+  whooshFilter.frequency.exponentialRampToValueAtTime(400, now + 0.22);
+  whooshFilter.Q.setValueAtTime(3, now);
 
-  swoosh.connect(swooshFilter);
-  swooshFilter.connect(swooshGain);
-  swooshGain.connect(ctx.destination);
+  const whooshGain = ctx.createGain();
+  whooshGain.gain.setValueAtTime(volume * 0.2, now);
+  whooshGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
 
-  swoosh.start(now);
-  swoosh.stop(now + 0.2);
+  whoosh.connect(whooshFilter);
+  whooshFilter.connect(whooshGain);
+  whooshGain.connect(ctx.destination);
 
-  // Part 2: Crumple (paper crushing) - noise burst
+  whoosh.start(now);
+  whoosh.stop(now + 0.25);
+
+  // Part 2: Soft paper crumple - very gentle
   setTimeout(() => {
-    const bufferSize = ctx.sampleRate * 0.15;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
+    const crumpleSize = ctx.sampleRate * 0.12;
+    const crumpleBuffer = ctx.createBuffer(1, crumpleSize, ctx.sampleRate);
+    const crumpleData = crumpleBuffer.getChannelData(0);
 
-    // Generate crumpling noise
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize); // Fade out
+    // Generate soft crumpling noise with smooth envelope
+    for (let i = 0; i < crumpleSize; i++) {
+      const envelope = 1 - (i / crumpleSize); // Gentle fade
+      crumpleData[i] = (Math.random() * 2 - 1) * envelope * 0.3; // Much softer
     }
 
     const crumple = ctx.createBufferSource();
-    crumple.buffer = buffer;
+    crumple.buffer = crumpleBuffer;
 
     const crumpleFilter = ctx.createBiquadFilter();
     crumpleFilter.type = 'highpass';
-    crumpleFilter.frequency.setValueAtTime(800, ctx.currentTime);
+    crumpleFilter.frequency.setValueAtTime(1200, ctx.currentTime);
+    crumpleFilter.Q.setValueAtTime(0.5, ctx.currentTime);
 
     const crumpleGain = ctx.createGain();
-    crumpleGain.gain.setValueAtTime(volume * 0.25, ctx.currentTime);
-    crumpleGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+    crumpleGain.gain.setValueAtTime(volume * 0.15, ctx.currentTime);
+    crumpleGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
 
     crumple.connect(crumpleFilter);
     crumpleFilter.connect(crumpleGain);
     crumpleGain.connect(ctx.destination);
 
     crumple.start(ctx.currentTime);
-    crumple.stop(ctx.currentTime + 0.15);
-  }, 120);
+    crumple.stop(ctx.currentTime + 0.12);
+  }, 150);
 
-  // Part 3: Clunk (hitting bin bottom) - low thud
+  // Part 3: Gentle "poof" settling - soft low tone
   setTimeout(() => {
-    const clunk = ctx.createOscillator();
-    const clunkGain = ctx.createGain();
+    const poof = ctx.createOscillator();
+    const poofGain = ctx.createGain();
+    const poofFilter = ctx.createBiquadFilter();
 
-    clunk.type = 'sine';
-    clunk.frequency.setValueAtTime(100, ctx.currentTime);
-    clunk.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.05);
+    poof.type = 'sine';
+    poof.frequency.setValueAtTime(150, ctx.currentTime);
+    poof.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
 
-    clunkGain.gain.setValueAtTime(volume * 0.4, ctx.currentTime);
-    clunkGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+    poofFilter.type = 'lowpass';
+    poofFilter.frequency.setValueAtTime(300, ctx.currentTime);
 
-    clunk.connect(clunkGain);
-    clunkGain.connect(ctx.destination);
+    poofGain.gain.setValueAtTime(volume * 0.12, ctx.currentTime);
+    poofGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
 
-    clunk.start(ctx.currentTime);
-    clunk.stop(ctx.currentTime + 0.1);
+    poof.connect(poofFilter);
+    poofFilter.connect(poofGain);
+    poofGain.connect(ctx.destination);
+
+    poof.start(ctx.currentTime);
+    poof.stop(ctx.currentTime + 0.12);
   }, 180);
 }
 
