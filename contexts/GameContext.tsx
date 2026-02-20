@@ -33,6 +33,7 @@ interface GameContextType extends GameState {
   setHasPosted: (posted: boolean) => void;
   setHashCopied: (copied: boolean) => void;
   setAllSensitiveTweetsDeleted: (deleted: boolean) => void; // New: setter for sensitive tweets
+  updateCurrentProfileTweets: (tweets: any[]) => void; // New: update tweets in current profile
   resetGame: () => void;
   changeDifficulty: (difficulty: Difficulty) => void;
   skipLevel: () => void;
@@ -226,6 +227,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const updateCurrentProfileTweets = (tweets: any[]) => {
+    setState(prev => {
+      if (!prev.currentProfile) return prev;
+
+      // Update current profile
+      const updatedCurrentProfile = {
+        ...prev.currentProfile,
+        tweets,
+      };
+
+      // If viewing current profile, update it
+      // If viewing history, update the history entry
+      let updatedHistory = prev.profileHistory;
+
+      if (prev.currentViewIndex < prev.profileHistory.length) {
+        // Viewing history - update that specific profile
+        updatedHistory = [...prev.profileHistory];
+        updatedHistory[prev.currentViewIndex] = {
+          ...updatedHistory[prev.currentViewIndex],
+          tweets,
+        };
+      }
+
+      return {
+        ...prev,
+        currentProfile: updatedCurrentProfile,
+        profileHistory: updatedHistory,
+      };
+    });
+  };
+
   const resetGame = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('gameState');
@@ -282,6 +314,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setHasPosted,
     setHashCopied,
     setAllSensitiveTweetsDeleted,
+    updateCurrentProfileTweets,
     resetGame,
     changeDifficulty,
     skipLevel,

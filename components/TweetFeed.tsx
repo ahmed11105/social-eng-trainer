@@ -17,13 +17,18 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
   const [tweets, setTweets] = useState<TweetType[]>(initialTweets);
   const [newTweetText, setNewTweetText] = useState('');
   const [hasAddedTweet, setHasAddedTweet] = useState(false);
-  const { setAllSensitiveTweetsDeleted } = useGame();
+  const { setAllSensitiveTweetsDeleted, updateCurrentProfileTweets } = useGame();
 
   // Update tweets when initialTweets changes (new profile loaded)
   useEffect(() => {
     setTweets(initialTweets);
     setHasAddedTweet(false);
   }, [initialTweets]);
+
+  // Sync tweets to profile whenever they change
+  useEffect(() => {
+    updateCurrentProfileTweets(tweets);
+  }, [tweets, updateCurrentProfileTweets]);
 
   // Check if all sensitive tweets are deleted
   useEffect(() => {
