@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated } from '@/lib/auth';
+import { BarChart3 } from 'lucide-react';
 import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
 import ProgressTracker from './ProgressTracker';
@@ -42,7 +43,7 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
       {/* Stats Dashboard */}
       <div className="bg-gray-900 rounded-2xl p-4">
         <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <span>📊</span>
+          <BarChart3 className="w-5 h-5 text-blue-400" />
           <span>Your Stats</span>
         </h3>
         <div className="space-y-3">

@@ -1,6 +1,7 @@
 'use client';
 
 import { Tweet as TweetType, Profile } from '@/types';
+import { MessageCircle, Repeat2, Heart, Trash2 } from 'lucide-react';
 
 interface TweetProps extends TweetType {
   onDelete?: () => void;
@@ -53,15 +54,21 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
           )}
           <div className="flex gap-16 mt-3 text-gray-500 text-sm">
             <button className="flex items-center gap-2 hover:text-blue-400 transition-colors group">
-              <span className="group-hover:bg-blue-400/10 p-2 rounded-full transition-colors">💬</span>
+              <span className="group-hover:bg-blue-400/10 p-2 rounded-full transition-colors">
+                <MessageCircle className="w-4 h-4" />
+              </span>
               <span>{replies}</span>
             </button>
             <button className="flex items-center gap-2 hover:text-green-400 transition-colors group">
-              <span className="group-hover:bg-green-400/10 p-2 rounded-full transition-colors">🔁</span>
+              <span className="group-hover:bg-green-400/10 p-2 rounded-full transition-colors">
+                <Repeat2 className="w-4 h-4" />
+              </span>
               <span>{retweets}</span>
             </button>
             <button className="flex items-center gap-2 hover:text-red-400 transition-colors group">
-              <span className="group-hover:bg-red-400/10 p-2 rounded-full transition-colors">❤️</span>
+              <span className="group-hover:bg-red-400/10 p-2 rounded-full transition-colors">
+                <Heart className="w-4 h-4" />
+              </span>
               <span>{likes}</span>
             </button>
             {onDelete && (
@@ -69,7 +76,9 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
                 onClick={onDelete}
                 className="flex items-center gap-2 hover:text-red-500 ml-auto transition-colors group"
               >
-                <span className="group-hover:bg-red-500/10 p-2 rounded-full transition-colors">🗑️</span>
+                <span className="group-hover:bg-red-500/10 p-2 rounded-full transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </span>
                 <span className="text-xs">Delete</span>
               </button>
             )}

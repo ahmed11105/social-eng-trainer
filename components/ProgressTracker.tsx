@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Copy, LogIn, MessageSquare } from 'lucide-react';
+import { Check, Copy, LogIn, MessageSquare, Target, Trophy } from 'lucide-react';
 
 interface ProgressTrackerProps {
   hashCopied: boolean;
@@ -41,7 +41,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, onR
     <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-lg flex items-center gap-2">
-          <span>🎯</span>
+          <Target className="w-5 h-5 text-green-400" />
           <span>Progress</span>
         </h3>
         <span className="text-sm text-gray-400">
@@ -124,7 +124,10 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, onR
           onClick={onRoundComplete}
           className="mt-4 w-full p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 cursor-pointer"
         >
-          <p className="text-green-400 font-bold">🎉 Round Complete!</p>
+          <p className="text-green-400 font-bold flex items-center justify-center gap-2">
+            <Trophy className="w-4 h-4" />
+            Round Complete!
+          </p>
           <p className="text-xs text-gray-400 mt-1">Click to view completion details</p>
         </button>
       )}

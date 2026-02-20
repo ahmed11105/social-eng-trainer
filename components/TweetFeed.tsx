@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Image, BarChart3, Smile } from 'lucide-react';
 import Tweet from './Tweet';
 import { Tweet as TweetType, Profile } from '@/types';
 
@@ -87,13 +88,13 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
               <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-800">
                 <div className="flex gap-1">
                   <button className="p-2 hover:bg-blue-400/10 rounded-full text-blue-400 transition-colors">
-                    <span>🖼️</span>
+                    <Image className="w-5 h-5" />
                   </button>
                   <button className="p-2 hover:bg-blue-400/10 rounded-full text-blue-400 transition-colors">
-                    <span>📊</span>
+                    <BarChart3 className="w-5 h-5" />
                   </button>
                   <button className="p-2 hover:bg-blue-400/10 rounded-full text-blue-400 transition-colors">
-                    <span>😊</span>
+                    <Smile className="w-5 h-5" />
                   </button>
                 </div>
                 <button

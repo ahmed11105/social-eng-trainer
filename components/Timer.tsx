@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useGame } from '@/contexts/GameContext';
+import { Clock } from 'lucide-react';
 
 export default function Timer() {
   const { isRunning, elapsedTime, startTime, updateElapsedTime } = useGame();
@@ -35,7 +36,7 @@ export default function Timer() {
 
   return (
     <div className="flex items-center gap-2 px-4 py-2 bg-gray-900 rounded-full border border-gray-800">
-      <span className="text-xl">⏱️</span>
+      <Clock className="w-5 h-5 text-green-400" />
       <span className="font-mono text-lg font-bold text-white">
         {formatTime(elapsedTime)}
       </span>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Trophy, Clock } from 'lucide-react';
 
 interface CompletionModalProps {
   timeTaken: number;
@@ -81,7 +81,7 @@ export default function CompletionModal({
         {/* Success Icon */}
         <div className="text-center mb-3 sm:mb-4">
           <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500/30 to-blue-500/30 rounded-full mb-2 sm:mb-3 animate-bounce">
-            <span className="text-3xl sm:text-4xl md:text-5xl">🎉</span>
+            <Trophy className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-yellow-400" />
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-1 sm:mb-2">
             Mission Complete!
@@ -97,7 +97,10 @@ export default function CompletionModal({
           {/* Time Taken - Highlighted - ALWAYS VISIBLE */}
           <div className={`bg-gradient-to-r from-green-900/40 to-blue-900/40 border-2 border-green-500/50 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`}>
             <div className="flex items-center justify-between">
-              <span className="text-green-400 font-semibold text-xs sm:text-sm">⏱️ Your Time</span>
+              <span className="text-green-400 font-semibold text-xs sm:text-sm flex items-center gap-1">
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                Your Time
+              </span>
               <div className="text-right">
                 <span className="text-xl sm:text-2xl font-bold text-white block">
                   {formatTime(timeTaken)}
