@@ -223,47 +223,67 @@ export function playHoverSound(volume: number = 0.2) {
 }
 
 /**
- * Pitched hover sound - For navigation bars with ascending pitch
- * Creates a musical scale effect as you hover across buttons
+ * Pitched click sound - For navigation bars with ascending pitch
+ * Mechanical click sound with variable pitch based on position
  */
-export function playPitchedHoverSound(basePitch: number, volume: number = 0.25) {
+export function playPitchedClickSound(basePitch: number, volume: number = 0.25) {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
 
-  // Single clean tone with gentle attack and quick decay
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
+  // Scale factor based on pitch (300Hz = 1.0, 900Hz = 3.0)
+  const pitchScale = basePitch / 300;
 
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(basePitch, now);
+  // Three-layer click with pitch scaling
 
-  // Quick, gentle envelope
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(volume * 0.4, now + 0.005);
-  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+  // Layer 1: Low "thunk" (mechanical depth) - scaled
+  const bass = ctx.createOscillator();
+  const bassGain = ctx.createGain();
+  bass.type = 'sine';
+  bass.frequency.setValueAtTime(120 * pitchScale, now);
+  bass.frequency.exponentialRampToValueAtTime(80 * pitchScale, now + 0.04);
+  bassGain.gain.setValueAtTime(volume * 0.4, now);
+  bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+  bass.connect(bassGain);
+  bassGain.connect(ctx.destination);
+  bass.start(now);
+  bass.stop(now + 0.08);
 
-  osc.connect(gain);
-  gain.connect(ctx.destination);
+  // Layer 2: Mid "click" (satisfying snap) - scaled
+  const click = ctx.createOscillator();
+  const clickGain = ctx.createGain();
+  const clickFilter = ctx.createBiquadFilter();
 
-  osc.start(now);
-  osc.stop(now + 0.2);
+  click.type = 'sine';
+  click.frequency.setValueAtTime(1400 * pitchScale, now);
+  click.frequency.exponentialRampToValueAtTime(1000 * pitchScale, now + 0.03);
 
-  // Add a subtle harmonic for richness
-  const harmonic = ctx.createOscillator();
-  const harmonicGain = ctx.createGain();
+  clickFilter.type = 'bandpass';
+  clickFilter.frequency.setValueAtTime(1200 * pitchScale, now);
+  clickFilter.Q.setValueAtTime(2, now);
 
-  harmonic.type = 'sine';
-  harmonic.frequency.setValueAtTime(basePitch * 2, now); // Octave above
+  clickGain.gain.setValueAtTime(volume * 0.35, now);
+  clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
 
-  harmonicGain.gain.setValueAtTime(0, now);
-  harmonicGain.gain.linearRampToValueAtTime(volume * 0.1, now + 0.005);
-  harmonicGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+  click.connect(clickFilter);
+  clickFilter.connect(clickGain);
+  clickGain.connect(ctx.destination);
 
-  harmonic.connect(harmonicGain);
-  harmonicGain.connect(ctx.destination);
+  click.start(now);
+  click.stop(now + 0.07);
 
-  harmonic.start(now);
-  harmonic.stop(now + 0.15);
+  // Layer 3: Subtle high "tick" (clarity) - scaled
+  setTimeout(() => {
+    const tick = ctx.createOscillator();
+    const tickGain = ctx.createGain();
+    tick.type = 'sine';
+    tick.frequency.setValueAtTime(2800 * pitchScale, ctx.currentTime);
+    tickGain.gain.setValueAtTime(volume * 0.15, ctx.currentTime);
+    tickGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.02);
+    tick.connect(tickGain);
+    tickGain.connect(ctx.destination);
+    tick.start(ctx.currentTime);
+    tick.stop(ctx.currentTime + 0.03);
+  }, 5);
 }
 
 /**
