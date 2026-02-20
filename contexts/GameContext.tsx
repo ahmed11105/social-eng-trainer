@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { generateProfile, GeneratedProfile, Difficulty } from '@/lib/profileGenerator';
 import { clearAuthSession } from '@/lib/auth';
 import { PlayerProgress, loadPlayerProgress } from '@/lib/leveling';
+import { checkAchievements, loadAchievements, saveAchievements } from '@/lib/achievements';
 
 interface GameStats {
   totalRounds: number;
@@ -194,23 +195,41 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const timeTaken = Math.floor((Date.now() - state.startTime) / 1000);
     const isFastest = !state.stats.fastestTime || timeTaken < state.stats.fastestTime;
 
-    setState(prev => ({
-      ...prev,
-      isRunning: false,
-      roundCompleted: true,
-      elapsedTime: timeTaken,
-      currentProfile: prev.currentProfile ? {
-        ...prev.currentProfile,
-        completionTime: timeTaken, // Save completion time to profile
-      } : prev.currentProfile,
-      stats: {
+    setState(prev => {
+      const newStats = {
         totalRounds: prev.stats.totalRounds + 1,
         fastestTime: isFastest ? timeTaken : prev.stats.fastestTime,
         currentStreak: prev.stats.currentStreak + 1,
         bestStreak: Math.max(prev.stats.currentStreak + 1, prev.stats.bestStreak),
         roundsCompleted: prev.stats.roundsCompleted + 1,
-      },
-    }));
+      };
+
+      // Check and unlock achievements
+      const currentAchievements = loadAchievements();
+      const { achievements: updatedAchievements } = checkAchievements(
+        {
+          roundsCompleted: newStats.roundsCompleted,
+          currentStreak: newStats.currentStreak,
+          hashCopied: prev.hashCopied,
+          isLoggedIn: true, // They must be logged in to complete
+          completionTime: timeTaken,
+        },
+        currentAchievements
+      );
+      saveAchievements(updatedAchievements);
+
+      return {
+        ...prev,
+        isRunning: false,
+        roundCompleted: true,
+        elapsedTime: timeTaken,
+        currentProfile: prev.currentProfile ? {
+          ...prev.currentProfile,
+          completionTime: timeTaken,
+        } : prev.currentProfile,
+        stats: newStats,
+      };
+    });
   };
 
   const skipLevel = () => {
@@ -252,10 +271,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setHashCopied = useCallback((copied: boolean) => {
-    setState(prev => ({
-      ...prev,
-      hashCopied: copied,
-    }));
+    setState(prev => {
+      // Check achievements when hash is copied
+      if (copied) {
+        const currentAchievements = loadAchievements();
+        const { achievements: updatedAchievements } = checkAchievements(
+          {
+            roundsCompleted: prev.stats.roundsCompleted,
+            currentStreak: prev.stats.currentStreak,
+            hashCopied: true,
+            isLoggedIn: false,
+          },
+          currentAchievements
+        );
+        saveAchievements(updatedAchievements);
+      }
+
+      return {
+        ...prev,
+        hashCopied: copied,
+      };
+    });
   }, []);
 
   const setAllSensitiveTweetsDeleted = useCallback((deleted: boolean) => {

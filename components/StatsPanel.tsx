@@ -149,6 +149,12 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         <AchievementsModal
           achievements={achievements}
           onClose={() => setShowAchievements(false)}
+          stats={{
+            roundsCompleted: stats.roundsCompleted,
+            currentStreak: stats.currentStreak,
+            hashCopied: hashCopied,
+            isLoggedIn: isLoggedIn,
+          }}
         />
       )}
 

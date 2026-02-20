@@ -8,6 +8,8 @@ export interface Achievement {
   unlocked: boolean;
   unlockedAt?: number; // timestamp
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  progress?: number; // Current progress (0-1)
+  target?: number; // Target value for completion
 }
 
 export const ACHIEVEMENTS: Record<string, Omit<Achievement, 'unlocked' | 'unlockedAt'>> = {
@@ -241,4 +243,40 @@ export function checkAchievements(
   }
 
   return { achievements, newUnlocks };
+}
+
+// Calculate progress for each achievement based on current stats
+export function calculateAchievementProgress(
+  achievementId: string,
+  stats: {
+    roundsCompleted: number;
+    currentStreak: number;
+    hashCopied: boolean;
+    isLoggedIn: boolean;
+  }
+): { current: number; target: number; progress: number } {
+  switch (achievementId) {
+    case 'first_hash':
+      return { current: stats.hashCopied ? 1 : 0, target: 1, progress: stats.hashCopied ? 1 : 0 };
+    case 'first_login':
+      return { current: stats.isLoggedIn ? 1 : 0, target: 1, progress: stats.isLoggedIn ? 1 : 0 };
+    case 'first_round':
+      return { current: Math.min(stats.roundsCompleted, 1), target: 1, progress: Math.min(stats.roundsCompleted, 1) };
+    case 'rounds_10':
+      return { current: stats.roundsCompleted, target: 10, progress: Math.min(stats.roundsCompleted / 10, 1) };
+    case 'rounds_25':
+      return { current: stats.roundsCompleted, target: 25, progress: Math.min(stats.roundsCompleted / 25, 1) };
+    case 'rounds_50':
+      return { current: stats.roundsCompleted, target: 50, progress: Math.min(stats.roundsCompleted / 50, 1) };
+    case 'rounds_100':
+      return { current: stats.roundsCompleted, target: 100, progress: Math.min(stats.roundsCompleted / 100, 1) };
+    case 'streak_3':
+      return { current: stats.currentStreak, target: 3, progress: Math.min(stats.currentStreak / 3, 1) };
+    case 'streak_5':
+      return { current: stats.currentStreak, target: 5, progress: Math.min(stats.currentStreak / 5, 1) };
+    case 'streak_10':
+      return { current: stats.currentStreak, target: 10, progress: Math.min(stats.currentStreak / 10, 1) };
+    default:
+      return { current: 0, target: 1, progress: 0 };
+  }
 }
