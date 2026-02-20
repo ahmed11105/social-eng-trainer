@@ -206,24 +206,6 @@ export default function CompletionModal({
               </div>
             </div>
           )}
-
-          {/* 3. Overall Stats Grid THIRD - HIDDEN on mobile, VISIBLE on sm+ */}
-          <div className={`hidden sm:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-            <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 sm:p-3 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-white">{totalRounds}</div>
-              <div className="text-xs text-gray-400 mt-1">Rounds</div>
-            </div>
-            <div className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-lg p-2 sm:p-3 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-yellow-400">{currentStreak}</div>
-              <div className="text-xs text-gray-400 mt-1">Streak 🔥</div>
-            </div>
-            <div className="bg-gradient-to-br from-green-900/40 to-teal-900/40 border border-green-500/30 rounded-lg p-2 sm:p-3 text-center">
-              <div className="text-xl sm:text-2xl font-bold text-green-400">
-                {fastestTime ? formatTime(fastestTime) : '--'}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">Best</div>
-            </div>
-          </div>
         </div>
 
         {/* Next Round Button - ALWAYS VISIBLE (unless viewing history) */}
