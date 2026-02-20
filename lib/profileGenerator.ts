@@ -438,20 +438,52 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
     };
   });
 
-  // Generate password with variations (not always petname + year)
+  // Generate password with variations (18 total patterns)
+  const adoptionYear = richPersona.pet.adoptionYear;
+  const adoptionYearShort = String(adoptionYear).slice(-2); // e.g., 2019 → "19"
+  const birthYear = new Date().getFullYear() - richPersona.age;
+  const birthYearShort = String(birthYear).slice(-2); // e.g., 1995 → "95"
+
   const passwordPatterns = [
-    // Pattern 1: petname + adoption year (classic)
-    `${richPersona.pet.name.toLowerCase()}${richPersona.pet.adoptionYear}`,
-    // Pattern 2: petname + location
+    // Patterns without years (6 variations)
+    // Pattern 1: petname + location
     `${richPersona.pet.name.toLowerCase()}${richPersona.location.toLowerCase().replace(/\s+/g, '')}`,
-    // Pattern 3: location + adoption year
-    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${richPersona.pet.adoptionYear}`,
-    // Pattern 4: name + petname
+    // Pattern 2: name + petname
     `${richPersona.name.toLowerCase()}${richPersona.pet.name.toLowerCase()}`,
-    // Pattern 5: petname + birth year (age-based)
-    `${richPersona.pet.name.toLowerCase()}${new Date().getFullYear() - richPersona.age}`,
-    // Pattern 6: location + name
+    // Pattern 3: location + name
     `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${richPersona.name.toLowerCase()}`,
+    // Pattern 4: location + petname (reversed)
+    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${richPersona.pet.name.toLowerCase()}`,
+    // Pattern 5: petname + name (reversed)
+    `${richPersona.pet.name.toLowerCase()}${richPersona.name.toLowerCase()}`,
+    // Pattern 6: name + location (reversed)
+    `${richPersona.name.toLowerCase()}${richPersona.location.toLowerCase().replace(/\s+/g, '')}`,
+
+    // Patterns with years (12 variations - 6 patterns × 2 versions each)
+    // Pattern 7: petname + adoption year (full)
+    `${richPersona.pet.name.toLowerCase()}${adoptionYear}`,
+    // Pattern 8: petname + adoption year (short)
+    `${richPersona.pet.name.toLowerCase()}${adoptionYearShort}`,
+    // Pattern 9: location + adoption year (full)
+    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${adoptionYear}`,
+    // Pattern 10: location + adoption year (short)
+    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${adoptionYearShort}`,
+    // Pattern 11: petname + birth year (full)
+    `${richPersona.pet.name.toLowerCase()}${birthYear}`,
+    // Pattern 12: petname + birth year (short)
+    `${richPersona.pet.name.toLowerCase()}${birthYearShort}`,
+    // Pattern 13: adoption year (full) + petname
+    `${adoptionYear}${richPersona.pet.name.toLowerCase()}`,
+    // Pattern 14: adoption year (short) + petname
+    `${adoptionYearShort}${richPersona.pet.name.toLowerCase()}`,
+    // Pattern 15: adoption year (full) + location
+    `${adoptionYear}${richPersona.location.toLowerCase().replace(/\s+/g, '')}`,
+    // Pattern 16: adoption year (short) + location
+    `${adoptionYearShort}${richPersona.location.toLowerCase().replace(/\s+/g, '')}`,
+    // Pattern 17: birth year (full) + petname
+    `${birthYear}${richPersona.pet.name.toLowerCase()}`,
+    // Pattern 18: birth year (short) + petname
+    `${birthYearShort}${richPersona.pet.name.toLowerCase()}`,
   ];
 
   // Randomly select one pattern
