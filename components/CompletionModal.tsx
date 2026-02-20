@@ -143,7 +143,7 @@ export default function CompletionModal({
           {/* 4. Clues FOURTH - Collapsible - HIDDEN except on very large screens */}
           <details className={`hidden 2xl:block bg-black/30 border border-gray-700 rounded-lg ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.45s' }}>
             <summary className="p-2 sm:p-3 cursor-pointer text-gray-400 text-xs sm:text-sm font-semibold hover:text-white transition-colors">
-              📝 View Clues You Found
+              📝 View Available Clues
             </summary>
             <div className="px-2 sm:px-3 pb-2 sm:pb-3">
               <ul className="space-y-1">
