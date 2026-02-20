@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { validateCredentials, setAuthSession } from '@/lib/auth';
+import { validateCredentials, setAuthSession, isAuthenticated } from '@/lib/auth';
 import { useGame } from '@/contexts/GameContext';
 
 export default function LoginForm() {
@@ -13,7 +13,8 @@ export default function LoginForm() {
   const [showHintOffer, setShowHintOffer] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const router = useRouter();
-  const { currentProfile } = useGame();
+  const { currentProfile, hashCopied, hasPosted } = useGame();
+  const isLoggedIn = isAuthenticated();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,7 +93,25 @@ export default function LoginForm() {
           <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
             Login
           </h1>
-          <p className="text-gray-400 mb-6 text-center">Enter the credentials you cracked!</p>
+          <p className="text-gray-400 mb-4 text-center">Enter the credentials you cracked!</p>
+
+          {/* Compact horizontal progress */}
+          <div className="flex items-center justify-center gap-2 mb-6 px-4">
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2 h-2 rounded-full ${hashCopied ? 'bg-green-500' : 'bg-gray-700'}`} />
+              <span className={`text-xs ${hashCopied ? 'text-green-400' : 'text-gray-600'}`}>Hash</span>
+            </div>
+            <div className={`h-px flex-1 max-w-[40px] ${hashCopied ? 'bg-green-500' : 'bg-gray-700'}`} />
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2 h-2 rounded-full ${isLoggedIn ? 'bg-blue-500 animate-pulse' : 'bg-gray-700'}`} />
+              <span className={`text-xs font-semibold ${isLoggedIn ? 'text-blue-400' : 'text-gray-600'}`}>Login</span>
+            </div>
+            <div className={`h-px flex-1 max-w-[40px] ${isLoggedIn ? 'bg-blue-500' : 'bg-gray-700'}`} />
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2 h-2 rounded-full ${hasPosted ? 'bg-purple-500' : 'bg-gray-700'}`} />
+              <span className={`text-xs ${hasPosted ? 'text-purple-400' : 'text-gray-600'}`}>Post</span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
