@@ -1,3 +1,7 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ConfirmModalProps {
@@ -19,13 +23,21 @@ export default function ConfirmModal({
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
+  const [mounted, setMounted] = React.useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const colorClasses = {
     red: 'bg-red-600 hover:bg-red-700',
     yellow: 'bg-yellow-600 hover:bg-yellow-700',
     green: 'bg-green-600 hover:bg-green-700',
   };
 
-  return (
+  if (!mounted) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="bg-gray-900 border border-green-500/30 rounded-lg max-w-md w-full shadow-2xl animate-in zoom-in duration-200">
         {/* Header */}
@@ -63,4 +75,6 @@ export default function ConfirmModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
