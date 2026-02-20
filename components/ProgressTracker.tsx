@@ -55,7 +55,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
   }, [completedCount]);
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800 relative overflow-hidden">
+    <div className="bg-gray-900 rounded-2xl p-3 border border-gray-800 relative overflow-hidden">
       {/* Particle Effect */}
       <ParticleEffect
         trigger={showParticles}
@@ -64,7 +64,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
         onComplete={() => setShowParticles(false)}
       />
 
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-lg flex items-center gap-2">
           <Target className="w-5 h-5 text-green-400" />
           <span>Progress</span>
@@ -75,7 +75,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
+      <div className="w-full bg-gray-800 rounded-full h-2 mb-3 overflow-hidden">
         <div
           className="bg-gradient-to-r from-green-500 to-blue-500 h-full transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
@@ -83,7 +83,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
       </div>
 
       {/* Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {steps.map((step, index) => {
           const Icon = step.icon;
           const isActive = !step.completed && (index === 0 || steps[index - 1].completed);
@@ -91,7 +91,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
           return (
             <div
               key={step.id}
-              className={`flex items-start gap-3 p-3 rounded-lg transition-all duration-300 ${
+              className={`flex items-start gap-2.5 p-2.5 rounded-lg transition-all duration-300 ${
                 step.completed
                   ? 'bg-green-900/30 border border-green-500/30'
                   : isActive
@@ -151,13 +151,13 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
             onRoundComplete?.();
           }}
           onMouseEnter={() => playSound('hover')}
-          className="mt-4 w-full p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer animate-pulse shadow-lg shadow-green-500/30"
+          className="mt-3 w-full p-2.5 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer animate-pulse shadow-lg shadow-green-500/30"
         >
           <p className="text-green-400 font-bold flex items-center justify-center gap-2">
             <Trophy className="w-4 h-4 animate-bounce" />
             Round Complete!
           </p>
-          <p className="text-xs text-gray-400 mt-1">Click to view completion details</p>
+          <p className="text-xs text-gray-400 mt-0.5">Click to view completion details</p>
         </button>
       )}
     </div>
