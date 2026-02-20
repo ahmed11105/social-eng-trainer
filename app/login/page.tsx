@@ -25,32 +25,17 @@ export default function LoginPage() {
       <Sidebar />
 
       <main className="flex-1 relative overflow-hidden">
-        {/* Topographic/circuit pattern background */}
+        {/* Aesthetic black/grey background image */}
         <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `
-              radial-gradient(circle at 25% 25%, transparent 10%, rgba(16, 185, 129, 0.1) 11%, transparent 12%),
-              radial-gradient(circle at 75% 75%, transparent 10%, rgba(59, 130, 246, 0.1) 11%, transparent 12%),
-              radial-gradient(circle at 50% 50%, transparent 20%, rgba(16, 185, 129, 0.05) 21%, transparent 22%),
-              linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px),
-              linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '200px 200px, 180px 180px, 300px 300px, 50px 50px, 50px 50px',
-            backgroundPosition: '0 0, 100px 100px, 50px 50px, 0 0, 0 0'
+            backgroundImage: 'url(https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=1080&fit=crop&q=80)',
+            filter: 'brightness(0.3)'
           }}
         />
 
-        {/* Additional pattern layer for depth */}
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage: `
-              repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(59, 130, 246, 0.1) 35px, rgba(59, 130, 246, 0.1) 36px),
-              repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(16, 185, 129, 0.1) 35px, rgba(16, 185, 129, 0.1) 36px)
-            `
-          }}
-        />
+        {/* Dark overlay for better contrast */}
+        <div className="absolute inset-0 bg-black/60" />
 
         <div className="border-b border-gray-800 p-4 backdrop-blur bg-black/80 sticky top-0 z-10">
           <h2 className="text-xl font-bold">Login - OSINT Challenge</h2>

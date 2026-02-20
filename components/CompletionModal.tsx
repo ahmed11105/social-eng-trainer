@@ -92,10 +92,18 @@ export default function CompletionModal({
           )}
         </div>
 
-        {/* Stats */}
+        {/* Stats - Reordered with smooth top-to-bottom reveal */}
         <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
-          {/* Time Taken - Highlighted - ALWAYS VISIBLE */}
-          <div className={`bg-gradient-to-r from-green-900/40 to-blue-900/40 border-2 border-green-500/50 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`}>
+          {/* 1. Password Revealed FIRST - HIDDEN on mobile/tablet, VISIBLE on lg+ */}
+          <div className={`hidden lg:block bg-black/50 border border-gray-700 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0s' }}>
+            <div className="text-gray-400 text-xs sm:text-sm mb-1">Password was:</div>
+            <code className="text-green-400 font-mono text-sm sm:text-base block break-all font-bold">
+              {password}
+            </code>
+          </div>
+
+          {/* 2. Time Taken SECOND - Highlighted - ALWAYS VISIBLE */}
+          <div className={`bg-gradient-to-r from-green-900/40 to-blue-900/40 border-2 border-green-500/50 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.15s' }}>
             <div className="flex items-center justify-between">
               <span className="text-green-400 font-semibold text-xs sm:text-sm flex items-center gap-1">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -114,8 +122,8 @@ export default function CompletionModal({
             </div>
           </div>
 
-          {/* Overall Stats - Grid - HIDDEN on mobile, VISIBLE on sm+ */}
-          <div className={`hidden sm:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.1s' }}>
+          {/* 3. Overall Stats Grid THIRD - HIDDEN on mobile, VISIBLE on sm+ */}
+          <div className={`hidden sm:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
             <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 sm:p-3 text-center">
               <div className="text-xl sm:text-2xl font-bold text-white">{totalRounds}</div>
               <div className="text-xs text-gray-400 mt-1">Rounds</div>
@@ -132,16 +140,8 @@ export default function CompletionModal({
             </div>
           </div>
 
-          {/* Password Revealed - HIDDEN on mobile/tablet, VISIBLE on lg+ */}
-          <div className={`hidden lg:block bg-black/50 border border-gray-700 rounded-lg p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-            <div className="text-gray-400 text-xs sm:text-sm mb-1">Password was:</div>
-            <code className="text-green-400 font-mono text-sm sm:text-base block break-all font-bold">
-              {password}
-            </code>
-          </div>
-
-          {/* Clues - Collapsible - HIDDEN except on very large screens */}
-          <details className={`hidden 2xl:block bg-black/30 border border-gray-700 rounded-lg ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+          {/* 4. Clues FOURTH - Collapsible - HIDDEN except on very large screens */}
+          <details className={`hidden 2xl:block bg-black/30 border border-gray-700 rounded-lg ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.45s' }}>
             <summary className="p-2 sm:p-3 cursor-pointer text-gray-400 text-xs sm:text-sm font-semibold hover:text-white transition-colors">
               📝 View Clues You Found
             </summary>

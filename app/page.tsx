@@ -129,7 +129,7 @@ export default function Home() {
       {/* Completion Modal */}
       {showCompletionModal && roundCompleted && (
         <CompletionModal
-          timeTaken={elapsedTime}
+          timeTaken={viewedProfile.completionTime ?? elapsedTime}
           password={viewedProfile.password}
           clues={viewedProfile.clues}
           difficulty={viewedProfile.difficulty}

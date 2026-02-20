@@ -15,6 +15,7 @@ export interface GeneratedProfile {
   passwordHash: string;
   clues: string[];
   difficulty: Difficulty;
+  completionTime?: number; // Time in seconds to complete this round
 }
 
 // Global counter to ensure unique seeds even when called rapidly

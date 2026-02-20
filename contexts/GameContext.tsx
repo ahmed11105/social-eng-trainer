@@ -167,6 +167,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       isRunning: false,
       roundCompleted: true,
       elapsedTime: timeTaken,
+      currentProfile: prev.currentProfile ? {
+        ...prev.currentProfile,
+        completionTime: timeTaken, // Save completion time to profile
+      } : prev.currentProfile,
       stats: {
         totalRounds: prev.stats.totalRounds + 1,
         fastestTime: isFastest ? timeTaken : prev.stats.fastestTime,
