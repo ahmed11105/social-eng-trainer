@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from '@/contexts/GameContext';
 
 interface HashBannerProps {
@@ -11,6 +11,24 @@ interface HashBannerProps {
 export default function HashBanner({ hash, difficulty }: HashBannerProps) {
   const [copied, setCopied] = useState(false);
   const { setHashCopied } = useGame();
+
+  // Detect manual copying (highlight + copy) of the hash
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      const selection = window.getSelection();
+      const copiedText = selection?.toString().trim();
+
+      // Check if the copied text matches the hash
+      if (copiedText === hash) {
+        setCopied(true);
+        setHashCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    };
+
+    document.addEventListener('copy', handleCopy);
+    return () => document.removeEventListener('copy', handleCopy);
+  }, [hash, setHashCopied]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(hash);
