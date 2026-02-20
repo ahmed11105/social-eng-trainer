@@ -56,6 +56,45 @@ export default function ProfileNavigationBar() {
     return LOW_PITCH + (HIGH_PITCH - LOW_PITCH) * (index / (totalButtons - 1));
   };
 
+  // Smart pagination: only show 5 numbers at a time with ellipsis
+  const getVisiblePages = (): (number | 'ellipsis-start' | 'ellipsis-end')[] => {
+    if (totalRounds <= 7) {
+      // Show all pages if 7 or fewer
+      return Array.from({ length: totalRounds }, (_, i) => i);
+    }
+
+    const pages: (number | 'ellipsis-start' | 'ellipsis-end')[] = [];
+
+    if (currentViewIndex < 4) {
+      // Near start: [0, 1, 2, 3, 4, ..., last]
+      for (let i = 0; i < 5; i++) {
+        pages.push(i);
+      }
+      pages.push('ellipsis-end');
+      pages.push(totalRounds - 1);
+    } else if (currentViewIndex > totalRounds - 4) {
+      // Near end: [0, ..., last-4, last-3, last-2, last-1, last]
+      pages.push(0);
+      pages.push('ellipsis-start');
+      for (let i = totalRounds - 5; i < totalRounds; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Middle: [0, ..., current-1, current, current+1, ..., last]
+      pages.push(0);
+      pages.push('ellipsis-start');
+      pages.push(currentViewIndex - 1);
+      pages.push(currentViewIndex);
+      pages.push(currentViewIndex + 1);
+      pages.push('ellipsis-end');
+      pages.push(totalRounds - 1);
+    }
+
+    return pages;
+  };
+
+  const visiblePages = getVisiblePages();
+
   return (
     <div
       className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-transform duration-300 ease-in-out ${
@@ -79,9 +118,21 @@ export default function ProfileNavigationBar() {
             ← Prev
           </button>
 
-          {/* Round Numbers - scrollable if too many */}
-          <div className="flex items-center gap-2 overflow-x-auto max-w-2xl scrollbar-hide">
-            {Array.from({ length: totalRounds }, (_, i) => {
+          {/* Round Numbers - Smart Pagination */}
+          <div className="flex items-center gap-2">
+            {visiblePages.map((page, idx) => {
+              if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+                return (
+                  <div
+                    key={`ellipsis-${page}`}
+                    className="w-8 text-center text-gray-500 font-bold"
+                  >
+                    ...
+                  </div>
+                );
+              }
+
+              const i = page as number;
               const isCurrentRound = i === totalRounds - 1;
               const isActive = i === currentViewIndex;
               const buttonIndex = 1 + i; // Prev is 0, numbers start at 1
