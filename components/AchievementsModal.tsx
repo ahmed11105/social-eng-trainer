@@ -39,7 +39,8 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
 
   return (
     <div
-      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-fade-in overflow-y-auto"
+      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in overflow-y-auto"
+      style={{ zIndex: 10000 }}
       onClick={(e) => {
         // Close if clicking the backdrop
         if (e.target === e.currentTarget) onClose();
