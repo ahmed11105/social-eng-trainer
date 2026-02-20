@@ -135,9 +135,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const newDifficulty = difficulty || state.difficulty;
     const profile = generateProfile(newDifficulty);
 
-    // Clear authentication for new round
-    clearAuthSession();
-
     setState(prev => {
       // Add current profile to history before starting new round
       const newHistory = prev.currentProfile
@@ -159,6 +156,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentViewIndex: newHistory.length, // View the new profile
       };
     });
+
+    // Clear authentication and reload to ensure UI updates
+    clearAuthSession();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   const completeRound = () => {
@@ -190,9 +193,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // Generate new profile without saving current to history or incrementing stats
     const profile = generateProfile('easy'); // Always easy difficulty
 
-    // Clear authentication when skipping
-    clearAuthSession();
-
     setState(prev => ({
       ...prev,
       currentProfile: profile,
@@ -205,6 +205,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       roundCompleted: false,
       currentViewIndex: prev.profileHistory.length, // Stay on current view index
     }));
+
+    // Clear authentication and reload to ensure UI updates
+    clearAuthSession();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   const updateElapsedTime = (time: number) => {
@@ -271,9 +277,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('gameState');
     }
 
-    // Clear authentication when resetting
-    clearAuthSession();
-
     const profile = generateProfile('easy');
     setState({
       ...INITIAL_STATE,
@@ -281,6 +284,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       startTime: Date.now(),
       isRunning: true,
     });
+
+    // Clear authentication and reload to ensure UI updates
+    clearAuthSession();
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   const changeDifficulty = (difficulty: Difficulty) => {
