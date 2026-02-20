@@ -94,8 +94,8 @@ export default function CompletionModal({
 
         {/* Stats */}
         <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
-          {/* Time Taken - Highlighted - HIDDEN on very small screens, VISIBLE on xs+ */}
-          <div className={`hidden xs:block bg-gradient-to-r from-green-900/40 to-blue-900/40 border-2 border-green-500/50 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`}>
+          {/* Time Taken - Highlighted - ALWAYS VISIBLE */}
+          <div className={`bg-gradient-to-r from-green-900/40 to-blue-900/40 border-2 border-green-500/50 rounded-xl p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`}>
             <div className="flex items-center justify-between">
               <span className="text-green-400 font-semibold text-xs sm:text-sm">⏱️ Your Time</span>
               <div className="text-right">
@@ -111,8 +111,8 @@ export default function CompletionModal({
             </div>
           </div>
 
-          {/* Overall Stats - Grid - HIDDEN on xs and sm, VISIBLE on md+ */}
-          <div className={`hidden md:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.1s' }}>
+          {/* Overall Stats - Grid - HIDDEN on mobile, VISIBLE on sm+ */}
+          <div className={`hidden sm:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.1s' }}>
             <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 sm:p-3 text-center">
               <div className="text-xl sm:text-2xl font-bold text-white">{totalRounds}</div>
               <div className="text-xs text-gray-400 mt-1">Rounds</div>
@@ -129,7 +129,7 @@ export default function CompletionModal({
             </div>
           </div>
 
-          {/* Password Revealed - HIDDEN on xs, sm, md, VISIBLE on lg+ */}
+          {/* Password Revealed - HIDDEN on mobile/tablet, VISIBLE on lg+ */}
           <div className={`hidden lg:block bg-black/50 border border-gray-700 rounded-lg p-2 sm:p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
             <div className="text-gray-400 text-xs sm:text-sm mb-1">Password was:</div>
             <code className="text-green-400 font-mono text-sm sm:text-base block break-all font-bold">
@@ -137,8 +137,8 @@ export default function CompletionModal({
             </code>
           </div>
 
-          {/* Clues - Collapsible - HIDDEN on xs, sm, md, lg, VISIBLE on xl+ */}
-          <details className={`hidden xl:block bg-black/30 border border-gray-700 rounded-lg ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+          {/* Clues - Collapsible - HIDDEN except on very large screens */}
+          <details className={`hidden 2xl:block bg-black/30 border border-gray-700 rounded-lg ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
             <summary className="p-2 sm:p-3 cursor-pointer text-gray-400 text-xs sm:text-sm font-semibold hover:text-white transition-colors">
               📝 View Clues You Found
             </summary>
@@ -165,7 +165,7 @@ export default function CompletionModal({
               🚀 Next Challenge
             </button>
 
-            <p className="hidden xs:block text-center text-gray-400 text-xs sm:text-sm mt-2 sm:mt-3">
+            <p className="hidden sm:block text-center text-gray-400 text-xs sm:text-sm mt-2 sm:mt-3">
               Ready for the next mission?
             </p>
           </>
