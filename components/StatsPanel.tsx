@@ -114,34 +114,36 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           </span>
         </button>
 
-        {/* Skip and Reset Buttons Side by Side */}
-        <div className="grid grid-cols-2 gap-2">
-          {/* Skip Level Button */}
-          <button
-            onClick={() => {
-              playSound('click');
-              setShowSkipConfirm(true);
-            }}
-            onMouseEnter={() => playSound('hover')}
-            className="px-3 py-2 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-500/30"
-          >
-            <FastForward className="w-4 h-4" />
-            <span className="text-sm">Skip</span>
-          </button>
+        {/* Skip and Reset Buttons - Only show on current round, not historical rounds */}
+        {!isViewingHistory && (
+          <div className="grid grid-cols-2 gap-2">
+            {/* Skip Level Button */}
+            <button
+              onClick={() => {
+                playSound('click');
+                setShowSkipConfirm(true);
+              }}
+              onMouseEnter={() => playSound('hover')}
+              className="px-3 py-2 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-500/30"
+            >
+              <FastForward className="w-4 h-4" />
+              <span className="text-sm">Skip</span>
+            </button>
 
-          {/* Reset Button */}
-          <button
-            onClick={() => {
-              playSound('click');
-              setShowResetConfirm(true);
-            }}
-            onMouseEnter={() => playSound('hover')}
-            className="px-3 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 border border-red-500/30 flex items-center justify-center gap-2"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span className="text-sm">Reset</span>
-          </button>
-        </div>
+            {/* Reset Button */}
+            <button
+              onClick={() => {
+                playSound('click');
+                setShowResetConfirm(true);
+              }}
+              onMouseEnter={() => playSound('hover')}
+              className="px-3 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 border border-red-500/30 flex items-center justify-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span className="text-sm">Reset</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Achievements Modal */}
