@@ -137,8 +137,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setState(prev => {
       // Add current profile to history before starting new round
+      // IMPORTANT: Create a deep copy to prevent shared references
       const newHistory = prev.currentProfile
-        ? [...prev.profileHistory, prev.currentProfile]
+        ? [...prev.profileHistory, {
+            ...prev.currentProfile,
+            tweets: [...prev.currentProfile.tweets], // Deep copy tweets array
+          }]
         : prev.profileHistory;
 
       return {
