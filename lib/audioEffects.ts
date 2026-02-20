@@ -268,8 +268,8 @@ export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   const pitchScale = basePitch / 300;
 
   // Inverse volume scaling: higher pitch = lower volume
-  // 300Hz = 1.0x volume, 900Hz = 0.5x volume (50% reduction at highest pitch)
-  const volumeScale = 1.0 - ((basePitch - 300) / (900 - 300)) * 0.5;
+  // 300Hz = 1.0x volume, 900Hz = 0.2x volume (80% reduction at highest pitch)
+  const volumeScale = 1.0 - ((basePitch - 300) / (900 - 300)) * 0.8;
   const adjustedVolume = volume * volumeScale;
 
   // Three-layer clickity-clack with pitch scaling and inverse volume

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated } from '@/lib/auth';
-import { BarChart3, Trophy } from 'lucide-react';
+import { Trophy, FastForward, RotateCcw } from 'lucide-react';
 import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
 import ProgressTracker from './ProgressTracker';
@@ -48,33 +48,46 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
   };
 
   return (
-    <div className="w-80 h-screen sticky top-0 p-4 space-y-4 overflow-y-auto">
-      {/* Timer */}
-      <div className="flex justify-center">
-        <Timer />
-      </div>
+    <div className="w-80 h-screen sticky top-0 p-4 space-y-4 flex flex-col pointer-events-none">
+      <div className="pointer-events-auto space-y-4">
+        {/* Timer */}
+        <div className="flex justify-center">
+          <Timer />
+        </div>
 
-      {/* Compact Stats */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-white">{stats.roundsCompleted}</div>
-          <div className="text-xs text-gray-400">Rounds</div>
-        </div>
-        <div className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-yellow-400">{stats.currentStreak}</div>
-          <div className="text-xs text-gray-400">Streak 🔥</div>
-        </div>
-        <div className="bg-gradient-to-br from-green-900/40 to-teal-900/40 border border-green-500/30 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-green-400">{stats.bestStreak}</div>
-          <div className="text-xs text-gray-400">Best Streak</div>
-        </div>
-        <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-500/30 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-cyan-400">
-            {formatTime(stats.fastestTime)}
+        {/* Compact Stats - Single Row */}
+        <div className="grid grid-cols-4 gap-1.5">
+          <div
+            className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 text-center cursor-help"
+            title="Total number of rounds you've completed"
+          >
+            <div className="text-base font-bold text-white">{stats.roundsCompleted}</div>
+            <div className="text-[10px] text-gray-400 leading-tight">Rounds</div>
           </div>
-          <div className="text-xs text-gray-400">Best Time</div>
+          <div
+            className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-lg p-2 text-center cursor-help"
+            title="Your current win streak"
+          >
+            <div className="text-base font-bold text-yellow-400">{stats.currentStreak}</div>
+            <div className="text-[10px] text-gray-400 leading-tight">Streak</div>
+          </div>
+          <div
+            className="bg-gradient-to-br from-green-900/40 to-teal-900/40 border border-green-500/30 rounded-lg p-2 text-center cursor-help"
+            title="Your longest win streak ever"
+          >
+            <div className="text-base font-bold text-green-400">{stats.bestStreak}</div>
+            <div className="text-[10px] text-gray-400 leading-tight">Best</div>
+          </div>
+          <div
+            className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-500/30 rounded-lg p-2 text-center cursor-help"
+            title="Your fastest completion time"
+          >
+            <div className="text-sm font-bold text-cyan-400">
+              {formatTime(stats.fastestTime)}
+            </div>
+            <div className="text-[10px] text-gray-400 leading-tight">Record</div>
+          </div>
         </div>
-      </div>
 
       {/* Progress Tracker */}
       <ProgressTracker
@@ -85,46 +98,51 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         onRoundComplete={onRoundComplete}
       />
 
-      {/* Achievements Button */}
-      <button
-        onClick={() => {
-          playSound('click');
-          setShowAchievements(true);
-        }}
-        onMouseEnter={() => playSound('hover')}
-        className="w-full px-4 py-3 bg-gradient-to-r from-yellow-900/50 to-purple-900/50 hover:from-yellow-900/70 hover:to-purple-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-      >
-        <Trophy className="w-5 h-5" />
-        <span>Achievements</span>
-        <span className="text-xs bg-yellow-500/20 px-2 py-0.5 rounded-full">
-          {achievements.filter(a => a.unlocked).length}/{achievements.length}
-        </span>
-      </button>
+        {/* Achievements Button */}
+        <button
+          onClick={() => {
+            playSound('click');
+            setShowAchievements(true);
+          }}
+          onMouseEnter={() => playSound('hover')}
+          className="w-full px-4 py-3 bg-gradient-to-r from-yellow-900/50 to-purple-900/50 hover:from-yellow-900/70 hover:to-purple-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+        >
+          <Trophy className="w-5 h-5" />
+          <span>Achievements</span>
+          <span className="text-xs bg-yellow-500/20 px-2 py-0.5 rounded-full">
+            {achievements.filter(a => a.unlocked).length}/{achievements.length}
+          </span>
+        </button>
 
-      {/* Skip Level Button */}
-      <button
-        onClick={() => {
-          playSound('click');
-          setShowSkipConfirm(true);
-        }}
-        onMouseEnter={() => playSound('hover')}
-        className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-500/30"
-      >
-        <span className="text-xl">⏭️</span>
-        <span>Skip Level</span>
-      </button>
+        {/* Skip and Reset Buttons Side by Side */}
+        <div className="grid grid-cols-2 gap-2">
+          {/* Skip Level Button */}
+          <button
+            onClick={() => {
+              playSound('click');
+              setShowSkipConfirm(true);
+            }}
+            onMouseEnter={() => playSound('hover')}
+            className="px-3 py-2 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-500/30"
+          >
+            <FastForward className="w-4 h-4" />
+            <span className="text-sm">Skip</span>
+          </button>
 
-      {/* Reset Button */}
-      <button
-        onClick={() => {
-          playSound('click');
-          setShowResetConfirm(true);
-        }}
-        onMouseEnter={() => playSound('hover')}
-        className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95 border border-red-500/30"
-      >
-        Reset All Stats
-      </button>
+          {/* Reset Button */}
+          <button
+            onClick={() => {
+              playSound('click');
+              setShowResetConfirm(true);
+            }}
+            onMouseEnter={() => playSound('hover')}
+            className="px-3 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 border border-red-500/30 flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span className="text-sm">Reset</span>
+          </button>
+        </div>
+      </div>
 
       {/* Achievements Modal */}
       {showAchievements && (

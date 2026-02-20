@@ -62,7 +62,7 @@ export default function ProfileNavigationBar() {
         isHidden ? 'translate-y-32' : 'translate-y-0'
       }`}
     >
-      <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3 shadow-2xl">
+      <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3 shadow-2xl max-w-4xl">
         <div className="flex items-center gap-4">
           {/* Previous Button */}
           <button
@@ -72,15 +72,15 @@ export default function ProfileNavigationBar() {
             }}
             onMouseEnter={() => playPitchedHover(getPitchForIndex(0))}
             disabled={currentViewIndex === 0}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-full font-semibold transition-all hover:scale-105 active:scale-95 flex-shrink-0"
             title="Previous Profile"
             aria-label="Previous profile"
           >
             ← Prev
           </button>
 
-          {/* Round Numbers */}
-          <div className="flex items-center gap-2">
+          {/* Round Numbers - scrollable if too many */}
+          <div className="flex items-center gap-2 overflow-x-auto max-w-2xl scrollbar-hide">
             {Array.from({ length: totalRounds }, (_, i) => {
               const isCurrentRound = i === totalRounds - 1;
               const isActive = i === currentViewIndex;
@@ -95,7 +95,7 @@ export default function ProfileNavigationBar() {
                   }}
                   onMouseEnter={() => playPitchedHover(getPitchForIndex(buttonIndex))}
                   className={`
-                    w-10 h-10 rounded-full font-bold transition-all
+                    w-10 h-10 rounded-full font-bold transition-all flex-shrink-0
                     ${isActive
                       ? 'bg-blue-500 text-white scale-110 shadow-lg shadow-blue-500/50'
                       : isCurrentRound
