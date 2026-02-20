@@ -22,16 +22,6 @@ export default function Sidebar() {
           <span>Login</span>
         </Link>
       </nav>
-
-      <div className="mt-8 p-4 bg-gray-900 rounded-2xl">
-        <h3 className="font-bold mb-2 flex items-center gap-2">
-          <Search className="w-5 h-5 text-green-400" />
-          OSINT Challenge
-        </h3>
-        <p className="text-sm text-gray-400">
-          Analyze this profile to find clues. Crack the password hash using what you learned!
-        </p>
-      </div>
     </div>
   );
 }

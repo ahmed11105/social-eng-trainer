@@ -91,17 +91,6 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         </div>
       </div>
 
-      {/* Training Instructions */}
-      <div className="bg-gray-900 rounded-2xl p-4">
-        <h3 className="font-bold text-lg mb-3">Training Instructions</h3>
-        <ol className="text-sm space-y-2 text-gray-300">
-          <li>1. Study the profile and tweets for clues 🔍</li>
-          <li>2. Build a wordlist with password patterns</li>
-          <li>3. Crack the MD5 hash using hashcat</li>
-          <li>4. Login and make a post to complete!</li>
-        </ol>
-      </div>
-
       {/* Achievements Button */}
       <button
         onClick={() => {
