@@ -1,5 +1,5 @@
 // Audio feedback system for game interactions
-import { playAudioEffect, playPitchedHoverSound } from './audioEffects';
+import { playAudioEffect, playPitchedHoverSound, playRecycleBinSound } from './audioEffects';
 
 // Global sound settings (will be updated by SoundContext)
 let globalVolume = 0.5;
@@ -18,7 +18,8 @@ export type SoundType =
   | 'success'
   | 'milestone'
   | 'celebration'
-  | 'whoosh';
+  | 'whoosh'
+  | 'trash';
 
 // Sound definitions with base64 encoded audio or URLs
 const sounds: Record<SoundType, string> = {
@@ -45,6 +46,9 @@ const sounds: Record<SoundType, string> = {
 
   // Whoosh for smooth transitions
   whoosh: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
+
+  // Recycle bin (generated, not base64)
+  trash: '',
 };
 
 // Volume levels for different sound types
@@ -57,6 +61,7 @@ const volumes: Record<SoundType, number> = {
   milestone: 0.6,
   celebration: 0.3,
   whoosh: 0.2,
+  trash: 0.35,
 };
 
 // Audio cache to reuse instances
@@ -85,6 +90,12 @@ export function playSound(
     const baseVolume = options?.volume ?? volumes[type];
     const finalVolume = baseVolume * globalVolume;
 
+    // Use Web Audio API for rich sounds, or custom functions
+    if (type === 'trash') {
+      playRecycleBinSound(finalVolume);
+      return;
+    }
+
     // Map sound types to audio effects
     const effectMap: Record<SoundType, Parameters<typeof playAudioEffect>[0]> = {
       milestone: 'milestone',
@@ -95,6 +106,7 @@ export function playSound(
       whoosh: 'whoosh',
       celebration: 'celebration',
       hover: 'hover', // ASMR gentle tap
+      trash: 'whoosh', // Fallback (won't be used due to early return)
     };
 
     const effect = effectMap[type];

@@ -415,6 +415,87 @@ export function playWhooshSound(volume: number = 0.3) {
 }
 
 /**
+ * Recycle bin sound - throwing into trash with crumple
+ * Swoosh followed by crumple and light clunk
+ */
+export function playRecycleBinSound(volume: number = 0.35) {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Part 1: Swoosh (throwing motion) - descending pitch
+  const swoosh = ctx.createOscillator();
+  const swooshGain = ctx.createGain();
+  const swooshFilter = ctx.createBiquadFilter();
+
+  swoosh.type = 'sine';
+  swoosh.frequency.setValueAtTime(800, now);
+  swoosh.frequency.exponentialRampToValueAtTime(200, now + 0.15);
+
+  swooshFilter.type = 'lowpass';
+  swooshFilter.frequency.setValueAtTime(1200, now);
+  swooshFilter.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+
+  swooshGain.gain.setValueAtTime(volume * 0.3, now);
+  swooshGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+  swoosh.connect(swooshFilter);
+  swooshFilter.connect(swooshGain);
+  swooshGain.connect(ctx.destination);
+
+  swoosh.start(now);
+  swoosh.stop(now + 0.2);
+
+  // Part 2: Crumple (paper crushing) - noise burst
+  setTimeout(() => {
+    const bufferSize = ctx.sampleRate * 0.15;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Generate crumpling noise
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize); // Fade out
+    }
+
+    const crumple = ctx.createBufferSource();
+    crumple.buffer = buffer;
+
+    const crumpleFilter = ctx.createBiquadFilter();
+    crumpleFilter.type = 'highpass';
+    crumpleFilter.frequency.setValueAtTime(800, ctx.currentTime);
+
+    const crumpleGain = ctx.createGain();
+    crumpleGain.gain.setValueAtTime(volume * 0.25, ctx.currentTime);
+    crumpleGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+
+    crumple.connect(crumpleFilter);
+    crumpleFilter.connect(crumpleGain);
+    crumpleGain.connect(ctx.destination);
+
+    crumple.start(ctx.currentTime);
+    crumple.stop(ctx.currentTime + 0.15);
+  }, 120);
+
+  // Part 3: Clunk (hitting bin bottom) - low thud
+  setTimeout(() => {
+    const clunk = ctx.createOscillator();
+    const clunkGain = ctx.createGain();
+
+    clunk.type = 'sine';
+    clunk.frequency.setValueAtTime(100, ctx.currentTime);
+    clunk.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.05);
+
+    clunkGain.gain.setValueAtTime(volume * 0.4, ctx.currentTime);
+    clunkGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+    clunk.connect(clunkGain);
+    clunkGain.connect(ctx.destination);
+
+    clunk.start(ctx.currentTime);
+    clunk.stop(ctx.currentTime + 0.1);
+  }, 180);
+}
+
+/**
  * Celebration sound - multi-layered fanfare
  */
 export function playCelebrationSound(volume: number = 0.3) {

@@ -75,7 +75,7 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
             {onDelete && (
               <button
                 onClick={() => {
-                  playSound('whoosh');
+                  playSound('trash');
                   onDelete();
                 }}
                 onMouseEnter={() => playSound('hover')}
