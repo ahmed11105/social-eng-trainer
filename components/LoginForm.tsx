@@ -13,7 +13,7 @@ export default function LoginForm() {
   const [showHintOffer, setShowHintOffer] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const router = useRouter();
-  const { currentProfile, hashCopied, hasPosted } = useGame();
+  const { currentProfile, hashCopied, hasPosted, setHashCopied } = useGame();
   const isLoggedIn = isAuthenticated();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,6 +31,8 @@ export default function LoginForm() {
       currentProfile.profile.username,
       currentProfile.passwordHash
     )) {
+      // Mark hash as copied since they successfully cracked it
+      setHashCopied(true);
       setAuthSession(username);
       router.push('/');
     } else {
