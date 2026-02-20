@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { playPitchedHover, playSound } from '@/lib/sounds';
 
@@ -12,6 +13,28 @@ export default function ProfileNavigationBar() {
     goToProfile,
     isViewingHistory,
   } = useGame();
+
+  const [isHidden, setIsHidden] = useState(false);
+
+  // Hide nav bar when scrolled to bottom, show when scrolling up
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+
+      // Check if user is near bottom (within 100px)
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 100;
+
+      setIsHidden(isNearBottom);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Check initial position
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Don't show if there's no history or if data is not ready
   if (!profileHistory || profileHistory.length === 0) {
@@ -34,7 +57,11 @@ export default function ProfileNavigationBar() {
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+    <div
+      className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-transform duration-300 ease-in-out ${
+        isHidden ? 'translate-y-32' : 'translate-y-0'
+      }`}
+    >
       <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3 shadow-2xl">
         <div className="flex items-center gap-4">
           {/* Previous Button */}
