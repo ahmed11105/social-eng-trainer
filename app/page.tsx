@@ -83,7 +83,7 @@ export default function Home() {
       <Sidebar />
 
       <main className="flex-1 max-w-2xl border-r border-gray-800">
-        <div className="border-b border-gray-800 p-4 backdrop-blur bg-black/80 sticky top-0 z-10">
+        <div className="border-b border-gray-800 p-4 backdrop-blur bg-black/80 sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">OSINT Challenge</h2>
             <div className="flex items-center gap-3">
