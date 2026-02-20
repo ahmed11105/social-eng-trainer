@@ -50,11 +50,11 @@ export default function Home() {
     if (!isViewingHistory && roundCompleted) {
       // Current round just completed
       setShowCompletionModal(true);
-    } else if (isViewingHistory && viewedProfile.completionTime !== undefined) {
+    } else if (isViewingHistory && viewedProfile && viewedProfile.completionTime !== undefined) {
       // Viewing a completed historical round - don't auto-show, let user click button
       setShowCompletionModal(false);
     }
-  }, [roundCompleted, isViewingHistory, viewedProfile.completionTime]);
+  }, [roundCompleted, isViewingHistory, viewedProfile]);
 
   const handleLogout = () => {
     clearAuthSession();
