@@ -11,7 +11,8 @@ export interface PlayerProgress {
 export interface RoundScore {
   basePoints: number; // Points from speed
   accuracyMultiplier: number; // 0.0 to 2.0
-  finalPoints: number; // basePoints * accuracyMultiplier
+  speedBonus: number; // Bonus for lightning-fast completion
+  finalPoints: number; // (basePoints + speedBonus) * accuracyMultiplier
   correctDeletions: number;
   incorrectDeletions: number;
   timeTaken: number;
@@ -106,6 +107,17 @@ export function calculateAccuracyMultiplier(
 }
 
 /**
+ * Calculate speed bonus for lightning-fast completions
+ * Under 2 minutes (120 seconds) = +200 bonus points
+ */
+export function calculateSpeedBonus(timeTaken: number): number {
+  const LIGHTNING_THRESHOLD = 120; // 2 minutes
+  const SPEED_BONUS = 200;
+
+  return timeTaken < LIGHTNING_THRESHOLD ? SPEED_BONUS : 0;
+}
+
+/**
  * Calculate final score for a round
  */
 export function calculateRoundScore(
@@ -114,11 +126,13 @@ export function calculateRoundScore(
   incorrectDeletions: number
 ): RoundScore {
   const basePoints = calculateBasePoints(timeTaken);
+  const speedBonus = calculateSpeedBonus(timeTaken);
   const accuracyMultiplier = calculateAccuracyMultiplier(correctDeletions, incorrectDeletions);
-  const finalPoints = Math.floor(basePoints * accuracyMultiplier);
+  const finalPoints = Math.floor((basePoints + speedBonus) * accuracyMultiplier);
 
   return {
     basePoints,
+    speedBonus,
     accuracyMultiplier,
     finalPoints,
     correctDeletions,

@@ -178,6 +178,14 @@ export default function CompletionModal({
                   </span>
                   <span className="font-bold text-white">{roundScore.basePoints}</span>
                 </div>
+                {roundScore.speedBonus > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-yellow-300 flex items-center gap-1">
+                      ⚡ Lightning Bonus
+                    </span>
+                    <span className="font-bold text-yellow-400">+{roundScore.speedBonus}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-300 flex items-center gap-1">
                     <Target className="w-4 h-4 text-blue-400" />
