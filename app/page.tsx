@@ -130,6 +130,7 @@ export default function Home() {
           playSound('click');
           setShowHowToPlay(true);
         }}
+        onMouseEnter={() => playSound('hover')}
         className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 border border-green-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:shadow-green-500/50 transition-all hover:scale-105 active:scale-95"
       >
         <HelpCircle className="w-5 h-5" />
@@ -159,6 +160,7 @@ export default function Home() {
             playSound('click');
             handleNextRound();
           }}
+          onMouseEnter={() => playSound('hover')}
           className="fixed bottom-6 right-6 z-40 px-6 py-4 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-green-500/50 transition-all transform hover:scale-110 active:scale-95 animate-pulse-slow"
         >
           🚀 Next Round

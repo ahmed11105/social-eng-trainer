@@ -108,6 +108,7 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           playSound('click');
           setShowAchievements(true);
         }}
+        onMouseEnter={() => playSound('hover')}
         className="w-full px-4 py-3 bg-gradient-to-r from-yellow-900/50 to-purple-900/50 hover:from-yellow-900/70 hover:to-purple-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
       >
         <Trophy className="w-5 h-5" />
@@ -123,6 +124,7 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           playSound('click');
           setShowSkipConfirm(true);
         }}
+        onMouseEnter={() => playSound('hover')}
         className="w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
       >
         ⏭️ Skip Level
@@ -134,6 +136,7 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           playSound('click');
           setShowResetConfirm(true);
         }}
+        onMouseEnter={() => playSound('hover')}
         className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95"
       >
         Reset All Stats

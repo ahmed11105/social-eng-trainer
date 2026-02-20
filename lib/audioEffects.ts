@@ -156,27 +156,97 @@ export function playErrorSound(volume: number = 0.3) {
 }
 
 /**
- * Click sound - subtle tap
+ * Hover sound - ASMR gentle tap (very subtle and cozy)
  */
-export function playClickSound(volume: number = 0.2) {
+export function playHoverSound(volume: number = 0.15) {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
 
+  // Soft, rounded tone - like a gentle tap on wood
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
 
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(1000, now);
-  osc.frequency.exponentialRampToValueAtTime(800, now + 0.03);
+  osc.frequency.setValueAtTime(800, now);
+  osc.frequency.exponentialRampToValueAtTime(600, now + 0.04);
 
-  gain.gain.setValueAtTime(volume * 0.3, now);
-  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+  // Low-pass filter for warmth
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(1200, now);
+  filter.Q.setValueAtTime(0.5, now);
 
-  osc.connect(gain);
+  // Very gentle envelope - ASMR soft
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(volume * 0.2, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+
+  osc.connect(filter);
+  filter.connect(gain);
   gain.connect(ctx.destination);
 
   osc.start(now);
-  osc.stop(now + 0.06);
+  osc.stop(now + 0.08);
+}
+
+/**
+ * Click sound - satisfying mechanical click (like a quality switch)
+ */
+export function playClickSound(volume: number = 0.25) {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Two-layer click for depth and satisfaction
+
+  // Layer 1: Low "thunk" (mechanical depth)
+  const bass = ctx.createOscillator();
+  const bassGain = ctx.createGain();
+  bass.type = 'sine';
+  bass.frequency.setValueAtTime(120, now);
+  bass.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+  bassGain.gain.setValueAtTime(volume * 0.4, now);
+  bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+  bass.connect(bassGain);
+  bassGain.connect(ctx.destination);
+  bass.start(now);
+  bass.stop(now + 0.08);
+
+  // Layer 2: Mid "click" (satisfying snap)
+  const click = ctx.createOscillator();
+  const clickGain = ctx.createGain();
+  const clickFilter = ctx.createBiquadFilter();
+
+  click.type = 'sine';
+  click.frequency.setValueAtTime(1400, now);
+  click.frequency.exponentialRampToValueAtTime(1000, now + 0.03);
+
+  clickFilter.type = 'bandpass';
+  clickFilter.frequency.setValueAtTime(1200, now);
+  clickFilter.Q.setValueAtTime(2, now);
+
+  clickGain.gain.setValueAtTime(volume * 0.35, now);
+  clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+  click.connect(clickFilter);
+  clickFilter.connect(clickGain);
+  clickGain.connect(ctx.destination);
+
+  click.start(now);
+  click.stop(now + 0.07);
+
+  // Layer 3: Subtle high "tick" (clarity and satisfaction)
+  setTimeout(() => {
+    const tick = ctx.createOscillator();
+    const tickGain = ctx.createGain();
+    tick.type = 'sine';
+    tick.frequency.setValueAtTime(2800, ctx.currentTime);
+    tickGain.gain.setValueAtTime(volume * 0.15, ctx.currentTime);
+    tickGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.02);
+    tick.connect(tickGain);
+    tickGain.connect(ctx.destination);
+    tick.start(ctx.currentTime);
+    tick.stop(ctx.currentTime + 0.03);
+  }, 5);
 }
 
 /**
@@ -258,7 +328,7 @@ export function playCelebrationSound(volume: number = 0.3) {
 /**
  * Main function to play sound effects
  */
-export function playAudioEffect(effect: SoundEffect, volume: number = 1.0) {
+export function playAudioEffect(effect: SoundEffect | 'hover', volume: number = 1.0) {
   if (typeof window === 'undefined') return;
 
   try {
@@ -277,6 +347,9 @@ export function playAudioEffect(effect: SoundEffect, volume: number = 1.0) {
         break;
       case 'click':
         playClickSound(volume);
+        break;
+      case 'hover':
+        playHoverSound(volume);
         break;
       case 'whoosh':
         playWhooshSound(volume);

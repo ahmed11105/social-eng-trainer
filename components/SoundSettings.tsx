@@ -47,6 +47,7 @@ export default function SoundSettings() {
           {/* Mute Toggle */}
           <button
             onClick={handleToggleMute}
+            onMouseEnter={() => !isMuted && playSound('hover')}
             className={`w-full p-3 rounded-lg mb-3 flex items-center justify-between transition-all ${
               isMuted
                 ? 'bg-red-900/30 border border-red-700 text-red-400'
@@ -105,6 +106,7 @@ export default function SoundSettings() {
           setIsOpen(!isOpen);
           if (!isMuted) playSound('click');
         }}
+        onMouseEnter={() => !isMuted && playSound('hover')}
         className={`
           p-3 rounded-full transition-all shadow-lg
           ${isOpen

@@ -167,6 +167,7 @@ export default function CompletionModal({
                 playSound('click');
                 onNextRound();
               }}
+              onMouseEnter={() => playSound('hover')}
               className="w-full py-2 sm:py-3 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600 text-white font-bold rounded-xl text-base sm:text-lg transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/50 animate-pulse-slow"
             >
               🚀 Next Challenge

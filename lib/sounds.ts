@@ -94,7 +94,7 @@ export function playSound(
       click: 'click',
       whoosh: 'whoosh',
       celebration: 'celebration',
-      hover: 'click', // Use subtle click for hover
+      hover: 'hover', // ASMR gentle tap
     };
 
     const effect = effectMap[type];

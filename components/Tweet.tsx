@@ -83,6 +83,7 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
                   playSound('whoosh');
                   onDelete();
                 }}
+                onMouseEnter={() => playSound('hover')}
                 className="flex items-center gap-2 hover:text-red-500 ml-auto transition-all group active:scale-95"
               >
                 <span className="group-hover:bg-red-500/10 p-2 rounded-full transition-all group-hover:rotate-12">

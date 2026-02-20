@@ -154,6 +154,7 @@ export default function LoginForm() {
             <button
               type="submit"
               onClick={() => playSound('click')}
+              onMouseEnter={() => playSound('hover')}
               className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-lg font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-green-500/50"
             >
               Login
@@ -173,6 +174,7 @@ export default function LoginForm() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowHintOffer(false)}
+                onMouseEnter={() => playSound('hover')}
                 className="flex-1 px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
               >
                 No Thanks
@@ -182,6 +184,7 @@ export default function LoginForm() {
                   setShowHint(true);
                   setShowHintOffer(false);
                 }}
+                onMouseEnter={() => playSound('hover')}
                 className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
               >
                 Show Hint

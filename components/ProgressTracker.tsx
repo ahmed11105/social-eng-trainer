@@ -150,6 +150,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
             playSound('click');
             onRoundComplete?.();
           }}
+          onMouseEnter={() => playSound('hover')}
           className="mt-4 w-full p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer animate-pulse shadow-lg shadow-green-500/30"
         >
           <p className="text-green-400 font-bold flex items-center justify-center gap-2">
