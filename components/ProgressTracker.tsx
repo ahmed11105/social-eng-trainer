@@ -91,7 +91,7 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
           return (
             <div
               key={step.id}
-              className={`flex items-start gap-3 p-3 rounded-lg transition-all duration-300 ${
+              className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
                 step.completed
                   ? 'bg-green-900/30 border border-green-500/30'
                   : isActive
