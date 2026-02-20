@@ -245,17 +245,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState(prev => {
       if (!prev.currentProfile) return prev;
 
-      // Update current profile
-      const updatedCurrentProfile = {
-        ...prev.currentProfile,
-        tweets,
-      };
+      const isViewingHistory = prev.currentViewIndex < prev.profileHistory.length;
 
-      // If viewing current profile, update it
-      // If viewing history, update the history entry
+      // Only update current profile if we're viewing it (not viewing history)
+      const updatedCurrentProfile = isViewingHistory
+        ? prev.currentProfile  // Don't change current profile when viewing history
+        : {
+            ...prev.currentProfile,
+            tweets,
+          };
+
+      // If viewing history, update that specific historical profile
       let updatedHistory = prev.profileHistory;
 
-      if (prev.currentViewIndex < prev.profileHistory.length) {
+      if (isViewingHistory) {
         // Viewing history - update that specific profile
         updatedHistory = [...prev.profileHistory];
         updatedHistory[prev.currentViewIndex] = {
