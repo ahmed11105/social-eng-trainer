@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { X, Trophy, Lock } from 'lucide-react';
 import type { Achievement } from '@/lib/achievements';
 import { getRarityColors, calculateAchievementProgress } from '@/lib/achievements';
@@ -16,6 +17,13 @@ interface AchievementsModalProps {
 }
 
 export default function AchievementsModal({ achievements, onClose, stats }: AchievementsModalProps) {
+  // Prevent body scrolling when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
   const unlocked = achievements.filter(a => a.unlocked).length;
   const total = achievements.length;
   const progress = (unlocked / total) * 100;
@@ -30,8 +38,17 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
   const rarityOrder: Achievement['rarity'][] = ['common', 'rare', 'epic', 'legendary'];
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-fade-in">
-      <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-700 shadow-2xl animate-scale-in relative">
+    <div
+      className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-fade-in overflow-y-auto"
+      onClick={(e) => {
+        // Close if clicking the backdrop
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-700 shadow-2xl animate-scale-in relative my-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 p-6 z-10">
           <button
