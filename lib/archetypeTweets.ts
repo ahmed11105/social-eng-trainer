@@ -168,7 +168,7 @@ function generateCasualAdultTweets(persona: RichPersona, rng: SeededRandom): str
   tweets.push(
     rng.pick([
       `${persona.pet.name} had ${rng.pick(['her', 'his'])} annual checkup today. Can\'t believe it\'s been ${petYears} years since I adopted ${rng.pick(['her', 'him'])} in ${persona.pet.adoptionYear}. ${rng.pick([`${persona.pet.name}'s still scared of the vet every single time lol`, `Still the best ${persona.pet.type} ever`])}`,
-      `Can\'t believe ${persona.pet.name} and I have been together for ${petYears} years now. Got ${rng.pick(['her', 'him'])} back in ${persona.pet.adoptionYear} ${rng.pick(['right before everything shut down', 'when I moved to ' + persona.location, 'and best decision ever'])}. ${rng.pick([`${persona.pet.name}'s napping next to me right now`, 'Best ${persona.pet.type} I know'])}`,
+      `Can\'t believe ${persona.pet.name} and I have been together for ${petYears} years now. Got ${rng.pick(['her', 'him'])} back in ${persona.pet.adoptionYear} ${rng.pick(['right before everything shut down', 'when I moved to ' + persona.location, 'and best decision ever'])}. ${rng.pick([`${persona.pet.name}'s napping next to me right now`, `Best ${persona.pet.type} I know`])}`,
     ])
   );
 
