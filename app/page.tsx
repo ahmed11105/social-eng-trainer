@@ -14,6 +14,7 @@ import { isAuthenticated, clearAuthSession } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { HelpCircle } from 'lucide-react';
 import { preloadSounds, playSound } from '@/lib/sounds';
+import { initializeAudio } from '@/lib/audioEffects';
 
 export default function Home() {
   const [isAuth, setIsAuth] = useState(false);
@@ -39,6 +40,26 @@ export default function Home() {
     setIsAuth(isAuthenticated());
     // Preload all sound effects for better performance
     preloadSounds();
+
+    // Initialize audio context on first user interaction to prevent "pop" sound
+    const initAudio = () => {
+      initializeAudio();
+      // Remove listeners after first interaction
+      document.removeEventListener('click', initAudio);
+      document.removeEventListener('keydown', initAudio);
+      document.removeEventListener('touchstart', initAudio);
+    };
+
+    // Listen for any user interaction to wake up audio
+    document.addEventListener('click', initAudio, { once: true });
+    document.addEventListener('keydown', initAudio, { once: true });
+    document.addEventListener('touchstart', initAudio, { once: true });
+
+    return () => {
+      document.removeEventListener('click', initAudio);
+      document.removeEventListener('keydown', initAudio);
+      document.removeEventListener('touchstart', initAudio);
+    };
   }, []);
 
   // Check for round completion when user logs in and deletes all sensitive tweets

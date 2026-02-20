@@ -14,6 +14,24 @@ function getAudioContext(): AudioContext {
 }
 
 /**
+ * Initialize audio context on user interaction to prevent the first sound "pop"
+ * Call this on page load with a click/touch event listener
+ */
+export function initializeAudio(): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const ctx = getAudioContext();
+    // Resume audio context if it's suspended (browser security requirement)
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+  } catch (error) {
+    console.debug('Audio initialization failed:', error);
+  }
+}
+
+/**
  * Generate a satisfying milestone achievement sound
  * Three-note rising arpeggio with shimmer
  */
