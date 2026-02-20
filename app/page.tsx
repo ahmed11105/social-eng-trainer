@@ -146,16 +146,6 @@ export default function Home() {
         />
       )}
 
-      {/* View Stats Button for Completed Historical Rounds */}
-      {isViewingHistory && viewedProfile.completionTime !== undefined && !showCompletionModal && (
-        <button
-          onClick={() => setShowCompletionModal(true)}
-          className="fixed bottom-6 right-6 z-40 px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-2xl hover:shadow-yellow-500/50 transition-all transform hover:scale-110"
-        >
-          📊 View Stats
-        </button>
-      )}
-
       {/* Floating Next Round Button (when modal is closed but round completed) */}
       {!showCompletionModal && roundCompleted && !isViewingHistory && (
         <button
