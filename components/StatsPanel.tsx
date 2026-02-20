@@ -48,10 +48,32 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
   };
 
   return (
-    <div className="w-80 p-4 space-y-4">
+    <div className="w-80 h-screen sticky top-0 p-4 space-y-4 overflow-y-auto">
       {/* Timer */}
       <div className="flex justify-center">
         <Timer />
+      </div>
+
+      {/* Compact Stats */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-2 text-center">
+          <div className="text-lg font-bold text-white">{stats.roundsCompleted}</div>
+          <div className="text-xs text-gray-400">Rounds</div>
+        </div>
+        <div className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border border-yellow-500/30 rounded-lg p-2 text-center">
+          <div className="text-lg font-bold text-yellow-400">{stats.currentStreak}</div>
+          <div className="text-xs text-gray-400">Streak 🔥</div>
+        </div>
+        <div className="bg-gradient-to-br from-green-900/40 to-teal-900/40 border border-green-500/30 rounded-lg p-2 text-center">
+          <div className="text-lg font-bold text-green-400">{stats.bestStreak}</div>
+          <div className="text-xs text-gray-400">Best Streak</div>
+        </div>
+        <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-500/30 rounded-lg p-2 text-center">
+          <div className="text-lg font-bold text-cyan-400">
+            {formatTime(stats.fastestTime)}
+          </div>
+          <div className="text-xs text-gray-400">Best Time</div>
+        </div>
       </div>
 
       {/* Progress Tracker */}
@@ -62,34 +84,6 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         allSensitiveTweetsDeleted={isCompletedHistoricalRound || allSensitiveTweetsDeleted}
         onRoundComplete={onRoundComplete}
       />
-
-      {/* Stats Dashboard */}
-      <div className="bg-gray-900 rounded-2xl p-4">
-        <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-blue-400" />
-          <span>Your Stats</span>
-        </h3>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-400 text-sm">Rounds Completed</span>
-            <span className="text-2xl font-bold text-white">{stats.roundsCompleted}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-400 text-sm">Current Streak</span>
-            <span className="text-2xl font-bold text-yellow-400">{stats.currentStreak}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-400 text-sm">Best Streak</span>
-            <span className="text-2xl font-bold text-blue-400">{stats.bestStreak}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-400 text-sm">Fastest Time</span>
-            <span className="text-2xl font-bold text-green-400">
-              {formatTime(stats.fastestTime)}
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* Achievements Button */}
       <button
@@ -114,9 +108,10 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           setShowSkipConfirm(true);
         }}
         onMouseEnter={() => playSound('hover')}
-        className="w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
+        className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/50 to-cyan-900/50 hover:from-blue-900/70 hover:to-cyan-900/70 text-blue-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-500/30"
       >
-        ⏭️ Skip Level
+        <span className="text-xl">⏭️</span>
+        <span>Skip Level</span>
       </button>
 
       {/* Reset Button */}
@@ -126,21 +121,10 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           setShowResetConfirm(true);
         }}
         onMouseEnter={() => playSound('hover')}
-        className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95"
+        className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95 border border-red-500/30"
       >
         Reset All Stats
       </button>
-
-      {/* Quick Tips */}
-      <div className="bg-gray-900 rounded-2xl p-4">
-        <h3 className="font-bold mb-2">Quick Tips 💡</h3>
-        <ul className="text-sm space-y-1 text-gray-400">
-          <li>• Look for pet names</li>
-          <li>• Check birth years and dates</li>
-          <li>• Note adoption years</li>
-          <li>• Combine words + numbers</li>
-        </ul>
-      </div>
 
       {/* Achievements Modal */}
       {showAchievements && (

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Lock, Search } from 'lucide-react';
+import { Home, Lock } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -22,6 +22,17 @@ export default function Sidebar() {
           <span>Login</span>
         </Link>
       </nav>
+
+      {/* Quick Tips */}
+      <div className="mt-8 p-4 bg-gray-900 rounded-2xl">
+        <h3 className="font-bold mb-2">Quick Tips 💡</h3>
+        <ul className="text-sm space-y-1 text-gray-400">
+          <li>• Look for pet names</li>
+          <li>• Check birth years and dates</li>
+          <li>• Note adoption years</li>
+          <li>• Combine words + numbers</li>
+        </ul>
+      </div>
     </div>
   );
 }
