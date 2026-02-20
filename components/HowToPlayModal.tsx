@@ -19,20 +19,10 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
-      style={{
-        animation: isClosing ? 'fadeOut 0.15s ease-in' : 'fadeIn 0.15s ease-out',
-        willChange: 'opacity'
-      }}
-    >
+    <div className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}>
       <div
-        className="bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
-        style={{
-          animation: isClosing ? 'scaleOut 0.15s ease-in' : 'scaleIn 0.15s ease-out',
-          willChange: 'transform, opacity',
-          transformOrigin: 'bottom left'
-        }}
+        className={`bg-gray-900 border border-green-500/30 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto ${isClosing ? 'animate-scale-out' : 'animate-scale-in'}`}
+        style={{ transformOrigin: 'bottom left' }}
       >
         {/* Header */}
         <div className="sticky top-0 bg-gray-900 border-b border-green-500/30 p-4 flex items-center justify-between z-10">
