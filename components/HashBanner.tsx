@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useGame } from '@/contexts/GameContext';
+import { playSound } from '@/lib/sounds';
 
 interface HashBannerProps {
   hash: string;
@@ -22,6 +23,7 @@ export default function HashBanner({ hash, difficulty }: HashBannerProps) {
       if (copiedText === hash) {
         setCopied(true);
         setHashCopied(true);
+        playSound('copy'); // Add sound for manual copy too
         setTimeout(() => setCopied(false), 2000);
       }
     };
@@ -34,6 +36,7 @@ export default function HashBanner({ hash, difficulty }: HashBannerProps) {
     navigator.clipboard.writeText(hash);
     setCopied(true);
     setHashCopied(true);
+    playSound('copy'); // Add satisfying copy sound
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -73,11 +76,19 @@ export default function HashBanner({ hash, difficulty }: HashBannerProps) {
           </div>
           <button
             onClick={copyToClipboard}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap"
+            className={`
+              px-4 py-2 rounded-lg text-sm font-medium
+              flex items-center gap-2 whitespace-nowrap
+              transition-all duration-200
+              ${copied
+                ? 'bg-green-600 text-white scale-105 shadow-lg shadow-green-500/50'
+                : 'bg-gray-800 hover:bg-gray-700 hover:scale-105 active:scale-95'
+              }
+            `}
           >
             {copied ? (
               <>
-                <span>✓</span>
+                <span className="animate-bounce">✓</span>
                 <span>Copied!</span>
               </>
             ) : (

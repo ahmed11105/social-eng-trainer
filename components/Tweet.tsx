@@ -2,6 +2,7 @@
 
 import { Tweet as TweetType, Profile } from '@/types';
 import { MessageCircle, Repeat2, Heart, Trash2 } from 'lucide-react';
+import { playSound } from '@/lib/sounds';
 
 interface TweetProps extends TweetType {
   onDelete?: () => void;
@@ -26,7 +27,7 @@ function parseTextWithMentions(text: string) {
 
 export default function Tweet({ text, date, likes, retweets, replies = 0, media, onDelete, profile, containsSensitiveInfo }: TweetProps) {
   return (
-    <div className={`border-b border-gray-800 p-4 hover:bg-gray-900 transition ${containsSensitiveInfo ? 'bg-red-900/10 border-l-4 border-l-red-500' : ''}`}>
+    <div className={`border-b border-gray-800 p-4 hover:bg-gray-900/50 transition-all duration-200 cursor-pointer ${containsSensitiveInfo ? 'bg-red-900/10 border-l-4 border-l-red-500 hover:bg-red-900/20' : ''}`}>
       <div className="flex gap-3">
         <div className="w-12 h-12 bg-gray-700 rounded-full flex-shrink-0 overflow-hidden">
           <img
@@ -78,10 +79,13 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
             </button>
             {onDelete && (
               <button
-                onClick={onDelete}
-                className="flex items-center gap-2 hover:text-red-500 ml-auto transition-colors group"
+                onClick={() => {
+                  playSound('whoosh');
+                  onDelete();
+                }}
+                className="flex items-center gap-2 hover:text-red-500 ml-auto transition-all group active:scale-95"
               >
-                <span className="group-hover:bg-red-500/10 p-2 rounded-full transition-colors">
+                <span className="group-hover:bg-red-500/10 p-2 rounded-full transition-all group-hover:rotate-12">
                   <Trash2 className="w-4 h-4" />
                 </span>
                 <span className="text-xs">Delete</span>

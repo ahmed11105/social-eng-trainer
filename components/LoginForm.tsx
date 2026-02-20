@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validateCredentials, setAuthSession, isAuthenticated } from '@/lib/auth';
 import { useGame } from '@/contexts/GameContext';
+import { playSound } from '@/lib/sounds';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
@@ -34,11 +35,13 @@ export default function LoginForm() {
       // Mark hash as copied since they successfully cracked it
       setHashCopied(true);
       setAuthSession(username);
+      playSound('success'); // Victory sound!
       router.push('/');
     } else {
       const newAttempts = failedAttempts + 1;
       setFailedAttempts(newAttempts);
       setError('Invalid credentials! Keep cracking that hash 🔐');
+      playSound('error'); // Error buzz
 
       // Offer hint after 3 failed attempts
       if (newAttempts >= 3 && !showHint) {
@@ -150,7 +153,8 @@ export default function LoginForm() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+              onClick={() => playSound('click')}
+              className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-lg font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-green-500/50"
             >
               Login
             </button>

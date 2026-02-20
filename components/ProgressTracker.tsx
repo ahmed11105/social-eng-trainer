@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Check, Copy, LogIn, MessageSquare, Target, Trophy, Trash2 } from 'lucide-react';
+import { playSound } from '@/lib/sounds';
 
 interface ProgressTrackerProps {
   hashCopied: boolean;
@@ -37,6 +39,17 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
 
   const completedCount = steps.filter(s => s.completed).length;
   const progress = (completedCount / steps.length) * 100;
+
+  // Track previous completed count to detect new completions
+  const prevCompletedRef = useRef(0);
+
+  useEffect(() => {
+    // Play milestone sound when a new step is completed
+    if (completedCount > prevCompletedRef.current && completedCount > 0) {
+      playSound('milestone');
+    }
+    prevCompletedRef.current = completedCount;
+  }, [completedCount]);
 
   return (
     <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800">
@@ -79,14 +92,14 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
               <div
                 className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                   step.completed
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-green-500 text-white animate-bounce shadow-lg shadow-green-500/50'
                     : isActive
                     ? 'bg-blue-500/20 border-2 border-blue-500 text-blue-400'
                     : 'bg-gray-700 border-2 border-gray-600 text-gray-500'
                 }`}
               >
                 {step.completed ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-5 h-5 animate-pulse" />
                 ) : (
                   <Icon className="w-4 h-4" />
                 )}
@@ -122,11 +135,14 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
       {/* Completion Message */}
       {completedCount === steps.length && (
         <button
-          onClick={onRoundComplete}
-          className="mt-4 w-full p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 cursor-pointer"
+          onClick={() => {
+            playSound('click');
+            onRoundComplete?.();
+          }}
+          className="mt-4 w-full p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 hover:from-green-900/50 hover:to-blue-900/50 border border-green-500/30 hover:border-green-500/50 rounded-lg text-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer animate-pulse shadow-lg shadow-green-500/30"
         >
           <p className="text-green-400 font-bold flex items-center justify-center gap-2">
-            <Trophy className="w-4 h-4" />
+            <Trophy className="w-4 h-4 animate-bounce" />
             Round Complete!
           </p>
           <p className="text-xs text-gray-400 mt-1">Click to view completion details</p>

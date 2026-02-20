@@ -52,3 +52,7 @@ test-realistic-system.js
 *.swp
 *.swo
 *~
+screenshots/
+game-analysis.md
+analyze-game-experience.js
+analysis.pid

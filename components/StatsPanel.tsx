@@ -7,6 +7,7 @@ import { BarChart3 } from 'lucide-react';
 import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
 import ProgressTracker from './ProgressTracker';
+import { playSound } from '@/lib/sounds';
 
 interface StatsPanelProps {
   onRoundComplete?: () => void;
@@ -94,16 +95,22 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
 
       {/* Skip Level Button */}
       <button
-        onClick={() => setShowSkipConfirm(true)}
-        className="w-full px-4 py-2 bg-yellow-900/50 hover:bg-yellow-900/70 text-yellow-400 rounded-lg font-medium transition-colors"
+        onClick={() => {
+          playSound('click');
+          setShowSkipConfirm(true);
+        }}
+        className="w-full px-4 py-2 bg-yellow-900/50 hover:bg-yellow-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
       >
         ⏭️ Skip Level
       </button>
 
       {/* Reset Button */}
       <button
-        onClick={() => setShowResetConfirm(true)}
-        className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-colors"
+        onClick={() => {
+          playSound('click');
+          setShowResetConfirm(true);
+        }}
+        className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900/70 text-red-400 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95"
       >
         Reset All Stats
       </button>

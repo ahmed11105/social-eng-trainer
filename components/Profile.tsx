@@ -24,11 +24,11 @@ export default function Profile({ profile, isAuthenticated, onLogout }: ProfileP
       <div className="px-4 pb-4">
         <div className="flex justify-between items-start mb-4">
           {/* Avatar - positioned to overlap cover */}
-          <div className="w-32 h-32 -mt-16 rounded-full border-4 border-black overflow-hidden bg-gray-700 relative z-10">
+          <div className="w-32 h-32 -mt-16 rounded-full border-4 border-black overflow-hidden bg-gray-700 relative z-10 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50">
             <img
               src={profile.avatarUrl}
               alt={profile.displayName}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
             />
           </div>
 
