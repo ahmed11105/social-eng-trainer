@@ -53,14 +53,9 @@ export default function Timer() {
       ) : (
         <Clock className="w-5 h-5 text-green-400" />
       )}
-      <div className="flex flex-col">
-        {isShowingCompletionTime && (
-          <span className="text-[10px] text-green-400 leading-tight">Completed</span>
-        )}
-        <span className="font-mono text-lg font-bold text-white leading-tight">
-          {formatTime(displayTime)}
-        </span>
-      </div>
+      <span className="font-mono text-lg font-bold text-white">
+        {formatTime(displayTime)}
+      </span>
     </div>
   );
 }
