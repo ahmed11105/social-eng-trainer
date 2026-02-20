@@ -95,22 +95,23 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
                   {items.map(achievement => {
                     const itemColors = getRarityColors(achievement.rarity);
                     const progressData = stats ? calculateAchievementProgress(achievement.id, stats) : null;
+                    const hasProgress = progressData && progressData.progress > 0;
 
                     return (
                       <div
                         key={achievement.id}
                         className={`
-                          ${achievement.unlocked ? itemColors.bg : 'bg-gray-900/30'}
-                          ${achievement.unlocked ? itemColors.border : 'border-gray-700'}
+                          ${achievement.unlocked ? itemColors.bg : hasProgress ? 'bg-gray-900/50' : 'bg-gray-900/30'}
+                          ${achievement.unlocked ? itemColors.border : hasProgress ? itemColors.border.replace('border-', 'border-').replace('500', '400') : 'border-gray-700'}
                           border-2 rounded-xl p-4 transition-all
-                          ${achievement.unlocked ? `${itemColors.glow} shadow-lg` : 'opacity-60'}
-                          ${achievement.unlocked ? 'hover:scale-105' : ''}
+                          ${achievement.unlocked ? `${itemColors.glow} shadow-lg` : hasProgress ? 'opacity-90' : 'opacity-60'}
+                          ${achievement.unlocked || hasProgress ? 'hover:scale-105' : ''}
                         `}
                       >
                         {/* Icon */}
                         <div className="flex items-start gap-3 mb-2">
-                          <div className={`text-4xl ${achievement.unlocked ? '' : 'grayscale opacity-30'}`}>
-                            {achievement.unlocked ? achievement.icon : <Lock className="w-8 h-8 text-gray-600" />}
+                          <div className={`text-4xl ${achievement.unlocked ? '' : hasProgress ? 'grayscale-0 opacity-70' : 'grayscale opacity-30'}`}>
+                            {achievement.unlocked ? achievement.icon : hasProgress ? achievement.icon : <Lock className="w-8 h-8 text-gray-600" />}
                           </div>
                           {achievement.unlocked && (
                             <div className="ml-auto">
@@ -120,10 +121,10 @@ export default function AchievementsModal({ achievements, onClose, stats }: Achi
                         </div>
 
                         {/* Text */}
-                        <h4 className={`font-bold ${achievement.unlocked ? 'text-white' : 'text-gray-600'}`}>
+                        <h4 className={`font-bold ${achievement.unlocked ? 'text-white' : hasProgress ? 'text-gray-300' : 'text-gray-600'}`}>
                           {achievement.name}
                         </h4>
-                        <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-gray-400' : 'text-gray-700'}`}>
+                        <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-gray-400' : hasProgress ? 'text-gray-500' : 'text-gray-700'}`}>
                           {achievement.description}
                         </p>
 
