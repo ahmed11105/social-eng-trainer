@@ -223,67 +223,74 @@ export function playHoverSound(volume: number = 0.2) {
 }
 
 /**
- * Pitched click sound - For navigation bars with ascending pitch
- * Mechanical click sound with variable pitch based on position
+ * Pitched hover sound - Clickity-clack with variable pitch for navigation
+ * Same as regular hover sound but with pitch scaling
  */
-export function playPitchedClickSound(basePitch: number, volume: number = 0.25) {
+export function playPitchedHoverSound(basePitch: number, volume: number = 0.2) {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
 
   // Scale factor based on pitch (300Hz = 1.0, 900Hz = 3.0)
   const pitchScale = basePitch / 300;
 
-  // Three-layer click with pitch scaling
+  // Three-layer clickity-clack with pitch scaling
 
-  // Layer 1: Low "thunk" (mechanical depth) - scaled
+  // Layer 1: High "click" (key press start) - scaled
+  const click1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+
+  click1.type = 'sine';
+  click1.frequency.setValueAtTime(1800 * pitchScale, now);
+  click1.frequency.exponentialRampToValueAtTime(1400 * pitchScale, now + 0.01);
+
+  gain1.gain.setValueAtTime(volume * 0.3, now);
+  gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.02);
+
+  click1.connect(gain1);
+  gain1.connect(ctx.destination);
+
+  click1.start(now);
+  click1.stop(now + 0.025);
+
+  // Layer 2: Mid "clack" (key bottoming out) - scaled
+  const click2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  click2.type = 'sine';
+  click2.frequency.setValueAtTime(900 * pitchScale, now + 0.008);
+  click2.frequency.exponentialRampToValueAtTime(700 * pitchScale, now + 0.025);
+
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(850 * pitchScale, now);
+  filter.Q.setValueAtTime(3, now);
+
+  gain2.gain.setValueAtTime(volume * 0.25, now + 0.008);
+  gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+
+  click2.connect(filter);
+  filter.connect(gain2);
+  gain2.connect(ctx.destination);
+
+  click2.start(now + 0.008);
+  click2.stop(now + 0.035);
+
+  // Layer 3: Subtle bass "thock" (key impact) - scaled
   const bass = ctx.createOscillator();
   const bassGain = ctx.createGain();
+
   bass.type = 'sine';
-  bass.frequency.setValueAtTime(120 * pitchScale, now);
-  bass.frequency.exponentialRampToValueAtTime(80 * pitchScale, now + 0.04);
-  bassGain.gain.setValueAtTime(volume * 0.4, now);
-  bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+  bass.frequency.setValueAtTime(180 * pitchScale, now + 0.01);
+  bass.frequency.exponentialRampToValueAtTime(120 * pitchScale, now + 0.03);
+
+  bassGain.gain.setValueAtTime(volume * 0.2, now + 0.01);
+  bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+
   bass.connect(bassGain);
   bassGain.connect(ctx.destination);
-  bass.start(now);
-  bass.stop(now + 0.08);
 
-  // Layer 2: Mid "click" (satisfying snap) - scaled
-  const click = ctx.createOscillator();
-  const clickGain = ctx.createGain();
-  const clickFilter = ctx.createBiquadFilter();
-
-  click.type = 'sine';
-  click.frequency.setValueAtTime(1400 * pitchScale, now);
-  click.frequency.exponentialRampToValueAtTime(1000 * pitchScale, now + 0.03);
-
-  clickFilter.type = 'bandpass';
-  clickFilter.frequency.setValueAtTime(1200 * pitchScale, now);
-  clickFilter.Q.setValueAtTime(2, now);
-
-  clickGain.gain.setValueAtTime(volume * 0.35, now);
-  clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-
-  click.connect(clickFilter);
-  clickFilter.connect(clickGain);
-  clickGain.connect(ctx.destination);
-
-  click.start(now);
-  click.stop(now + 0.07);
-
-  // Layer 3: Subtle high "tick" (clarity) - scaled
-  setTimeout(() => {
-    const tick = ctx.createOscillator();
-    const tickGain = ctx.createGain();
-    tick.type = 'sine';
-    tick.frequency.setValueAtTime(2800 * pitchScale, ctx.currentTime);
-    tickGain.gain.setValueAtTime(volume * 0.15, ctx.currentTime);
-    tickGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.02);
-    tick.connect(tickGain);
-    tickGain.connect(ctx.destination);
-    tick.start(ctx.currentTime);
-    tick.stop(ctx.currentTime + 0.03);
-  }, 5);
+  bass.start(now + 0.01);
+  bass.stop(now + 0.045);
 }
 
 /**

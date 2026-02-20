@@ -1,5 +1,5 @@
 // Audio feedback system for game interactions
-import { playAudioEffect, playPitchedClickSound } from './audioEffects';
+import { playAudioEffect, playPitchedHoverSound } from './audioEffects';
 
 // Global sound settings (will be updated by SoundContext)
 let globalVolume = 0.5;
@@ -108,21 +108,21 @@ export function playSound(
 }
 
 /**
- * Play a pitched click sound for navigation bars
- * Mechanical click with ascending pitch creates a musical scale effect
+ * Play a pitched hover sound for navigation bars
+ * Clickity-clack hover with ascending pitch creates a musical scale effect
  * @param pitch The frequency in Hz (typically 300-900)
  * @param volume Optional volume override
  */
-export function playPitchedClick(pitch: number, volume?: number): void {
+export function playPitchedHover(pitch: number, volume?: number): void {
   if (typeof window === 'undefined') return;
   if (globalMuted) return;
 
   try {
-    const baseVolume = volume ?? 0.25;
+    const baseVolume = volume ?? 0.2;
     const finalVolume = baseVolume * globalVolume;
-    playPitchedClickSound(pitch, finalVolume);
+    playPitchedHoverSound(pitch, finalVolume);
   } catch (error) {
-    console.debug('Pitched click sound failed:', error);
+    console.debug('Pitched hover sound failed:', error);
   }
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useGame } from '@/contexts/GameContext';
-import { playPitchedClick, playSound } from '@/lib/sounds';
+import { playPitchedHover, playSound } from '@/lib/sounds';
 
 export default function ProfileNavigationBar() {
   const {
@@ -43,7 +43,7 @@ export default function ProfileNavigationBar() {
               playSound('click');
               goToPreviousProfile();
             }}
-            onMouseEnter={() => playPitchedClick(getPitchForIndex(0))}
+            onMouseEnter={() => playPitchedHover(getPitchForIndex(0))}
             disabled={currentViewIndex === 0}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
             title="Previous Profile"
@@ -66,7 +66,7 @@ export default function ProfileNavigationBar() {
                     playSound('click');
                     goToProfile(i);
                   }}
-                  onMouseEnter={() => playPitchedClick(getPitchForIndex(buttonIndex))}
+                  onMouseEnter={() => playPitchedHover(getPitchForIndex(buttonIndex))}
                   className={`
                     w-10 h-10 rounded-full font-bold transition-all
                     ${isActive
@@ -91,7 +91,7 @@ export default function ProfileNavigationBar() {
                 playSound('click');
                 goToNextProfile();
               }}
-              onMouseEnter={() => playPitchedClick(getPitchForIndex(totalButtons - 1))}
+              onMouseEnter={() => playPitchedHover(getPitchForIndex(totalButtons - 1))}
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
               title="Next Profile"
               aria-label="Next profile"
