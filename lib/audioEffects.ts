@@ -15,10 +15,11 @@ function getAudioContext(): AudioContext {
 
 /**
  * Initialize audio context on user interaction to prevent the first sound "pop"
+ * Returns volume settings to be applied synchronously
  * Call this on page load with a click/touch event listener
  */
-export function initializeAudio(): void {
-  if (typeof window === 'undefined') return;
+export function initializeAudio(): { volume: number; muted: boolean } | null {
+  if (typeof window === 'undefined') return null;
 
   try {
     const ctx = getAudioContext();
@@ -26,9 +27,23 @@ export function initializeAudio(): void {
     if (ctx.state === 'suspended') {
       ctx.resume();
     }
+
+    // Load and return volume settings from localStorage
+    // Caller should apply these immediately to prevent volume pop
+    const savedSettings = localStorage.getItem('soundSettings');
+    if (savedSettings) {
+      try {
+        const { volume, muted } = JSON.parse(savedSettings);
+        return { volume, muted };
+      } catch (e) {
+        // Use defaults if parsing fails
+      }
+    }
   } catch (error) {
     console.debug('Audio initialization failed:', error);
   }
+
+  return null;
 }
 
 /**

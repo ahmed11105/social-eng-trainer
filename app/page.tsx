@@ -13,7 +13,7 @@ import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated, clearAuthSession } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { HelpCircle } from 'lucide-react';
-import { preloadSounds, playSound } from '@/lib/sounds';
+import { preloadSounds, playSound, updateSoundSettings } from '@/lib/sounds';
 import { initializeAudio } from '@/lib/audioEffects';
 
 export default function Home() {
@@ -43,7 +43,14 @@ export default function Home() {
 
     // Initialize audio context on first user interaction to prevent "pop" sound
     const initAudio = () => {
-      initializeAudio();
+      // Initialize audio and get saved settings
+      const savedSettings = initializeAudio();
+
+      // Apply volume settings IMMEDIATELY before any sound can play
+      if (savedSettings) {
+        updateSoundSettings(savedSettings.volume, savedSettings.muted);
+      }
+
       // Remove listeners after first interaction
       document.removeEventListener('click', initAudio);
       document.removeEventListener('keydown', initAudio);
