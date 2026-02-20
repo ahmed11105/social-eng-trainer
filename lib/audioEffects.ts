@@ -156,37 +156,70 @@ export function playErrorSound(volume: number = 0.3) {
 }
 
 /**
- * Hover sound - ASMR gentle tap (very subtle and cozy)
+ * Hover sound - Satisfying clickity-clack (like a mechanical keyboard)
  */
-export function playHoverSound(volume: number = 0.15) {
+export function playHoverSound(volume: number = 0.2) {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
 
-  // Soft, rounded tone - like a gentle tap on wood
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
+  // Two-layer click for that satisfying clack
+
+  // Layer 1: High "click" (key press start)
+  const click1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+
+  click1.type = 'sine';
+  click1.frequency.setValueAtTime(1800, now);
+  click1.frequency.exponentialRampToValueAtTime(1400, now + 0.01);
+
+  gain1.gain.setValueAtTime(volume * 0.3, now);
+  gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.02);
+
+  click1.connect(gain1);
+  gain1.connect(ctx.destination);
+
+  click1.start(now);
+  click1.stop(now + 0.025);
+
+  // Layer 2: Mid "clack" (key bottoming out)
+  const click2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
   const filter = ctx.createBiquadFilter();
 
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(800, now);
-  osc.frequency.exponentialRampToValueAtTime(600, now + 0.04);
+  click2.type = 'sine';
+  click2.frequency.setValueAtTime(900, now + 0.008);
+  click2.frequency.exponentialRampToValueAtTime(700, now + 0.025);
 
-  // Low-pass filter for warmth
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(1200, now);
-  filter.Q.setValueAtTime(0.5, now);
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(850, now);
+  filter.Q.setValueAtTime(3, now);
 
-  // Very gentle envelope - ASMR soft
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(volume * 0.2, now + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+  gain2.gain.setValueAtTime(volume * 0.25, now + 0.008);
+  gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
 
-  osc.connect(filter);
-  filter.connect(gain);
-  gain.connect(ctx.destination);
+  click2.connect(filter);
+  filter.connect(gain2);
+  gain2.connect(ctx.destination);
 
-  osc.start(now);
-  osc.stop(now + 0.08);
+  click2.start(now + 0.008);
+  click2.stop(now + 0.035);
+
+  // Layer 3: Subtle bass "thock" (key impact)
+  const bass = ctx.createOscillator();
+  const bassGain = ctx.createGain();
+
+  bass.type = 'sine';
+  bass.frequency.setValueAtTime(180, now + 0.01);
+  bass.frequency.exponentialRampToValueAtTime(120, now + 0.03);
+
+  bassGain.gain.setValueAtTime(volume * 0.2, now + 0.01);
+  bassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+
+  bass.connect(bassGain);
+  bassGain.connect(ctx.destination);
+
+  bass.start(now + 0.01);
+  bass.stop(now + 0.045);
 }
 
 /**
