@@ -1,0 +1,87 @@
+🔍 DEBUG: Testing login flow on localhost...
+
+Step 1: Going to homepage...
+BROWSER LOG: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+BROWSER LOG: [HMR] connected
+BROWSER LOG: Failed to load resource: the server responded with a status of 404 (Not Found)
+✓ Profile loaded
+
+Step 2: Getting username...
+   Username found: marcella_yundt28 (displayed as: @marcella_yundt28)
+
+Step 3: Getting hash...
+   Hash: 869a9cf1620eb871372681ffd9d5e529
+
+Step 4: Analyzing tweets...
+   Found 10 tweets
+
+   Found pet name: Angel
+   Found year: 2018
+
+Step 5: Checking for sensitive tweet markers...
+   Sensitive markers visible: 0
+   Tweets with red background: 2
+
+Step 6: Cracking password...
+   Wordlist: angel2018, 2018angel, angel18
+   ✅ CRACKED: angel2018 (hash: 869a9cf1620eb871372681ffd9d5e529)
+
+Step 7: Checking game state...
+   Game state: {
+  "profileUsername": "marcella_yundt28",
+  "passwordHash": "869a9cf1620eb871372681ffd9d5e529",
+  "password": "angel2018"
+}
+
+Step 8: Navigating to login page...
+BROWSER LOG: [Fast Refresh] rebuilding
+BROWSER LOG: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+BROWSER LOG: [HMR] connected
+BROWSER LOG: [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o
+   Current URL: http://localhost:3000/login
+
+Step 9: Checking login form...
+   Profile from form context: {
+  "profileUsername": "marcella_yundt28",
+  "passwordHash": "869a9cf1620eb871372681ffd9d5e529"
+}
+
+Step 10: Filling login form...
+   Filled username: "marcella_yundt28"
+   Filled password: "angel2018"
+
+Step 11: Submitting form...
+BROWSER LOG: [Fast Refresh] rebuilding
+BROWSER LOG: [Fast Refresh] done in 217ms
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+   Final URL: http://localhost:3000/
+   Error visible: false
+   ✅ LOGIN SUCCESSFUL!
+
+   Authenticated in localStorage: true
+
+🔍 Debug complete. Browser will stay open for 30 seconds...
+BROWSER LOG: [Fast Refresh] rebuilding
+BROWSER LOG: [Fast Refresh] done in 198ms
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+BROWSER LOG: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.

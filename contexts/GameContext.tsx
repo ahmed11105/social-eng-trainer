@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { generateProfile, GeneratedProfile, Difficulty } from '@/lib/profileGenerator';
 
 interface GameStats {
@@ -206,28 +206,28 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const setHasPosted = (posted: boolean) => {
+  const setHasPosted = useCallback((posted: boolean) => {
     setState(prev => ({
       ...prev,
       hasPosted: posted,
     }));
-  };
+  }, []);
 
-  const setHashCopied = (copied: boolean) => {
+  const setHashCopied = useCallback((copied: boolean) => {
     setState(prev => ({
       ...prev,
       hashCopied: copied,
     }));
-  };
+  }, []);
 
-  const setAllSensitiveTweetsDeleted = (deleted: boolean) => {
+  const setAllSensitiveTweetsDeleted = useCallback((deleted: boolean) => {
     setState(prev => ({
       ...prev,
       allSensitiveTweetsDeleted: deleted,
     }));
-  };
+  }, []);
 
-  const updateCurrentProfileTweets = (tweets: any[]) => {
+  const updateCurrentProfileTweets = useCallback((tweets: any[]) => {
     setState(prev => {
       if (!prev.currentProfile) return prev;
 
@@ -256,7 +256,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         profileHistory: updatedHistory,
       };
     });
-  };
+  }, []);
 
   const resetGame = () => {
     if (typeof window !== 'undefined') {

@@ -1,0 +1,267 @@
+🎮 Starting comprehensive 5-round playthrough...
+
+Opening browser in VISIBLE mode so you can watch...
+
+
+============================================================
+🏁 ROUND 1 - Starting...
+============================================================
+
+📊 Step 1: Analyzing profile...
+   Username: @brandon_hand34
+   Hash: 68c230d747b15afb24f212c6ac09ab74
+   ✓ Hash copied to clipboard
+
+🔍 Step 2: Gathering OSINT clues from tweets...
+   Found 10 tweets to analyze
+   📝 "Max has been part of our family for 13 years now. Got him back in 2013 before th..."
+      → Found potential pet name: Max
+      → Found year: 2013
+   📝 "Found cheerios in places I didn't know existed. This is my life now."
+   📝 "Managed to make it to school pickup for once. Small victories."
+   📝 "So proud of my kid for making honor roll. These are the moments."
+   📝 "Demarcuston community never disappoint. Grateful we moved here."
+   📝 "@jordan59 Yes! We're dealing with the same thing. Want to set up a playdate?"
+   📝 "Finally got the kids to bed and now I have 4 hours of work to catch up on. Work-..."
+   📝 "Made breakfast for the third time today. I used to have hobbies."
+   📝 "Caught my kid and Max playing in the backyard. This is everything."
+   📝 "Weekend itinerary: 2 activities and maybe 36 minutes of sanity. This is fine."
+
+🔨 Step 3: Building wordlist and cracking hash...
+   Wordlist: max2013, 2013max, max13
+   ✅ PASSWORD CRACKED: "max2013"
+
+🔐 Step 4: Logging in...
+   Username: brandon_hand34
+   Password: max2013
+   ✅ Login successful!
+
+🗑️  Step 5: Checking and deleting sensitive tweets...
+   🔴 Found 2 tweets marked with "Contains Password Clue"
+   🔴 Found 2 tweets with red background
+   Deleted sensitive tweet 1
+   Deleted sensitive tweet 2
+   Deleted sensitive tweet 3
+   Deleted sensitive tweet 4
+   Deleted sensitive tweet 5
+   Deleted sensitive tweet 6
+   Deleted sensitive tweet 7
+   Deleted sensitive tweet 8
+   Deleted sensitive tweet 9
+   ✅ Deleted 9 sensitive tweets total
+
+🎉 Step 6: Round completed! Viewing completion modal...
+   📸 Screenshot saved: round-1-completion.png
+   ✓ Modal closed
+
+⏱️  Round 1 completed in 34 seconds
+
+▶️  Starting next round...
+
+============================================================
+🏁 ROUND 2 - Starting...
+============================================================
+
+📊 Step 1: Analyzing profile...
+   Username: @king7
+   Hash: fa99dac0d52e1701faa94333b62a7c08
+   ✓ Hash copied to clipboard
+
+🔍 Step 2: Gathering OSINT clues from tweets...
+   Found 12 tweets to analyze
+   📝 "Been with Avis for 8 years now (adopted him back in 2018). Best decision I made ..."
+      → Found potential pet name: Been
+      → Found year: 2018
+   📝 "Productive panel discussion this morning on market trends. Key takeaway: people ..."
+   📝 "@evan_zulauf Saw your post about the conference. Would love to hear your thought..."
+   📝 "Flight to Chicago delayed by 3 hours. At least I have time to finish reviewing t..."
+   📝 "Reading "Zero to One" for probably the second time. Still finding new insights. ..."
+   📝 "8 meetings today and 3 of them could have been emails. Still processing."
+   📝 "Avis decided 7:23am was an appropriate time to wake me up. Not ideal but at leas..."
+   📝 "Madera weather keeps surprising me."
+   📝 "Finally updated my LinkedIn profile. Only took me 6 months. If you're in the Mad..."
+   📝 "@sonja.powlowski0 Let me know when you're free next week. Would be good to sync ..."
+   📝 "22 unread messages and it's only 9am. Going to be one of those days."
+   📝 "7 years in consulting and still learning something new every day. That's what ke..."
+
+🔨 Step 3: Building wordlist and cracking hash...
+   Wordlist: been2018, 2018been, been18
+   ❌ Could not crack password with gathered clues
+   ⏭️  Skipping this round...
+
+============================================================
+🏁 ROUND 3 - Starting...
+============================================================
+
+📊 Step 1: Analyzing profile...
+   Username: @janick620
+   Hash: 9480b49b94d9b3fa361650ddda3e04d9
+   ✓ Hash copied to clipboard
+
+🔍 Step 2: Gathering OSINT clues from tweets...
+   Found 11 tweets to analyze
+   📝 "Otis has been the only consistently good thing for 4 years (got her in 2022). Ca..."
+      → Found potential pet name: Otis
+      → Found year: 2022
+   📝 "Why is everyone not talking about subscription fatigue? This is insane."
+   📝 "@foster_rolfson Interesting take given your post from yesterday. "
+   📝 "Cleveland public transit need to be addressed. How is this acceptable? Fed up."
+   📝 "The fact that the industry thinks respond to emails at 11pm in 2026 is unaccepta..."
+   📝 "People obsessed with that book but the plot made zero sense. We can admit this."
+   📝 "Interesting how when X does it it's fine but when Y does it everyone loses their..."
+   📝 "Just paid $18 for lunch in Cleveland. Highway robbery. This can't be sustainable..."
+   📝 "Spent 66 minutes on trying to cancel a subscription. The system is broken."
+   📝 "Otis woke me up at 5am again. You're testing me today."
+   📝 "It's "fewer" not "less" for countable things. We learned this in elementary scho..."
+
+🔨 Step 3: Building wordlist and cracking hash...
+   Wordlist: otis2022, 2022otis, otis22
+   ✅ PASSWORD CRACKED: "otis2022"
+
+🔐 Step 4: Logging in...
+   Username: janick620
+   Password: otis2022
+   ✅ Login successful!
+
+🗑️  Step 5: Checking and deleting sensitive tweets...
+   🔴 Found 2 tweets marked with "Contains Password Clue"
+   🔴 Found 2 tweets with red background
+   Deleted sensitive tweet 1
+   Deleted sensitive tweet 2
+   Deleted sensitive tweet 3
+   Deleted sensitive tweet 4
+   Deleted sensitive tweet 5
+   Deleted sensitive tweet 6
+   Deleted sensitive tweet 7
+   Deleted sensitive tweet 8
+   Deleted sensitive tweet 9
+   Deleted sensitive tweet 10
+   ✅ Deleted 10 sensitive tweets total
+
+🎉 Step 6: Round completed! Viewing completion modal...
+   📸 Screenshot saved: round-3-completion.png
+   ✓ Modal closed
+
+⏱️  Round 3 completed in 33 seconds
+
+▶️  Starting next round...
+
+============================================================
+🏁 ROUND 4 - Starting...
+============================================================
+
+📊 Step 1: Analyzing profile...
+   Username: @leticia2
+   Hash: 2f83e89d4d0c5f6beb58a5574cfc670f
+   ✓ Hash copied to clipboard
+
+🔍 Step 2: Gathering OSINT clues from tweets...
+   Found 12 tweets to analyze
+   📝 "Realized Ned and I have been together for 12 years now. Got him back in 2014 bes..."
+      → Found potential pet name: Realized
+      → Found year: 2014
+   📝 "Refactored 894 lines of legacy code today. Code is beautiful now. My past self w..."
+   📝 "Client just asked if we can "make the app more blockchain". I physically aged 9 ..."
+   📝 "Finally upgraded my desk setup and wow the difference is incredible. My wallet h..."
+   📝 "@leticia2 yo I JUST got to that boss and yeah it's ridiculous. Took me like 18 t..."
+   📝 "Four day weekend and I've already spent 9 hours playing Baldurs Gate. This is ei..."
+   📝 "Lorain weather is unreal and it's only October. Everything is fine. 🙃"
+   📝 "Realized I've been using the same password structure since 2015 and should proba..."
+   📝 "Ned is freaking out because there's a lizard on the balcony and he cannot compre..."
+   📝 "Spent my lunch break doom scrolling Reddit and now I'm behind on everything. Pro..."
+   📝 "My coworker just said "what's the tea" unironically in a meeting and I had to mu..."
+   📝 "@leticia2 @nelson_schroeder you guys wanna run some duos this weekend? I'm free ..."
+
+🔨 Step 3: Building wordlist and cracking hash...
+   Wordlist: realized2014, 2014realized, realized14
+   ❌ Could not crack password with gathered clues
+   ⏭️  Skipping this round...
+
+============================================================
+🏁 ROUND 5 - Starting...
+============================================================
+
+📊 Step 1: Analyzing profile...
+   Username: @bart_harris
+   Hash: 385c3a225d513c3ddc651c86f7474816
+   ✓ Hash copied to clipboard
+
+🔍 Step 2: Gathering OSINT clues from tweets...
+   Found 11 tweets to analyze
+   📝 "Loretta has been the only consistently good thing for 8 years (got her in 2018)...."
+      → Found potential pet name: Loretta
+      → Found year: 2018
+   📝 "Unpopular opinion: The Office is overrated. Not sorry."
+   📝 "@haley_sawayn11 didn't you say the opposite last week? 🤔"
+   📝 "Lake Glennaside traffic need to be addressed. This is ridiculous. I'm moving."
+   📝 "Just sat through a 74 minute meeting that could have been an email. Respect peop..."
+   📝 "People won't shut up about that movie but it was mid at best. Emperor has no clo..."
+   📝 "Notice how the rules change depending on who breaks them. The double standards."
+   📝 "Spent $35 for coffee and a muffin in Lake Glennaside. Inflation is out of contro..."
+   📝 "Why does every app now require an account? I miss the old internet."
+   📝 "Loretta threw up on the carpet for the third time this week. You're testing me t..."
+   📝 "It's "fewer" not "less" for countable things. Standards are on the floor."
+
+🔨 Step 3: Building wordlist and cracking hash...
+   Wordlist: loretta2018, 2018loretta, loretta18
+   ✅ PASSWORD CRACKED: "loretta2018"
+
+🔐 Step 4: Logging in...
+   Username: bart_harris
+   Password: loretta2018
+   ✅ Login successful!
+
+🗑️  Step 5: Checking and deleting sensitive tweets...
+   🔴 Found 2 tweets marked with "Contains Password Clue"
+   🔴 Found 2 tweets with red background
+   Deleted sensitive tweet 1
+   Deleted sensitive tweet 2
+   Deleted sensitive tweet 3
+   Deleted sensitive tweet 4
+   Deleted sensitive tweet 5
+   Deleted sensitive tweet 6
+   Deleted sensitive tweet 7
+   Deleted sensitive tweet 8
+   Deleted sensitive tweet 9
+   Deleted sensitive tweet 10
+   ✅ Deleted 10 sensitive tweets total
+
+🎉 Step 6: Round completed! Viewing completion modal...
+   📸 Screenshot saved: round-5-completion.png
+   ✓ Modal closed
+
+⏱️  Round 5 completed in 33 seconds
+
+
+============================================================
+📋 FINAL SUMMARY - 5 Rounds Complete
+============================================================
+
+Round 1 (34s):
+  Observations:
+    • ✓ Hash banner visible and clickable
+    • ✓ Login page has background image
+    • ✓ Progress indicator visible
+    • 2 sensitive tweet badges visible when authenticated
+    • Successfully deleted 9 sensitive tweets
+    • Modal shows: ✓ Password, ✓ Time, ✓ Next button
+
+Round 3 (33s):
+  Observations:
+    • ✓ Hash banner visible and clickable
+    • ✓ Login page has background image
+    • ✓ Progress indicator visible
+    • 2 sensitive tweet badges visible when authenticated
+    • Successfully deleted 10 sensitive tweets
+    • Modal shows: ✓ Password, ✓ Time, ✓ Next button
+
+Round 5 (33s):
+  Observations:
+    • ✓ Hash banner visible and clickable
+    • ✓ Login page has background image
+    • ✓ Progress indicator visible
+    • 2 sensitive tweet badges visible when authenticated
+    • Successfully deleted 10 sensitive tweets
+    • Modal shows: ✓ Password, ✓ Time, ✓ Next button
+
+✅ Test complete! Browser will stay open for 30 seconds for inspection...
