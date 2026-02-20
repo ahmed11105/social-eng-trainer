@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { generateProfile, GeneratedProfile, Difficulty } from '@/lib/profileGenerator';
+import { clearAuthSession } from '@/lib/auth';
 
 interface GameStats {
   totalRounds: number;
@@ -134,6 +135,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const newDifficulty = difficulty || state.difficulty;
     const profile = generateProfile(newDifficulty);
 
+    // Clear authentication for new round
+    clearAuthSession();
+
     setState(prev => {
       // Add current profile to history before starting new round
       const newHistory = prev.currentProfile
@@ -185,6 +189,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const skipLevel = () => {
     // Generate new profile without saving current to history or incrementing stats
     const profile = generateProfile('easy'); // Always easy difficulty
+
+    // Clear authentication when skipping
+    clearAuthSession();
+
     setState(prev => ({
       ...prev,
       currentProfile: profile,
@@ -262,6 +270,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('gameState');
     }
+
+    // Clear authentication when resetting
+    clearAuthSession();
+
     const profile = generateProfile('easy');
     setState({
       ...INITIAL_STATE,
