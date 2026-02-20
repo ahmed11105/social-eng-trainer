@@ -87,7 +87,7 @@ export default function LoginForm() {
                 <div key={i} className="text-xs mb-1">• {clue}</div>
               ))}
               <div className="text-xs font-bold mt-2 text-blue-900">
-                Pattern: {currentProfile.password.toLowerCase()}
+                Password: {currentProfile.password.toLowerCase()}
               </div>
             </div>
           </div>

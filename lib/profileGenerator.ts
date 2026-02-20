@@ -542,7 +542,7 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
   };
 
   // Generate clues based on what's actually in the password
-  const birthYear = new Date().getFullYear() - richPersona.age;
+  // birthYear is already defined above, no need to redefine
   const allPossibleClues = [
     { label: `Pet: ${richPersona.pet.name} (${richPersona.pet.type})`, value: richPersona.pet.name.toLowerCase() },
     { label: `Pet adoption year: ${richPersona.pet.adoptionYear}`, value: String(richPersona.pet.adoptionYear) },
