@@ -31,10 +31,10 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
     },
     {
       id: 'cleanup',
-      label: 'Delete Sensitive Posts',
+      label: 'Clean Up Timeline',
       icon: Trash2,
       completed: allSensitiveTweetsDeleted,
-      description: 'Remove posts with password clues',
+      description: 'Remove any compromising posts',
     },
   ];
 

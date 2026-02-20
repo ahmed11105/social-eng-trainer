@@ -27,7 +27,7 @@ function parseTextWithMentions(text: string) {
 
 export default function Tweet({ text, date, likes, retweets, replies = 0, media, onDelete, profile, containsSensitiveInfo }: TweetProps) {
   return (
-    <div className={`border-b border-gray-800 p-4 hover:bg-gray-900/50 transition-all duration-200 cursor-pointer ${containsSensitiveInfo ? 'bg-red-900/10 border-l-4 border-l-red-500 hover:bg-red-900/20' : ''}`}>
+    <div className="border-b border-gray-800 p-4 hover:bg-gray-900/50 transition-all duration-200 cursor-pointer">
       <div className="flex gap-3">
         <div className="w-12 h-12 bg-gray-700 rounded-full flex-shrink-0 overflow-hidden">
           <img
@@ -42,11 +42,6 @@ export default function Tweet({ text, date, likes, retweets, replies = 0, media,
             <span className="text-gray-500">@{profile.username}</span>
             <span className="text-gray-500">·</span>
             <span className="text-gray-500">{date}</span>
-            {containsSensitiveInfo && onDelete && (
-              <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full border border-red-500/30 font-semibold">
-                Contains Password Clue - Delete to Complete!
-              </span>
-            )}
           </div>
           <p className="mt-2 text-white" data-testid="tweet-text">{parseTextWithMentions(text)}</p>
           {media && (
