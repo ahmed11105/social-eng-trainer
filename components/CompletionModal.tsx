@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X, Trophy, Clock } from 'lucide-react';
+import { X, Trophy, Clock, Target, Zap } from 'lucide-react';
 import { playSound } from '@/lib/sounds';
 import { playAudioEffect } from '@/lib/audioEffects';
+import { calculateRoundScore, addXP, getXPForLevel } from '@/lib/leveling';
+import { useGame } from '@/contexts/GameContext';
+import XPCircle from './XPCircle';
 
 interface CompletionModalProps {
   timeTaken: number;
@@ -30,15 +33,37 @@ export default function CompletionModal({
   onClose,
   isHistorical = false,
 }: CompletionModalProps) {
-  const [showStats, setShowStats] = useState(false);
+  const { correctDeletions, incorrectDeletions, playerProgress } = useGame();
+  const [showXPAnimation, setShowXPAnimation] = useState(!isHistorical);
+  const [showStats, setShowStats] = useState(isHistorical); // Show stats immediately for historical rounds
+  const [roundScore, setRoundScore] = useState<any>(null);
+  const [newProgress, setNewProgress] = useState(playerProgress);
 
   useEffect(() => {
-    // Play celebration sound using new audio system
+    if (isHistorical) {
+      // For historical rounds, just show stats
+      setTimeout(() => setShowStats(true), 200);
+      return;
+    }
+
+    // Calculate score and XP for current round
+    const score = calculateRoundScore(timeTaken, correctDeletions, incorrectDeletions);
+    setRoundScore(score);
+
+    // Add XP and update progress
+    const result = addXP(playerProgress, score.finalPoints);
+    setNewProgress(result.newProgress);
+
+    // Play celebration sound
     playAudioEffect('celebration', 0.5);
 
-    // Delay showing stats for staggered animation
-    setTimeout(() => setShowStats(true), 200);
-  }, []);
+    // XP animation will handle when to show stats
+  }, [timeTaken, correctDeletions, incorrectDeletions, playerProgress, isHistorical]);
+
+  const handleXPAnimationComplete = () => {
+    setShowXPAnimation(false);
+    setTimeout(() => setShowStats(true), 300);
+  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -52,23 +77,40 @@ export default function CompletionModal({
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in overflow-y-auto">
       {/* Celebration confetti effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 animate-confetti"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: '-10px',
-              backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'][Math.floor(Math.random() * 4)],
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
+      {showStats && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 animate-confetti"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: '-10px',
+                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'][Math.floor(Math.random() * 4)],
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto my-auto transform transition-all border-2 border-green-500/50 shadow-2xl shadow-green-500/30 animate-scale-in relative">
+      {/* XP Animation Phase */}
+      {showXPAnimation && roundScore && (
+        <div className="animate-scale-in">
+          <XPCircle
+            currentLevel={newProgress.level}
+            xpGained={roundScore.finalPoints}
+            startXP={playerProgress.xp}
+            xpForLevel={getXPForLevel(newProgress.level)}
+            onComplete={handleXPAnimationComplete}
+          />
+        </div>
+      )}
+
+      {/* Stats Phase */}
+      {showStats && (
+        <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto my-auto transform transition-all border-2 border-green-500/50 shadow-2xl shadow-green-500/30 animate-scale-in relative">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -121,6 +163,46 @@ export default function CompletionModal({
               </div>
             </div>
           </div>
+
+          {/* 2.5 Score Breakdown - Show for non-historical rounds */}
+          {!isHistorical && roundScore && (
+            <div className={`bg-gradient-to-r from-purple-900/40 to-pink-900/40 border-2 border-purple-500/50 rounded-xl p-3 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-300 flex items-center gap-1">
+                    <Zap className="w-4 h-4 text-yellow-400" />
+                    Speed Points
+                  </span>
+                  <span className="font-bold text-white">{roundScore.basePoints}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-300 flex items-center gap-1">
+                    <Target className="w-4 h-4 text-blue-400" />
+                    Accuracy Multiplier
+                  </span>
+                  <span className={`font-bold ${roundScore.accuracyMultiplier === 0 ? 'text-red-400' : roundScore.accuracyMultiplier === 2.0 ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {roundScore.accuracyMultiplier.toFixed(1)}x
+                  </span>
+                </div>
+                <div className="border-t border-purple-500/30 pt-2 flex items-center justify-between">
+                  <span className="text-purple-300 font-semibold">Total XP Earned</span>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                    +{roundScore.finalPoints}
+                  </span>
+                </div>
+                {roundScore.incorrectDeletions > 0 && (
+                  <p className="text-xs text-red-400 text-center mt-2">
+                    ⚠️ {roundScore.incorrectDeletions} wrong deletion{roundScore.incorrectDeletions > 1 ? 's' : ''} reduced multiplier
+                  </p>
+                )}
+                {roundScore.accuracyMultiplier === 2.0 && (
+                  <p className="text-xs text-green-400 text-center mt-2 animate-pulse">
+                    🎯 Perfect accuracy! 2x multiplier!
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 3. Overall Stats Grid THIRD - HIDDEN on mobile, VISIBLE on sm+ */}
           <div className={`hidden sm:grid grid-cols-3 gap-2 ${showStats ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
@@ -185,6 +267,7 @@ export default function CompletionModal({
           </p>
         )}
       </div>
+      )}
     </div>
   );
 }

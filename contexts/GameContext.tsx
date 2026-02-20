@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { generateProfile, GeneratedProfile, Difficulty } from '@/lib/profileGenerator';
 import { clearAuthSession } from '@/lib/auth';
+import { PlayerProgress, loadPlayerProgress } from '@/lib/leveling';
 
 interface GameStats {
   totalRounds: number;
@@ -25,6 +26,9 @@ interface GameState {
   allSensitiveTweetsDeleted: boolean; // New: tracks if all sensitive tweets are deleted
   profileHistory: GeneratedProfile[];
   currentViewIndex: number;
+  correctDeletions: number; // Track correct sensitive tweet deletions
+  incorrectDeletions: number; // Track wrong (non-sensitive) tweet deletions
+  playerProgress: PlayerProgress; // Level and XP
 }
 
 interface GameContextType extends GameState {
@@ -35,6 +39,7 @@ interface GameContextType extends GameState {
   setHashCopied: (copied: boolean) => void;
   setAllSensitiveTweetsDeleted: (deleted: boolean) => void; // New: setter for sensitive tweets
   updateCurrentProfileTweets: (tweets: any[]) => void; // New: update tweets in current profile
+  trackDeletion: (wasSensitive: boolean) => void; // Track tweet deletion accuracy
   resetGame: () => void;
   changeDifficulty: (difficulty: Difficulty) => void;
   skipLevel: () => void;
@@ -68,6 +73,9 @@ const INITIAL_STATE: GameState = {
   allSensitiveTweetsDeleted: false, // Initially false
   profileHistory: [],
   currentViewIndex: 0,
+  correctDeletions: 0,
+  incorrectDeletions: 0,
+  playerProgress: { level: 1, xp: 0, totalXP: 0 },
 };
 
 export function GameProvider({ children }: { children: ReactNode }) {
@@ -78,6 +86,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Ensure we're on the client
     if (typeof window === 'undefined') return;
+
+    // Load player progress
+    const playerProgress = loadPlayerProgress();
 
     const saved = localStorage.getItem('gameState');
     if (saved) {
@@ -90,12 +101,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
           profileHistory: parsedState.profileHistory || [],
           currentViewIndex: parsedState.currentViewIndex ?? (parsedState.profileHistory?.length || 0),
           hashCopied: parsedState.hashCopied ?? false,
+          correctDeletions: parsedState.correctDeletions ?? 0,
+          incorrectDeletions: parsedState.incorrectDeletions ?? 0,
+          playerProgress,
         };
 
         setState(migratedState);
       } catch (error) {
         // Silent fail - will generate new profile below
         const profile = generateProfile('easy');
+        const playerProgress = loadPlayerProgress();
         setState(prev => ({
           ...prev,
           currentProfile: profile,
@@ -103,11 +118,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
           isRunning: true,
           profileHistory: [],
           currentViewIndex: 0,
+          playerProgress,
         }));
       }
     } else {
       // No saved state, generate initial profile
       const profile = generateProfile('easy');
+      const playerProgress = loadPlayerProgress();
       setState(prev => ({
         ...prev,
         currentProfile: profile,
@@ -115,6 +132,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isRunning: true,
         profileHistory: [],
         currentViewIndex: 0,
+        playerProgress,
       }));
     }
     setIsHydrated(true);
@@ -158,6 +176,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         allSensitiveTweetsDeleted: false,
         profileHistory: newHistory,
         currentViewIndex: newHistory.length, // View the new profile
+        correctDeletions: 0, // Reset deletion tracking
+        incorrectDeletions: 0,
       };
     });
 
@@ -327,6 +347,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const trackDeletion = useCallback((wasSensitive: boolean) => {
+    setState(prev => ({
+      ...prev,
+      correctDeletions: wasSensitive ? prev.correctDeletions + 1 : prev.correctDeletions,
+      incorrectDeletions: !wasSensitive ? prev.incorrectDeletions + 1 : prev.incorrectDeletions,
+    }));
+  }, []);
+
   // Computed properties
   const viewedProfile = state.currentViewIndex === state.profileHistory.length
     ? state.currentProfile
@@ -343,6 +371,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setHashCopied,
     setAllSensitiveTweetsDeleted,
     updateCurrentProfileTweets,
+    trackDeletion,
     resetGame,
     changeDifficulty,
     skipLevel,

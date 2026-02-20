@@ -17,7 +17,7 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
   const [tweets, setTweets] = useState<TweetType[]>(initialTweets);
   const [newTweetText, setNewTweetText] = useState('');
   const [hasAddedTweet, setHasAddedTweet] = useState(false);
-  const { setAllSensitiveTweetsDeleted, updateCurrentProfileTweets } = useGame();
+  const { setAllSensitiveTweetsDeleted, updateCurrentProfileTweets, trackDeletion } = useGame();
 
   // Update tweets when initialTweets changes (new profile loaded)
   useEffect(() => {
@@ -58,6 +58,12 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
   };
 
   const deleteTweet = (id: number) => {
+    // Find the tweet being deleted to check if it's sensitive
+    const tweetToDelete = tweets.find(t => t.id === id);
+    if (tweetToDelete) {
+      // Track whether this deletion was correct (sensitive) or incorrect (not sensitive)
+      trackDeletion(tweetToDelete.containsSensitiveInfo === true);
+    }
     setTweets(tweets.filter(t => t.id !== id));
   };
 
