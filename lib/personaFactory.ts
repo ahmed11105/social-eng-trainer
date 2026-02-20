@@ -343,9 +343,135 @@ function generateVoiceForArchetype(archetype: Archetype, rng: SeededRandom) {
 }
 
 /**
+ * Apply realistic style variations to a bio
+ * Independent of archetype - adds variety in length, emojis, symbols, age, rules, tone
+ */
+function applyBioStyleVariations(baseBio: string, age: number, rng: SeededRandom): string {
+  let bio = baseBio;
+
+  // STYLE 1: Length variation (20% short, 60% normal, 20% max out)
+  const lengthStyle = rng.pick(['short', 'normal', 'normal', 'normal', 'maxed']);
+
+  if (lengthStyle === 'short') {
+    // Truncate to first 1-2 segments
+    const parts = bio.split('|').map(p => p.trim());
+    bio = parts.slice(0, rng.int(1, 2)).join(' | ');
+  } else if (lengthStyle === 'maxed') {
+    // Add extra content to approach 160 char limit
+    const additions = [
+      ' | Always learning',
+      ' | Making things happen',
+      ' | Living my best life',
+      ' | Building something cool',
+      ' | One day at a time',
+      ' | Just vibing honestly',
+      ' | Creating my own path',
+      ' | Here for a good time',
+    ];
+    while (bio.length < 140 && additions.length > 0) {
+      const addition = rng.pick(additions);
+      additions.splice(additions.indexOf(addition), 1);
+      if (bio.length + addition.length < 160) {
+        bio += addition;
+      }
+    }
+  }
+
+  // STYLE 2: Age inclusion (30% chance to add age if not already there)
+  const showAge = rng.next() < 0.3 && !bio.includes(age.toString());
+  if (showAge) {
+    bio = `${age} | ${bio}`;
+  }
+
+  // STYLE 3: Emoji/symbol style (40% plain, 30% light emojis, 20% heavy emojis, 10% symbols)
+  const emojiStyle = rng.pick(['plain', 'plain', 'light', 'light', 'heavy', 'symbols']);
+
+  if (emojiStyle === 'light') {
+    // Add 1-2 contextual emojis
+    const lightEmojis = ['💙', '✨', '🌟', '💫', '🌙', '☀️', '🌸', '🍃'];
+    const emoji = rng.pick(lightEmojis);
+    bio = rng.pick([
+      `${bio} ${emoji}`,
+      `${emoji} ${bio}`,
+    ]);
+  } else if (emojiStyle === 'heavy') {
+    // Add multiple emojis throughout
+    const heavyEmojis = ['✨', '💖', '🌈', '🔥', '💯', '⭐', '🎉', '💕', '🌺', '🦋'];
+    const emojis = rng.picks(heavyEmojis, rng.int(2, 4));
+    bio = `${emojis[0]} ${bio} ${emojis.slice(1).join(' ')}`;
+  } else if (emojiStyle === 'symbols') {
+    // Use fancy Unicode symbols/text art
+    const symbolPairs = [
+      ['★', '★'],
+      ['☆', '☆'],
+      ['♡', '♡'],
+      ['◇', '◇'],
+      ['✦', '✦'],
+      ['~', '~'],
+      ['•', '•'],
+    ];
+    const pair = rng.pick(symbolPairs);
+    bio = `${pair[0]} ${bio} ${pair[1]}`;
+  }
+  // else: keep plain (no additions)
+
+  // STYLE 4: Rules/boundaries (15% chance)
+  const addRules = rng.next() < 0.15;
+  if (addRules) {
+    const rules = [
+      ' | MDNI',
+      ' | 18+ only',
+      ' | 21+',
+      ' | minors DNI',
+      ' | no minors',
+    ];
+    bio += rng.pick(rules);
+  }
+
+  // STYLE 5: Quirky additions (20% chance)
+  const addQuirky = rng.next() < 0.2;
+  if (addQuirky && bio.length < 130) {
+    const quirkyPhrases = [
+      ' | chaos coordinator',
+      ' | professional overthinker',
+      ' | running on caffeine',
+      ' | tired but thriving',
+      ' | 🤪',
+      ' | send help',
+      ' | no thoughts just vibes',
+      ' | existing',
+      ' | trying my best',
+    ];
+    bio += rng.pick(quirkyPhrases);
+  }
+
+  // STYLE 6: Serious/political additions (10% chance, mutually exclusive with quirky)
+  const addSerious = !addQuirky && rng.next() < 0.1;
+  if (addSerious && bio.length < 120) {
+    const seriousPhrases = [
+      ' | BLM',
+      ' | Climate action now',
+      ' | Trans rights are human rights',
+      ' | Love is love',
+      ' | Equality matters',
+      ' | Science is real',
+      ' | Kindness always',
+    ];
+    bio += rng.pick(seriousPhrases);
+  }
+
+  // Final length check - truncate if over 160 chars
+  if (bio.length > 160) {
+    bio = bio.substring(0, 157) + '...';
+  }
+
+  return bio;
+}
+
+/**
  * Generate bio based on archetype and persona details
  */
-function generateBio(archetype: Archetype, occupation: any, location: string, pet: any, rng: SeededRandom): string {
+function generateBio(archetype: Archetype, occupation: any, location: string, pet: any, age: number, rng: SeededRandom): string {
   const bioTemplates: Record<Archetype, string[]> = {
     corporate_professional: [
       `${occupation.title} @ ${occupation.workplace} | ${location} | Views are my own`,
@@ -356,14 +482,14 @@ function generateBio(archetype: Archetype, occupation: any, location: string, pe
     casual_adult: [
       `${occupation.title}. ${location} based. ${pet.type} mom to ${pet.name}`,
       `${occupation.title}. Coffee dependent. ${location}.`,
-      `${location} | ${occupation.title} | ${pet.type} parent 🐾`,
+      `${location} | ${occupation.title} | ${pet.type} parent`,
       `Just trying to survive. ${occupation.title}. ${location}.`,
     ],
     internet_native: [
-      `${rng.int(20, 27)} | ${occupation.title.toLowerCase()} | ${location.toLowerCase()} | void screaming`,
       `${occupation.title.toLowerCase()} | chronically online | ${pet.name.toLowerCase()}'s human`,
       `${location.toLowerCase()} based | ${occupation.title.toLowerCase()} | professional mess`,
-      `${occupation.title.toLowerCase()} | ${rng.int(20, 27)} | ${location.toLowerCase()} | chaotic energy`,
+      `${occupation.title.toLowerCase()} | ${location.toLowerCase()} | chaotic energy`,
+      `${occupation.title.toLowerCase()} | void screaming | ${location.toLowerCase()}`,
     ],
     hobby_enthusiast: [
       `${occupation.title} | ${location} | Passionate about ${rng.pick(['hiking', 'photography', 'cooking', 'reading'])}`,
@@ -376,7 +502,7 @@ function generateBio(archetype: Archetype, occupation: any, location: string, pe
       `${occupation.title}. Parent. ${location}. Tired always.`,
     ],
     student_young_adult: [
-      `${occupation.title} @ ${occupation.workplace} | ${rng.int(19, 25)} | ${location}`,
+      `${occupation.title} @ ${occupation.workplace} | ${location}`,
       `college student | ${location} | perpetually tired`,
       `${occupation.workplace} | ${location} | broke but vibing`,
     ],
@@ -412,10 +538,13 @@ function generateBio(archetype: Archetype, occupation: any, location: string, pe
     ],
   };
 
-  return rng.pick(bioTemplates[archetype])
+  const baseBio = rng.pick(bioTemplates[archetype])
     .replace('dad/mom', rng.pick(['dad', 'mom']))
     .replace('Mom/Dad', rng.pick(['Mom', 'Dad']))
     .replace('mom/dad', rng.pick(['mom', 'dad']));
+
+  // Apply style variations independent of archetype
+  return applyBioStyleVariations(baseBio, age, rng);
 }
 
 /**
@@ -691,7 +820,7 @@ export function generatePersona(seed: number): RichPersona {
   ];
 
   // Generate bio
-  const bio = generateBio(archetype, occupation, faker.location.city(), pet, rng);
+  const bio = generateBio(archetype, occupation, faker.location.city(), pet, age, rng);
 
   // Generate archetype-appropriate display name
   const displayName = generateDisplayName(firstName, archetype, rng);
