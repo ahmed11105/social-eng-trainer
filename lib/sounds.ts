@@ -118,7 +118,7 @@ export function playPitchedHover(pitch: number, volume?: number): void {
   if (globalMuted) return;
 
   try {
-    const baseVolume = volume ?? 0.2;
+    const baseVolume = volume ?? 0.1; // 50% quieter than regular hover (was 0.2)
     const finalVolume = baseVolume * globalVolume;
     playPitchedHoverSound(pitch, finalVolume);
   } catch (error) {
