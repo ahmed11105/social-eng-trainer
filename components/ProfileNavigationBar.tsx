@@ -29,6 +29,7 @@ export default function ProfileNavigationBar() {
             disabled={currentViewIndex === 0}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
             title="Previous Profile"
+            aria-label="Previous profile"
           >
             ← Prev
           </button>
@@ -66,6 +67,7 @@ export default function ProfileNavigationBar() {
               onClick={goToNextProfile}
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
               title="Next Profile"
+              aria-label="Next profile"
             >
               Next →
             </button>

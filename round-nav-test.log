@@ -1,0 +1,77 @@
+🎮 Testing round completion and navigation...
+
+
+============================================================
+Round 1: Starting...
+============================================================
+  Username: @kaitlinmeal
+  Hash: b752ae874b710d73bc137eecea75fbf0
+  ✅ Join date shows correctly (no duplicate)
+  🔓 Password cracked: judy2012
+  ✅ Logged in successfully
+  🗑️  Deleted 10 sensitive tweets
+  🎉 Round completed! Modal showing...
+  ⏱️  Completion time: 0:25
+
+============================================================
+Round 2: Starting...
+============================================================
+  Username: @tracy_celsius
+  Hash: dd7bd79868f3bda1ad4ebffba07f8cf0
+  ✅ Join date shows correctly (no duplicate)
+  🔓 Password cracked: armando2016
+  ✅ Logged in successfully
+  🗑️  Deleted 11 sensitive tweets
+  🎉 Round completed! Modal showing...
+  ⏱️  Completion time: 0:28
+
+============================================================
+Round 3: Starting...
+============================================================
+  Username: @mireya3
+  Hash: fed799b80cf5cc00ebd136f6fa429332
+  ✅ Join date shows correctly (no duplicate)
+  ⏭️  Could not crack password, skipping...
+
+============================================================
+Round 4: Starting...
+============================================================
+  Username: @ebba_cremin
+  Hash: d51f08f8d5e2d43092520b140f170b88
+  ✅ Join date shows correctly (no duplicate)
+  🔓 Password cracked: arielle2025
+  ✅ Logged in successfully
+  🗑️  Deleted 9 sensitive tweets
+  🎉 Round completed! Modal showing...
+  ⏱️  Completion time: 0:23
+
+============================================================
+Round 5: Starting...
+============================================================
+  Username: @timmy_smog
+  Hash: 32dea888a4f70f037abb259f87a3ded9
+  ✅ Join date shows correctly (no duplicate)
+  ⏭️  Could not crack password, skipping...
+
+
+============================================================
+✅ Completed 3 rounds successfully
+============================================================
+
+
+📜 Testing Historical Round Navigation...
+
+
+Checking Round 4...
+  ❌ "Viewing History" badge not visible
+  ❌ Username matches: @frankie_rempel6
+  ❌ "View Stats" button not visible
+
+Checking Round 2...
+ERROR: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('button[aria-label="Previous profile"]').first()[22m
+
+    at /Users/ahmedabdurahman/mrRobot/social-eng-trainer/test-round-navigation.js:221:26 {
+  name: 'TimeoutError'
+}
