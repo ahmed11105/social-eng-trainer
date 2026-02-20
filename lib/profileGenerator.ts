@@ -408,11 +408,23 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
   // Convert to old format for compatibility
   const currentYear = new Date().getFullYear();
   const tweets: Tweet[] = tweetTexts.map((text, i) => {
-    // Check if tweet contains password clues (pet name or adoption year)
+    // Check if tweet contains ANY compromising information
     const lowerText = text.toLowerCase();
+    const birthYear = new Date().getFullYear() - richPersona.age;
+
+    // Mark as sensitive if contains ANY of these:
     const containsPetName = lowerText.includes(richPersona.pet.name.toLowerCase());
     const containsAdoptionYear = lowerText.includes(String(richPersona.pet.adoptionYear));
-    const containsSensitiveInfo = containsPetName || containsAdoptionYear;
+    const containsLocation = lowerText.includes(richPersona.location.toLowerCase());
+    const containsBirthYear = lowerText.includes(String(birthYear));
+    const containsAge = lowerText.includes(String(richPersona.age));
+    const containsName = lowerText.includes(richPersona.name.toLowerCase());
+    const containsPetType = lowerText.includes(richPersona.pet.type.toLowerCase());
+
+    // Any personally identifiable or compromising information = sensitive
+    const containsSensitiveInfo = containsPetName || containsAdoptionYear ||
+                                   containsLocation || containsBirthYear ||
+                                   containsAge || containsName || containsPetType;
 
     return {
       id: i + 1,
@@ -426,8 +438,24 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
     };
   });
 
-  // Generate password
-  const password = `${richPersona.pet.name.toLowerCase()}${richPersona.pet.adoptionYear}`;
+  // Generate password with variations (not always petname + year)
+  const passwordPatterns = [
+    // Pattern 1: petname + adoption year (classic)
+    `${richPersona.pet.name.toLowerCase()}${richPersona.pet.adoptionYear}`,
+    // Pattern 2: petname + location
+    `${richPersona.pet.name.toLowerCase()}${richPersona.location.toLowerCase().replace(/\s+/g, '')}`,
+    // Pattern 3: location + adoption year
+    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${richPersona.pet.adoptionYear}`,
+    // Pattern 4: name + petname
+    `${richPersona.name.toLowerCase()}${richPersona.pet.name.toLowerCase()}`,
+    // Pattern 5: petname + birth year (age-based)
+    `${richPersona.pet.name.toLowerCase()}${new Date().getFullYear() - richPersona.age}`,
+    // Pattern 6: location + name
+    `${richPersona.location.toLowerCase().replace(/\s+/g, '')}${richPersona.name.toLowerCase()}`,
+  ];
+
+  // Randomly select one pattern
+  const password = passwordPatterns[useSeed % passwordPatterns.length];
   const passwordHash = CryptoJS.MD5(password).toString();
 
   // Generate realistic username based on archetype
@@ -481,18 +509,28 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
     coverUrl: generateImageUrl(useSeed + 1, 1500, 500),
   };
 
-  const clues = [
-    `Pet: ${richPersona.pet.name} (${richPersona.pet.type})`,
-    `Pet adoption year: ${richPersona.pet.adoptionYear}`,
-    `Location: ${richPersona.location}`,
+  // Generate clues based on what's actually in the password
+  const birthYear = new Date().getFullYear() - richPersona.age;
+  const allPossibleClues = [
+    { label: `Pet: ${richPersona.pet.name} (${richPersona.pet.type})`, value: richPersona.pet.name.toLowerCase() },
+    { label: `Pet adoption year: ${richPersona.pet.adoptionYear}`, value: String(richPersona.pet.adoptionYear) },
+    { label: `Location: ${richPersona.location}`, value: richPersona.location.toLowerCase().replace(/\s+/g, '') },
+    { label: `Name: ${richPersona.name}`, value: richPersona.name.toLowerCase() },
+    { label: `Birth year: ${birthYear}`, value: String(birthYear) },
+    { label: `Age: ${richPersona.age}`, value: String(richPersona.age) },
   ];
+
+  // Only include clues that are actually in the password
+  const clues = allPossibleClues
+    .filter(clue => password.includes(clue.value))
+    .map(clue => clue.label);
 
   return {
     profile,
     tweets,
     password,
     passwordHash,
-    clues: clues.filter(clue => password.includes(clue.split(': ')[1].toLowerCase())),
+    clues,
     difficulty,
   };
 }
