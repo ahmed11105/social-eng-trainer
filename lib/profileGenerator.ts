@@ -356,6 +356,7 @@ function generateTweets(archetype: PersonaArchetype, data: ProfileData, seed: nu
     retweets: faker.number.int({ min: 5, max: 50 }),
     replies: faker.number.int({ min: 2, max: 30 }),
     media: seed % 3 === 0 ? generateImageUrl(seed + 100, 800, 600) : undefined,
+    containsSensitiveInfo: true, // Contains pet name - password clue!
   });
 
   // Add location tweet (another password clue)
@@ -367,6 +368,7 @@ function generateTweets(archetype: PersonaArchetype, data: ProfileData, seed: nu
     retweets: faker.number.int({ min: 2, max: 20 }),
     replies: faker.number.int({ min: 1, max: 15 }),
     media: seed % 4 === 0 ? generateImageUrl(seed + 200, 800, 600) : undefined,
+    containsSensitiveInfo: true, // Contains city - password clue!
   });
 
   // Generate persona-specific tweets
@@ -404,15 +406,24 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
 
   // Convert to old format for compatibility
   const currentYear = new Date().getFullYear();
-  const tweets: Tweet[] = tweetTexts.map((text, i) => ({
-    id: i + 1,
-    text,
-    date: `${currentYear}-${faker.number.int({ min: 1, max: 12 }).toString().padStart(2, '0')}-${faker.number.int({ min: 1, max: 28 }).toString().padStart(2, '0')}`,
-    likes: faker.number.int({ min: 10, max: 500 }),
-    retweets: faker.number.int({ min: 1, max: 50 }),
-    replies: faker.number.int({ min: 0, max: 30 }),
-    media: (useSeed + i) % 3 === 0 ? generateImageUrl(useSeed + i + 300, 800, 600) : undefined,
-  }));
+  const tweets: Tweet[] = tweetTexts.map((text, i) => {
+    // Check if tweet contains password clues (pet name or adoption year)
+    const lowerText = text.toLowerCase();
+    const containsPetName = lowerText.includes(richPersona.pet.name.toLowerCase());
+    const containsAdoptionYear = lowerText.includes(String(richPersona.pet.adoptionYear));
+    const containsSensitiveInfo = containsPetName || containsAdoptionYear;
+
+    return {
+      id: i + 1,
+      text,
+      date: `${currentYear}-${faker.number.int({ min: 1, max: 12 }).toString().padStart(2, '0')}-${faker.number.int({ min: 1, max: 28 }).toString().padStart(2, '0')}`,
+      likes: faker.number.int({ min: 10, max: 500 }),
+      retweets: faker.number.int({ min: 1, max: 50 }),
+      replies: faker.number.int({ min: 0, max: 30 }),
+      media: (useSeed + i) % 3 === 0 ? generateImageUrl(useSeed + i + 300, 800, 600) : undefined,
+      containsSensitiveInfo, // Mark tweets with password clues
+    };
+  });
 
   // Generate password
   const password = `${richPersona.pet.name.toLowerCase()}${richPersona.pet.adoptionYear}`;

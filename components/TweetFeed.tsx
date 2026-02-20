@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Image, BarChart3, Smile } from 'lucide-react';
 import Tweet from './Tweet';
 import { Tweet as TweetType, Profile } from '@/types';
+import { useGame } from '@/contexts/GameContext';
 
 interface TweetFeedProps {
   initialTweets: TweetType[];
@@ -16,12 +17,19 @@ export default function TweetFeed({ initialTweets, isAuthenticated, onFirstPost,
   const [tweets, setTweets] = useState<TweetType[]>(initialTweets);
   const [newTweetText, setNewTweetText] = useState('');
   const [hasAddedTweet, setHasAddedTweet] = useState(false);
+  const { setAllSensitiveTweetsDeleted } = useGame();
 
   // Update tweets when initialTweets changes (new profile loaded)
   useEffect(() => {
     setTweets(initialTweets);
     setHasAddedTweet(false);
   }, [initialTweets]);
+
+  // Check if all sensitive tweets are deleted
+  useEffect(() => {
+    const sensitiveCount = tweets.filter(t => t.containsSensitiveInfo).length;
+    setAllSensitiveTweetsDeleted(sensitiveCount === 0);
+  }, [tweets, setAllSensitiveTweetsDeleted]);
 
   const addTweet = () => {
     if (!newTweetText.trim()) return;

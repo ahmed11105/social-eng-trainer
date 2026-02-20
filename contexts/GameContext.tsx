@@ -21,6 +21,7 @@ interface GameState {
   stats: GameStats;
   hasPosted: boolean;
   hashCopied: boolean;
+  allSensitiveTweetsDeleted: boolean; // New: tracks if all sensitive tweets are deleted
   profileHistory: GeneratedProfile[];
   currentViewIndex: number;
 }
@@ -31,6 +32,7 @@ interface GameContextType extends GameState {
   updateElapsedTime: (time: number) => void;
   setHasPosted: (posted: boolean) => void;
   setHashCopied: (copied: boolean) => void;
+  setAllSensitiveTweetsDeleted: (deleted: boolean) => void; // New: setter for sensitive tweets
   resetGame: () => void;
   changeDifficulty: (difficulty: Difficulty) => void;
   skipLevel: () => void;
@@ -61,6 +63,7 @@ const INITIAL_STATE: GameState = {
   stats: INITIAL_STATS,
   hasPosted: false,
   hashCopied: false,
+  allSensitiveTweetsDeleted: false, // Initially false
   profileHistory: [],
   currentViewIndex: 0,
 };
@@ -146,6 +149,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         roundCompleted: false,
         hasPosted: false,
         hashCopied: false,
+        allSensitiveTweetsDeleted: false,
         profileHistory: newHistory,
         currentViewIndex: newHistory.length, // View the new profile
       };
@@ -181,6 +185,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       currentProfile: profile,
       hashCopied: false,
       hasPosted: false,
+      allSensitiveTweetsDeleted: false,
       startTime: Date.now(),
       elapsedTime: 0,
       isRunning: true,
@@ -207,6 +212,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setState(prev => ({
       ...prev,
       hashCopied: copied,
+    }));
+  };
+
+  const setAllSensitiveTweetsDeleted = (deleted: boolean) => {
+    setState(prev => ({
+      ...prev,
+      allSensitiveTweetsDeleted: deleted,
     }));
   };
 
@@ -265,6 +277,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     updateElapsedTime,
     setHasPosted,
     setHashCopied,
+    setAllSensitiveTweetsDeleted,
     resetGame,
     changeDifficulty,
     skipLevel,

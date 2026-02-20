@@ -6,6 +6,7 @@ export interface Tweet {
   retweets: number;
   replies?: number;
   media?: string;
+  containsSensitiveInfo?: boolean; // Marks tweets with password clues that should be deleted
 }
 
 export interface Profile {

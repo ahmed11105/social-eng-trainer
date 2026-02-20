@@ -1,15 +1,16 @@
 'use client';
 
-import { Check, Copy, LogIn, MessageSquare, Target, Trophy } from 'lucide-react';
+import { Check, Copy, LogIn, MessageSquare, Target, Trophy, Trash2 } from 'lucide-react';
 
 interface ProgressTrackerProps {
   hashCopied: boolean;
   isLoggedIn: boolean;
   hasPosted: boolean;
+  allSensitiveTweetsDeleted: boolean; // New: track sensitive tweet deletion
   onRoundComplete?: () => void;
 }
 
-export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, onRoundComplete }: ProgressTrackerProps) {
+export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, allSensitiveTweetsDeleted, onRoundComplete }: ProgressTrackerProps) {
   const steps = [
     {
       id: 'hash',
@@ -26,11 +27,11 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, onR
       description: 'Crack the hash and login',
     },
     {
-      id: 'post',
-      label: 'Make a Post',
-      icon: MessageSquare,
-      completed: hasPosted,
-      description: 'Post something to complete',
+      id: 'cleanup',
+      label: 'Delete Sensitive Posts',
+      icon: Trash2,
+      completed: allSensitiveTweetsDeleted,
+      description: 'Remove posts with password clues',
     },
   ];
 

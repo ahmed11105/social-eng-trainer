@@ -13,7 +13,7 @@ interface StatsPanelProps {
 }
 
 export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
-  const { stats, resetGame, skipLevel, hashCopied, hasPosted } = useGame();
+  const { stats, resetGame, skipLevel, hashCopied, hasPosted, allSensitiveTweetsDeleted } = useGame();
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const isLoggedIn = isAuthenticated();
@@ -37,6 +37,7 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         hashCopied={hashCopied}
         isLoggedIn={isLoggedIn}
         hasPosted={hasPosted}
+        allSensitiveTweetsDeleted={allSensitiveTweetsDeleted}
         onRoundComplete={onRoundComplete}
       />
 

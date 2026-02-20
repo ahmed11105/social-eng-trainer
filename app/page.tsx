@@ -28,6 +28,7 @@ export default function Home() {
     stats,
     difficulty,
     hasPosted,
+    allSensitiveTweetsDeleted,
     setHasPosted,
     completeRound,
     startNewRound,
@@ -37,12 +38,12 @@ export default function Home() {
     setIsAuth(isAuthenticated());
   }, []);
 
-  // Check for round completion when user logs in and makes first post
+  // Check for round completion when user logs in and deletes all sensitive tweets
   useEffect(() => {
-    if (isAuth && hasPosted && !roundCompleted) {
+    if (isAuth && allSensitiveTweetsDeleted && !roundCompleted) {
       completeRound();
     }
-  }, [isAuth, hasPosted, roundCompleted, completeRound]);
+  }, [isAuth, allSensitiveTweetsDeleted, roundCompleted, completeRound]);
 
   // Show completion modal when round is completed
   useEffect(() => {
