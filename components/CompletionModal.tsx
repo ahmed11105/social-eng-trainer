@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { X, Trophy, Clock } from 'lucide-react';
 import { playSound } from '@/lib/sounds';
+import { playAudioEffect } from '@/lib/audioEffects';
 
 interface CompletionModalProps {
   timeTaken: number;
@@ -32,10 +33,8 @@ export default function CompletionModal({
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
-    // Play success sound
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTcIE2S57OihUBEJTKXh8bllHAU2jdXvynkoBSp+zPLaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBSl+y/LaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBSl+y/LaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBSl+y/LaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBSl+y/LaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBSl+y/LaizsKGGS56+mjTxELTqfd8LdnHgU7k9n0xnMpBQ==');
-    audio.volume = 0.3;
-    audio.play().catch(() => {}); // Fail silently if autoplay blocked
+    // Play celebration sound using new audio system
+    playAudioEffect('celebration', 0.5);
 
     // Delay showing stats for staggered animation
     setTimeout(() => setShowStats(true), 200);
