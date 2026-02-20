@@ -1,4 +1,5 @@
 // Audio feedback system for game interactions
+import { playAudioEffect } from './audioEffects';
 
 // Global sound settings (will be updated by SoundContext)
 let globalVolume = 0.5;
@@ -71,7 +72,7 @@ export function playSound(
   options?: {
     volume?: number;
     playbackRate?: number;
-    forceNew?: boolean; // Force create new instance instead of reusing
+    forceNew?: boolean;
   }
 ): void {
   if (typeof window === 'undefined') return;
@@ -80,32 +81,26 @@ export function playSound(
   if (globalMuted) return;
 
   try {
-    // Get or create audio instance
-    let audio: HTMLAudioElement;
-
-    if (options?.forceNew || !audioCache.has(type)) {
-      audio = new Audio(sounds[type]);
-      if (!options?.forceNew) {
-        audioCache.set(type, audio);
-      }
-    } else {
-      audio = audioCache.get(type)!;
-      // Reset to start if already playing
-      audio.currentTime = 0;
-    }
-
-    // Configure playback - apply global volume multiplier
+    // Use Web Audio API for rich, satisfying sounds
     const baseVolume = options?.volume ?? volumes[type];
-    audio.volume = baseVolume * globalVolume;
+    const finalVolume = baseVolume * globalVolume;
 
-    if (options?.playbackRate) {
-      audio.playbackRate = options.playbackRate;
+    // Map sound types to audio effects
+    const effectMap: Record<SoundType, Parameters<typeof playAudioEffect>[0]> = {
+      milestone: 'milestone',
+      success: 'success',
+      copy: 'copy',
+      error: 'error',
+      click: 'click',
+      whoosh: 'whoosh',
+      celebration: 'celebration',
+      hover: 'click', // Use subtle click for hover
+    };
+
+    const effect = effectMap[type];
+    if (effect) {
+      playAudioEffect(effect, finalVolume);
     }
-
-    // Play (fail silently if autoplay is blocked)
-    audio.play().catch(() => {
-      // Silently fail - browser may have autoplay restrictions
-    });
   } catch (error) {
     // Fail silently - audio not critical
     console.debug('Audio playback failed:', error);
