@@ -223,6 +223,50 @@ export function playHoverSound(volume: number = 0.2) {
 }
 
 /**
+ * Pitched hover sound - For navigation bars with ascending pitch
+ * Creates a musical scale effect as you hover across buttons
+ */
+export function playPitchedHoverSound(basePitch: number, volume: number = 0.25) {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Single clean tone with gentle attack and quick decay
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(basePitch, now);
+
+  // Quick, gentle envelope
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(volume * 0.4, now + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.2);
+
+  // Add a subtle harmonic for richness
+  const harmonic = ctx.createOscillator();
+  const harmonicGain = ctx.createGain();
+
+  harmonic.type = 'sine';
+  harmonic.frequency.setValueAtTime(basePitch * 2, now); // Octave above
+
+  harmonicGain.gain.setValueAtTime(0, now);
+  harmonicGain.gain.linearRampToValueAtTime(volume * 0.1, now + 0.005);
+  harmonicGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+  harmonic.connect(harmonicGain);
+  harmonicGain.connect(ctx.destination);
+
+  harmonic.start(now);
+  harmonic.stop(now + 0.15);
+}
+
+/**
  * Click sound - satisfying mechanical click (like a quality switch)
  */
 export function playClickSound(volume: number = 0.25) {

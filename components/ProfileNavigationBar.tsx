@@ -1,6 +1,7 @@
 'use client';
 
 import { useGame } from '@/contexts/GameContext';
+import { playPitchedHover, playSound } from '@/lib/sounds';
 
 export default function ProfileNavigationBar() {
   const {
@@ -19,13 +20,30 @@ export default function ProfileNavigationBar() {
 
   const totalRounds = profileHistory.length + 1; // +1 for current profile
 
+  // Calculate pitch range for navigation buttons
+  const LOW_PITCH = 300; // Hz - lowest pitch for first button
+  const HIGH_PITCH = 900; // Hz - highest pitch for last button
+
+  // Calculate total number of buttons (Prev + numbers + Next if applicable)
+  const totalButtons = 1 + totalRounds + (isViewingHistory ? 1 : 0); // Prev + numbers + (Next if viewing history)
+
+  // Helper function to calculate pitch for a button at given index
+  const getPitchForIndex = (index: number): number => {
+    if (totalButtons <= 1) return LOW_PITCH;
+    return LOW_PITCH + (HIGH_PITCH - LOW_PITCH) * (index / (totalButtons - 1));
+  };
+
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
       <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3 shadow-2xl">
         <div className="flex items-center gap-4">
           {/* Previous Button */}
           <button
-            onClick={goToPreviousProfile}
+            onClick={() => {
+              playSound('click');
+              goToPreviousProfile();
+            }}
+            onMouseEnter={() => playPitchedHover(getPitchForIndex(0))}
             disabled={currentViewIndex === 0}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
             title="Previous Profile"
@@ -39,11 +57,16 @@ export default function ProfileNavigationBar() {
             {Array.from({ length: totalRounds }, (_, i) => {
               const isCurrentRound = i === totalRounds - 1;
               const isActive = i === currentViewIndex;
+              const buttonIndex = 1 + i; // Prev is 0, numbers start at 1
 
               return (
                 <button
                   key={i}
-                  onClick={() => goToProfile(i)}
+                  onClick={() => {
+                    playSound('click');
+                    goToProfile(i);
+                  }}
+                  onMouseEnter={() => playPitchedHover(getPitchForIndex(buttonIndex))}
                   className={`
                     w-10 h-10 rounded-full font-bold transition-all
                     ${isActive
@@ -64,7 +87,11 @@ export default function ProfileNavigationBar() {
           {/* Next Button (only show when viewing history) */}
           {isViewingHistory && (
             <button
-              onClick={goToNextProfile}
+              onClick={() => {
+                playSound('click');
+                goToNextProfile();
+              }}
+              onMouseEnter={() => playPitchedHover(getPitchForIndex(totalButtons - 1))}
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all hover:scale-105 active:scale-95"
               title="Next Profile"
               aria-label="Next profile"
