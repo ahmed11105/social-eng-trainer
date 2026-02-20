@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { isAuthenticated } from '@/lib/auth';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Trophy } from 'lucide-react';
 import Timer from './Timer';
 import ConfirmModal from './ConfirmModal';
 import ProgressTracker from './ProgressTracker';
+import AchievementsModal from './AchievementsModal';
 import { playSound } from '@/lib/sounds';
+import { loadAchievements, type Achievement } from '@/lib/achievements';
 
 interface StatsPanelProps {
   onRoundComplete?: () => void;
@@ -26,7 +28,14 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
   } = useGame();
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const isLoggedIn = isAuthenticated();
+
+  // Load achievements
+  useEffect(() => {
+    setAchievements(loadAchievements());
+  }, []);
 
   // If viewing a completed historical round, show all steps as complete
   const isCompletedHistoricalRound = isViewingHistory && viewedProfile && viewedProfile.completionTime !== undefined;
@@ -93,13 +102,28 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
         </ol>
       </div>
 
+      {/* Achievements Button */}
+      <button
+        onClick={() => {
+          playSound('click');
+          setShowAchievements(true);
+        }}
+        className="w-full px-4 py-3 bg-gradient-to-r from-yellow-900/50 to-purple-900/50 hover:from-yellow-900/70 hover:to-purple-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+      >
+        <Trophy className="w-5 h-5" />
+        <span>Achievements</span>
+        <span className="text-xs bg-yellow-500/20 px-2 py-0.5 rounded-full">
+          {achievements.filter(a => a.unlocked).length}/{achievements.length}
+        </span>
+      </button>
+
       {/* Skip Level Button */}
       <button
         onClick={() => {
           playSound('click');
           setShowSkipConfirm(true);
         }}
-        className="w-full px-4 py-2 bg-yellow-900/50 hover:bg-yellow-900/70 text-yellow-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
+        className="w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg font-medium transition-all hover:scale-105 active:scale-95"
       >
         ⏭️ Skip Level
       </button>
@@ -125,6 +149,14 @@ export default function StatsPanel({ onRoundComplete }: StatsPanelProps) {
           <li>• Combine words + numbers</li>
         </ul>
       </div>
+
+      {/* Achievements Modal */}
+      {showAchievements && (
+        <AchievementsModal
+          achievements={achievements}
+          onClose={() => setShowAchievements(false)}
+        />
+      )}
 
       {/* Confirmation Modals */}
       {showSkipConfirm && (

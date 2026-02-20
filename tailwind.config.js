@@ -58,6 +58,30 @@ module.exports = {
             opacity: '0.8',
           },
         },
+        'float-up': {
+          '0%': {
+            transform: 'translateY(0) scale(0)',
+            opacity: '1',
+          },
+          '50%': {
+            transform: 'translateY(-50px) scale(1)',
+            opacity: '1',
+          },
+          '100%': {
+            transform: 'translateY(-100px) scale(0)',
+            opacity: '0',
+          },
+        },
+        'particle-burst': {
+          '0%': {
+            transform: 'translate(0, 0) scale(1)',
+            opacity: '1',
+          },
+          '100%': {
+            transform: 'translate(var(--tx), var(--ty)) scale(0)',
+            opacity: '0',
+          },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.2s ease-out',
@@ -66,6 +90,8 @@ module.exports = {
         'scale-out': 'scale-out 0.2s ease-out',
         'confetti': 'confetti linear infinite',
         'pulse-slow': 'pulse-slow 2s ease-in-out infinite',
+        'float-up': 'float-up 1.5s ease-out forwards',
+        'particle-burst': 'particle-burst 1s ease-out forwards',
       },
     },
   },

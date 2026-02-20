@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { GameProvider } from '@/contexts/GameContext';
+import { SoundProvider } from '@/contexts/SoundContext';
+import SoundSettings from '@/components/SoundSettings';
 
 export const metadata: Metadata = {
   title: 'Social Engineering Training Game',
@@ -15,9 +17,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <GameProvider>
-          {children}
-        </GameProvider>
+        <SoundProvider>
+          <GameProvider>
+            {children}
+            <SoundSettings />
+          </GameProvider>
+        </SoundProvider>
       </body>
     </html>
   );

@@ -1,5 +1,14 @@
 // Audio feedback system for game interactions
 
+// Global sound settings (will be updated by SoundContext)
+let globalVolume = 0.5;
+let globalMuted = false;
+
+export function updateSoundSettings(volume: number, muted: boolean) {
+  globalVolume = volume;
+  globalMuted = muted;
+}
+
 export type SoundType =
   | 'click'
   | 'hover'
@@ -67,6 +76,9 @@ export function playSound(
 ): void {
   if (typeof window === 'undefined') return;
 
+  // Don't play if muted
+  if (globalMuted) return;
+
   try {
     // Get or create audio instance
     let audio: HTMLAudioElement;
@@ -82,8 +94,10 @@ export function playSound(
       audio.currentTime = 0;
     }
 
-    // Configure playback
-    audio.volume = options?.volume ?? volumes[type];
+    // Configure playback - apply global volume multiplier
+    const baseVolume = options?.volume ?? volumes[type];
+    audio.volume = baseVolume * globalVolume;
+
     if (options?.playbackRate) {
       audio.playbackRate = options.playbackRate;
     }

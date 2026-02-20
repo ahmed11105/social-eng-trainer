@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Copy, LogIn, MessageSquare, Target, Trophy, Trash2 } from 'lucide-react';
 import { playSound } from '@/lib/sounds';
+import ParticleEffect from './ParticleEffect';
 
 interface ProgressTrackerProps {
   hashCopied: boolean;
@@ -42,17 +43,27 @@ export default function ProgressTracker({ hashCopied, isLoggedIn, hasPosted, all
 
   // Track previous completed count to detect new completions
   const prevCompletedRef = useRef(0);
+  const [showParticles, setShowParticles] = useState(false);
 
   useEffect(() => {
-    // Play milestone sound when a new step is completed
+    // Play milestone sound and show particles when a new step is completed
     if (completedCount > prevCompletedRef.current && completedCount > 0) {
       playSound('milestone');
+      setShowParticles(true);
     }
     prevCompletedRef.current = completedCount;
   }, [completedCount]);
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800">
+    <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800 relative overflow-hidden">
+      {/* Particle Effect */}
+      <ParticleEffect
+        trigger={showParticles}
+        color="green"
+        count={20}
+        onComplete={() => setShowParticles(false)}
+      />
+
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-lg flex items-center gap-2">
           <Target className="w-5 h-5 text-green-400" />

@@ -56,3 +56,4 @@ screenshots/
 game-analysis.md
 analyze-game-experience.js
 analysis.pid
+*.js
