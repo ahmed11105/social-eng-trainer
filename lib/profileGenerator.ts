@@ -28,6 +28,56 @@ if (typeof window !== 'undefined') {
   }, 60000);
 }
 
+/**
+ * Capitalize first letter of password components
+ * For names/pets/locations, capitalizes first letter of each word
+ */
+function capitalizePassword(password: string): string {
+  // Split on numbers to find word boundaries
+  const parts = password.split(/(\d+)/);
+  return parts.map(part => {
+    if (/^\d+$/.test(part)) return part; // Keep numbers as-is
+    if (part.length === 0) return part;
+    // Capitalize first letter of each word part
+    return part.charAt(0).toUpperCase() + part.slice(1);
+  }).join('');
+}
+
+/**
+ * Apply leetspeak transformations to password
+ * Replaces some letters with numbers/symbols
+ */
+function applyLeetspeak(password: string, seed: number): string {
+  const leetMap: Record<string, string> = {
+    'a': '4',
+    'e': '3',
+    'i': '1',
+    'o': '0',
+    's': '5',
+    't': '7',
+  };
+
+  let result = password;
+  let replacementCount = 0;
+  const maxReplacements = 2 + (seed % 3); // Replace 2-4 characters
+
+  // Randomly replace some characters with leet equivalents
+  for (const [letter, leet] of Object.entries(leetMap)) {
+    if (replacementCount >= maxReplacements) break;
+
+    const regex = new RegExp(letter, 'gi');
+    const matches = password.match(regex);
+
+    if (matches && (seed + replacementCount) % 3 === 0) {
+      // Replace first occurrence
+      result = result.replace(regex, leet);
+      replacementCount++;
+    }
+  }
+
+  return result;
+}
+
 interface ProfileData {
   // Core identity
   firstName: string;
@@ -487,8 +537,45 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
   ];
 
   // Randomly select one pattern
-  const password = passwordPatterns[useSeed % passwordPatterns.length];
-  const passwordHash = CryptoJS.MD5(password).toString();
+  let password = passwordPatterns[useSeed % passwordPatterns.length];
+
+  // Apply difficulty-based transformations
+  if (difficulty === 'medium') {
+    // Capitalize first letter of each word component
+    password = capitalizePassword(password);
+    // Occasionally add separator (20% chance)
+    if (useSeed % 5 === 0) {
+      const separators = ['_', '-'];
+      const sep = separators[useSeed % separators.length];
+      // Add separator in the middle
+      const midPoint = Math.floor(password.length / 2);
+      password = password.slice(0, midPoint) + sep + password.slice(midPoint);
+    }
+  } else if (difficulty === 'hard') {
+    // Capitalize first letter
+    password = capitalizePassword(password);
+    // Apply leetspeak (50% chance)
+    if (useSeed % 2 === 0) {
+      password = applyLeetspeak(password, useSeed);
+    }
+    // Add special character at end (80% chance)
+    if (useSeed % 5 !== 0) {
+      const specialChars = ['!', '@', '#', '$', '*'];
+      password += specialChars[useSeed % specialChars.length];
+    }
+    // Add separator for longer passwords (40% chance)
+    if (useSeed % 5 < 2 && password.length > 12) {
+      const separators = ['_', '-', '.'];
+      const sep = separators[useSeed % separators.length];
+      const midPoint = Math.floor(password.length / 2);
+      password = password.slice(0, midPoint) + sep + password.slice(midPoint);
+    }
+  }
+
+  // Generate hash based on difficulty
+  const passwordHash = difficulty === 'easy'
+    ? CryptoJS.MD5(password).toString()
+    : CryptoJS.SHA256(password).toString();
 
   // Generate realistic username based on archetype
   const generateUsername = () => {

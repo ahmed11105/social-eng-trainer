@@ -10,6 +10,7 @@ interface HowToPlayModalProps {
 export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
   const [isClosing, setIsClosing] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
 
   const handleClose = () => {
     setIsClosing(true);
@@ -36,6 +37,42 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
           </button>
         </div>
 
+        {/* Difficulty Tabs */}
+        <div className="border-b border-gray-700 px-6 pt-4">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setSelectedDifficulty('easy')}
+              className={`px-4 py-2 rounded-t-lg font-semibold transition-all ${
+                selectedDifficulty === 'easy'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              Easy (MD5)
+            </button>
+            <button
+              onClick={() => setSelectedDifficulty('medium')}
+              className={`px-4 py-2 rounded-t-lg font-semibold transition-all ${
+                selectedDifficulty === 'medium'
+                  ? 'bg-yellow-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              Medium (SHA-256)
+            </button>
+            <button
+              onClick={() => setSelectedDifficulty('hard')}
+              className={`px-4 py-2 rounded-t-lg font-semibold transition-all ${
+                selectedDifficulty === 'hard'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              Hard (SHA-256 + Complex)
+            </button>
+          </div>
+        </div>
+
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Goal */}
@@ -43,8 +80,22 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
             <h3 className="text-xl font-semibold text-green-400 mb-2">🎯 The Goal</h3>
             <p className="text-gray-300">
               Learn to perform a <strong>dictionary attack</strong> by gathering OSINT (open source intelligence) from a Twitter profile,
-              building a custom wordlist, and using command-line tools to crack MD5 hashes.
+              building a custom wordlist, and using command-line tools to crack {
+                selectedDifficulty === 'easy' ? 'MD5' :
+                selectedDifficulty === 'medium' ? 'SHA-256' :
+                'SHA-256'
+              } hashes.
             </p>
+            {selectedDifficulty === 'medium' && (
+              <p className="text-yellow-400 text-sm mt-2">
+                <strong>Medium:</strong> Passwords use capitalization (e.g., Fluffy2019). SHA-256 is slower to crack than MD5.
+              </p>
+            )}
+            {selectedDifficulty === 'hard' && (
+              <p className="text-red-400 text-sm mt-2">
+                <strong>Hard:</strong> Passwords use mixed case, special characters (!@#), and leetspeak (3 for e, 4 for a). Requires hashcat rules.
+              </p>
+            )}
           </div>
 
           {/* What You Need */}
@@ -104,7 +155,21 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
                   <p className="text-gray-300"><span className="text-green-400">Bio:</span> Seattle dog mom 🐕 | Coffee enthusiast</p>
                   <p className="text-gray-300"><span className="text-green-400">Tweet 1:</span> "Luna's 4th birthday today! 🎉"</p>
                   <p className="text-gray-300"><span className="text-green-400">Tweet 2:</span> "Adopted this little troublemaker back in 2020. Best decision ever!"</p>
-                  <p className="text-gray-300"><span className="text-green-400">MD5 Hash:</span> <code className="text-yellow-400">b59c67bf196a4758191e42f76670ceba</code></p>
+                  <p className="text-gray-300">
+                    <span className="text-green-400">{selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} Hash:</span>{' '}
+                    <code className="text-yellow-400">
+                      {selectedDifficulty === 'easy' ? 'b59c67bf196a4758191e42f76670ceba' :
+                       selectedDifficulty === 'medium' ? '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92' :
+                       'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'}
+                    </code>
+                  </p>
+                  {selectedDifficulty !== 'easy' && (
+                    <p className="text-sm text-gray-400 mt-2">
+                      <strong>Answer:</strong> {
+                        selectedDifficulty === 'medium' ? 'Luna2020' : 'Luna2020!'
+                      }
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -162,9 +227,13 @@ EOF`}</pre>
               {/* Step 3: Save the Hash */}
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-2">Step 3: Save the Hash 💾</p>
-                <p className="text-gray-400 text-sm mb-2">Copy the MD5 hash to a file:</p>
+                <p className="text-gray-400 text-sm mb-2">Copy the {selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} hash to a file:</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
+echo "{
+  selectedDifficulty === 'easy' ? 'b59c67bf196a4758191e42f76670ceba' :
+  selectedDifficulty === 'medium' ? '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92' :
+  'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
+}" &gt; hash.txt</pre>
               </div>
 
               {/* Step 4: Run Hashcat */}
@@ -178,7 +247,7 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                     <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
                     <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
                     <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 0 hash.txt wordlist.txt`}</pre>
                       <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
                     </div>
                     <div className="mt-2 text-xs text-gray-400">
@@ -191,7 +260,7 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                     <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
                     <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
                     <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 1 hash.txt words.txt numbers.txt`}</pre>
                       <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
                     </div>
                     <div className="mt-2 text-xs text-gray-400">
@@ -201,9 +270,20 @@ echo "b59c67bf196a4758191e42f76670ceba" &gt; hash.txt</pre>
                 </div>
 
                 <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
-                  <p>• <code className="text-green-400">-m 0</code> = MD5 hash type</p>
+                  <p>• <code className="text-green-400">-m {selectedDifficulty === 'easy' ? '0' : '1400'}</code> = {selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} hash type</p>
                   <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
                 </div>
+
+                {selectedDifficulty === 'hard' && (
+                  <div className="mt-3 text-xs bg-red-900/20 border border-red-500/30 p-3 rounded">
+                    <p className="text-red-400 font-semibold mb-2">🔥 Hard Mode Tip:</p>
+                    <p className="text-gray-300 mb-2">Use hashcat rules to generate variations (capitalization, leetspeak, special chars):</p>
+                    <pre className="bg-black/50 p-2 rounded text-green-400 overflow-x-auto">
+hashcat -m 1400 -a 0 hash.txt wordlist.txt -r /usr/share/hashcat/rules/best64.rule
+                    </pre>
+                    <p className="text-gray-400 mt-2">Or create custom rules for capitalization and special chars!</p>
+                  </div>
+                )}
               </div>
 
               {/* Step 5: View Results */}
@@ -242,9 +322,15 @@ hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
 
                 <p className="text-gray-400 text-sm mt-4 mb-2">Result:</p>
                 <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-b59c67bf196a4758191e42f76670ceba:luna2020
+{selectedDifficulty === 'easy' ? 'b59c67bf196a4758191e42f76670ceba:luna2020' :
+ selectedDifficulty === 'medium' ? '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92:Luna2020' :
+ 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3:Luna2020!'}
 Status: Cracked</pre>
-                <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: luna2020</p>
+                <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: {
+                  selectedDifficulty === 'easy' ? 'luna2020' :
+                  selectedDifficulty === 'medium' ? 'Luna2020' :
+                  'Luna2020!'
+                }</p>
                 <p className="text-gray-400 text-xs mt-2">💡 Combinator mode (-a 1) automatically tries all combinations!</p>
               </div>
 
@@ -265,22 +351,55 @@ Status: Cracked</pre>
           <div>
             <h3 className="text-xl font-semibold text-green-400 mb-3">💡 Pro Tips</h3>
             <ul className="text-gray-400 text-sm space-y-2">
-              <li>• <strong>Passwords are always lowercase</strong> - convert everything to lowercase in your wordlist</li>
-              <li>• Read all tweets carefully - years and names are hidden in casual mentions</li>
-              <li>• Common patterns: petname+year, petname+location, firstname+year</li>
-              <li>• Build a robust wordlist with 20-30 guesses for each profile</li>
-              <li>• Use variations: try the year before and after the adoption year</li>
+              {selectedDifficulty === 'easy' && (
+                <>
+                  <li>• <strong>Passwords are always lowercase</strong> - convert everything to lowercase in your wordlist</li>
+                  <li>• Read all tweets carefully - years and names are hidden in casual mentions</li>
+                  <li>• Common patterns: petname+year, petname+location, firstname+year</li>
+                  <li>• Build a robust wordlist with 20-30 guesses for each profile</li>
+                  <li>• Use variations: try the year before and after the adoption year</li>
+                </>
+              )}
+              {selectedDifficulty === 'medium' && (
+                <>
+                  <li>• <strong>Capitalize first letters</strong> - passwords use Title Case (Luna2020, Seattle2019)</li>
+                  <li>• Try variations with separators: Luna_2020, Seattle-2019</li>
+                  <li>• SHA-256 is slower to crack - be patient!</li>
+                  <li>• Use hashcat rules to auto-generate capitalization variants</li>
+                  <li>• Common patterns still apply: PetName+Year, Location+Name</li>
+                </>
+              )}
+              {selectedDifficulty === 'hard' && (
+                <>
+                  <li>• <strong>Expect leetspeak</strong> - e→3, a→4, i→1, o→0, s→5, t→7</li>
+                  <li>• <strong>Special characters</strong> - passwords often end with !, @, #, $, *</li>
+                  <li>• Use hashcat rules file (best64.rule or custom rules) to generate all variations</li>
+                  <li>• Start with base words, let hashcat mutate them with rules</li>
+                  <li>• Example: "luna2020" → hashcat rules → "Lun42020!", "Luna_2020@", etc.</li>
+                </>
+              )}
             </ul>
           </div>
 
           {/* Alternative: Quick Method */}
-          <div className="bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
-            <p className="text-yellow-400 font-semibold mb-2">🚀 Quick Method (Less Learning)</p>
-            <p className="text-gray-400 text-sm">
-              If you don't want to set up Hashcat, you can use online MD5 crackers like crackstation.net,
-              but you'll miss out on learning dictionary attack fundamentals!
-            </p>
-          </div>
+          {selectedDifficulty === 'easy' && (
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
+              <p className="text-yellow-400 font-semibold mb-2">🚀 Quick Method (Less Learning)</p>
+              <p className="text-gray-400 text-sm">
+                If you don't want to set up Hashcat, you can use online MD5 crackers like crackstation.net,
+                but you'll miss out on learning dictionary attack fundamentals!
+              </p>
+            </div>
+          )}
+          {selectedDifficulty !== 'easy' && (
+            <div className="bg-red-900/20 border border-red-500/30 rounded p-4">
+              <p className="text-red-400 font-semibold mb-2">⚠️ {selectedDifficulty === 'medium' ? 'Medium' : 'Hard'} Mode</p>
+              <p className="text-gray-400 text-sm">
+                Online hash crackers won't help much here. You MUST use Hashcat with custom wordlists
+                {selectedDifficulty === 'hard' && ' and rules'}. This is the real challenge!
+              </p>
+            </div>
+          )}
 
           {/* Common Errors */}
           <div className="bg-red-900/20 border border-red-500/30 rounded-lg overflow-hidden">
@@ -319,7 +438,7 @@ Status: Cracked</pre>
                   </p>
                   <div className="bg-black/50 p-3 rounded mb-2">
                     <p className="text-xs text-gray-400 mb-1">Solution: Show the cracked password</p>
-                    <pre className="text-green-400 text-xs overflow-x-auto">hashcat -m 0 hash.txt --show</pre>
+                    <pre className="text-green-400 text-xs overflow-x-auto">hashcat -m {selectedDifficulty === 'easy' ? '0' : '1400'} hash.txt --show</pre>
                   </div>
                   <p className="text-xs text-gray-500">Or clear potfile: <code className="text-green-400">rm ~/.hashcat/hashcat.potfile</code></p>
                 </div>
