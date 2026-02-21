@@ -60,7 +60,7 @@ export default function HashBanner({ hash, difficulty }: HashBannerProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">
-                🎯 Target MD5 Hash
+                🎯 Target {difficulty === 'easy' ? 'MD5' : 'SHA-256'} Hash
               </span>
               <span className={`text-xs px-2 py-0.5 rounded-full ${
                 difficulty === 'easy' ? 'bg-green-500/20 text-green-400' :
@@ -70,7 +70,11 @@ export default function HashBanner({ hash, difficulty }: HashBannerProps) {
                 {difficulty.toUpperCase()}
               </span>
             </div>
-            <code className="text-sm sm:text-base text-green-400 font-mono break-all select-all">
+            <code className={`text-sm sm:text-base font-mono break-all select-all ${
+              difficulty === 'easy' ? 'text-green-400' :
+              difficulty === 'medium' ? 'text-yellow-400' :
+              'text-red-400'
+            }`}>
               {hash}
             </code>
           </div>
