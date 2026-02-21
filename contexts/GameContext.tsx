@@ -356,10 +356,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const changeDifficulty = (difficulty: Difficulty) => {
+    // Update difficulty and generate new profile with that difficulty
+    const profile = generateProfile(difficulty);
+
     setState(prev => ({
       ...prev,
       difficulty,
+      currentProfile: profile,
+      // Reset round state for new profile
+      startTime: Date.now(),
+      elapsedTime: 0,
+      isRunning: true,
+      roundCompleted: false,
+      hasPosted: false,
+      hashCopied: false,
+      allSensitiveTweetsDeleted: false,
+      correctDeletions: 0,
+      incorrectDeletions: 0,
     }));
+
+    // Clear authentication
+    clearAuthSession();
   };
 
   const goToPreviousProfile = () => {
