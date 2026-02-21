@@ -541,34 +541,40 @@ export function generateRealisticProfileWrapper(difficulty: Difficulty = 'easy',
 
   // Apply difficulty-based transformations
   if (difficulty === 'medium') {
-    // Capitalize first letter of each word component
+    // MEDIUM MODE: Always capitalize + always add separator
     password = capitalizePassword(password);
-    // Occasionally add separator (20% chance)
-    if (useSeed % 5 === 0) {
-      const separators = ['_', '-'];
-      const sep = separators[useSeed % separators.length];
-      // Add separator in the middle
+
+    // ALWAYS add separator (100% chance) - this distinguishes from Easy
+    const separators = ['_', '-'];
+    const sep = separators[useSeed % separators.length];
+
+    // For longer passwords, add in middle; for short ones, add between components
+    if (password.length > 10) {
       const midPoint = Math.floor(password.length / 2);
       password = password.slice(0, midPoint) + sep + password.slice(midPoint);
+    } else {
+      // For shorter passwords, add at 60% position
+      const splitPoint = Math.floor(password.length * 0.6);
+      password = password.slice(0, splitPoint) + sep + password.slice(splitPoint);
     }
   } else if (difficulty === 'hard') {
-    // Capitalize first letter
+    // HARD MODE: Always capitalize + always special char + always (leetspeak OR separator)
     password = capitalizePassword(password);
-    // Apply leetspeak (50% chance)
+
+    // ALWAYS add special character at end (100% chance)
+    const specialChars = ['!', '@', '#', '$', '*'];
+    password += specialChars[useSeed % specialChars.length];
+
+    // ALWAYS apply either leetspeak OR separator (at least one complexity feature)
     if (useSeed % 2 === 0) {
+      // Apply leetspeak
       password = applyLeetspeak(password, useSeed);
-    }
-    // Add special character at end (80% chance)
-    if (useSeed % 5 !== 0) {
-      const specialChars = ['!', '@', '#', '$', '*'];
-      password += specialChars[useSeed % specialChars.length];
-    }
-    // Add separator for longer passwords (40% chance)
-    if (useSeed % 5 < 2 && password.length > 12) {
+    } else {
+      // Add separator instead
       const separators = ['_', '-', '.'];
       const sep = separators[useSeed % separators.length];
-      const midPoint = Math.floor(password.length / 2);
-      password = password.slice(0, midPoint) + sep + password.slice(midPoint);
+      const splitPoint = Math.floor((password.length - 1) / 2); // -1 to account for special char at end
+      password = password.slice(0, splitPoint) + sep + password.slice(splitPoint);
     }
   }
 
