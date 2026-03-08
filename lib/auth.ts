@@ -1,6 +1,9 @@
 import CryptoJS from 'crypto-js';
 
-export function hashPassword(password: string): string {
+export function hashPassword(password: string, algorithm: 'md5' | 'sha256' = 'md5'): string {
+  if (algorithm === 'sha256') {
+    return CryptoJS.SHA256(password).toString();
+  }
   return CryptoJS.MD5(password).toString();
 }
 
@@ -10,10 +13,12 @@ export function validateCredentials(
   targetUsername: string,
   targetPasswordHash: string
 ): boolean {
-  const passwordHash = hashPassword(password);
+  // Try MD5 first (easy), then SHA256 (medium/hard)
+  const md5Hash = CryptoJS.MD5(password).toString();
+  const sha256Hash = CryptoJS.SHA256(password).toString();
   return (
     username === targetUsername &&
-    passwordHash === targetPasswordHash
+    (md5Hash === targetPasswordHash || sha256Hash === targetPasswordHash)
   );
 }
 

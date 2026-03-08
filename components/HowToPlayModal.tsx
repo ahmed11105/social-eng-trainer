@@ -80,16 +80,34 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
             <h3 className="text-xl font-semibold text-green-400 mb-2">🎯 The Goal</h3>
             <p className="text-gray-300">
               Learn to perform a <strong>dictionary attack</strong> by gathering OSINT (open source intelligence) from a Twitter profile,
-              building a custom wordlist, and using command-line tools to crack {
+              building a custom wordlist, and using {
+                selectedDifficulty === 'medium' ? 'a Python script' : 'command-line tools'
+              } to crack {
                 selectedDifficulty === 'easy' ? 'MD5' :
                 selectedDifficulty === 'medium' ? 'SHA-256' :
                 'SHA-256'
               } hashes.
             </p>
             {selectedDifficulty === 'medium' && (
-              <p className="text-yellow-400 text-sm mt-2">
-                <strong>Medium:</strong> Passwords use capitalization (e.g., Fluffy2019). SHA-256 is slower to crack than MD5.
-              </p>
+              <div className="text-yellow-400 text-sm mt-2 space-y-1">
+                <p>
+                  <strong>Medium:</strong> Passwords combine two parts (words, names, or years) with two transformations:
+                </p>
+                <p>
+                  <strong>1. Capitalization</strong> — the first letter of each word part is uppercase. Numbers stay as-is.
+                  E.g. <code>luna2020</code> → <code>Luna2020</code>, <code>2020luna</code> → <code>2020Luna</code>
+                </p>
+                <p>
+                  <strong>2. Separator</strong> — a <code>_</code> or <code>-</code> is inserted near the middle of the <em>entire</em> string,
+                  NOT between the two words. This means it often lands in unexpected spots:
+                </p>
+                <ul className="ml-4 space-y-0.5 text-yellow-300">
+                  <li>• <code>Brian26</code> → <code>Bria_n26</code></li>
+                  <li>• <code>Lunaseattle</code> → <code>Lunas-eattle</code></li>
+                  <li>• <code>20Luna</code> → <code>20L_una</code></li>
+                </ul>
+                <p>This requires a Python script that tries every possible separator position.</p>
+              </div>
             )}
             {selectedDifficulty === 'hard' && (
               <p className="text-red-400 text-sm mt-2">
@@ -105,40 +123,58 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               <div>
                 <p className="text-gray-300 font-medium">Required Tools:</p>
                 <ul className="text-gray-400 text-sm ml-4 mt-2 space-y-1">
-                  <li>• <strong className="text-green-400">Hashcat</strong> (password cracking tool)</li>
-                  <li>• A terminal or command prompt</li>
-                  <li>• A text editor to create wordlists</li>
+                  {selectedDifficulty === 'medium' ? (
+                    <>
+                      <li>• <strong className="text-yellow-400">Python 3</strong> (for the cracking script)</li>
+                      <li>• A terminal or command prompt</li>
+                      <li>• A text editor to create your words file</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>• <strong className="text-green-400">Hashcat</strong> (password cracking tool)</li>
+                      <li>• A terminal or command prompt</li>
+                      <li>• A text editor to create wordlists</li>
+                    </>
+                  )}
                 </ul>
               </div>
 
               {/* Installation - Side by Side */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {/* macOS/Linux Installation */}
+              {selectedDifficulty === 'medium' ? (
                 <div className="bg-gray-900 p-3 rounded">
-                  <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                    </svg>
-                    macOS /
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.835-.41 1.6-.41 2.311 0 1.279.678 2.362 1.697 3.005.675.427 1.525.687 2.452.687.181 0 .359-.01.536-.03.722-.082 1.364-.472 1.944-.902.58-.43 1.127-.902 1.697-.902.57 0 1.117.472 1.697.902.58.43 1.222.82 1.944.902.177.02.355.03.536.03.927 0 1.777-.26 2.452-.687 1.019-.643 1.697-1.726 1.697-3.005 0-.711-.132-1.476-.41-2.311-.589-1.771-1.831-3.47-2.716-4.521-.75-1.067-.974-1.928-1.05-3.02-.065-1.491 1.056-5.965-3.17-6.298-.165-.013-.325-.021-.48-.021zm-.134 2.938c1.71 0 2.597 1.522 2.597 3.063 0 1.541-.887 3.063-2.597 3.063s-2.597-1.522-2.597-3.063c0-1.541.887-3.063 2.597-3.063z"/>
-                    </svg>
-                    Linux
-                  </p>
-                  <pre className="text-green-400 text-xs overflow-x-auto">brew install hashcat</pre>
+                  <p className="text-gray-400 text-sm font-medium mb-2">Python 3 (usually pre-installed on macOS/Linux)</p>
+                  <p className="text-gray-400 text-xs">Check with: <code className="text-green-400">python3 --version</code></p>
+                  <p className="text-gray-400 text-xs mt-1">Windows: Download from <a href="https://python.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">python.org</a></p>
                 </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* macOS/Linux Installation */}
+                  <div className="bg-gray-900 p-3 rounded">
+                    <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                      </svg>
+                      macOS /
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.835-.41 1.6-.41 2.311 0 1.279.678 2.362 1.697 3.005.675.427 1.525.687 2.452.687.181 0 .359-.01.536-.03.722-.082 1.364-.472 1.944-.902.58-.43 1.127-.902 1.697-.902.57 0 1.117.472 1.697.902.58.43 1.222.82 1.944.902.177.02.355.03.536.03.927 0 1.777-.26 2.452-.687 1.019-.643 1.697-1.726 1.697-3.005 0-.711-.132-1.476-.41-2.311-.589-1.771-1.831-3.47-2.716-4.521-.75-1.067-.974-1.928-1.05-3.02-.065-1.491 1.056-5.965-3.17-6.298-.165-.013-.325-.021-.48-.021zm-.134 2.938c1.71 0 2.597 1.522 2.597 3.063 0 1.541-.887 3.063-2.597 3.063s-2.597-1.522-2.597-3.063c0-1.541.887-3.063 2.597-3.063z"/>
+                      </svg>
+                      Linux
+                    </p>
+                    <pre className="text-green-400 text-xs overflow-x-auto">brew install hashcat</pre>
+                  </div>
 
-                {/* Windows Installation */}
-                <div className="bg-gray-900 p-3 rounded">
-                  <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
-                    </svg>
-                    Windows
-                  </p>
-                  <p className="text-gray-400 text-xs">Download from <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">hashcat.net/hashcat</a></p>
+                  {/* Windows Installation */}
+                  <div className="bg-gray-900 p-3 rounded">
+                    <p className="text-gray-400 text-sm font-medium mb-2 flex items-center gap-2">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                      </svg>
+                      Windows
+                    </p>
+                    <p className="text-gray-400 text-xs">Download from <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">hashcat.net/hashcat</a></p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -166,7 +202,7 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
                   {selectedDifficulty !== 'easy' && (
                     <p className="text-sm text-gray-400 mt-2">
                       <strong>Answer:</strong> {
-                        selectedDifficulty === 'medium' ? 'Luna2020' : 'Luna2020!'
+                        selectedDifficulty === 'medium' ? 'Luna_2020' : 'Luna2020!'
                       }
                     </p>
                   )}
@@ -188,13 +224,40 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-3">Step 2: Create wordlist.txt 📝</p>
 
-                {/* Side by side options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Option A */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Guesses</p>
-                    <p className="text-gray-400 text-xs mb-2">Make manual password guesses for hashcat to try</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > wordlist.txt << EOF
+                {selectedDifficulty === 'medium' ? (
+                  <>
+                    <p className="text-gray-400 text-sm mb-3">
+                      Write down all the clue words you found. Include names, pet names, locations, <strong className="text-yellow-400">and years</strong> (both
+                      full like 2020 and short like 20). You'll feed these into a Python script.
+                    </p>
+                    <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                      <p className="text-yellow-400 text-sm font-semibold mb-1">Create a words file</p>
+                      <p className="text-gray-400 text-xs mb-2">One entry per line — words AND numbers. Include both full and short years.</p>
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt << EOF
+luna
+seattle
+sarah
+2020
+20
+2019
+19
+1995
+95
+EOF`}</pre>
+                    </div>
+                    <p className="text-gray-500 text-xs mt-2">
+                      Passwords can be word+word, word+year, or year+word — the script tries all combinations.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    {/* Side by side options */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Option A */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Guesses</p>
+                        <p className="text-gray-400 text-xs mb-2">Make manual password guesses for hashcat to try</p>
+                        <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > wordlist.txt << EOF
 luna2019
 luna2021
 luna2022
@@ -203,13 +266,13 @@ seattle2021
 lunaseattle
 seattleluna
 EOF`}</pre>
-                  </div>
+                      </div>
 
-                  {/* Option B */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Combine</p>
-                    <p className="text-gray-400 text-xs mb-2">Hashcat combines all words with all numbers</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt << EOF
+                      {/* Option B */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Combine</p>
+                        <p className="text-gray-400 text-xs mb-2">Hashcat combines all words with all numbers</p>
+                        <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt << EOF
 luna
 seattle
 EOF
@@ -220,8 +283,10 @@ cat > numbers.txt << EOF
 2021
 2022
 EOF`}</pre>
-                  </div>
-                </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Step 3: Save the Hash */}
@@ -236,102 +301,178 @@ echo "{
 }" &gt; hash.txt</pre>
               </div>
 
-              {/* Step 4: Run Hashcat */}
+              {/* Step 4: Crack the Hash */}
               <div className="border-l-4 border-green-500 pl-4">
-                <p className="text-white font-semibold mb-3">Step 4: Run Hashcat ⚡</p>
-
-                {/* Side by side options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Option A */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
-                    <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
-                    <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 0 hash.txt wordlist.txt`}</pre>
-                      <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
+                {selectedDifficulty === 'medium' ? (
+                  <>
+                    <p className="text-white font-semibold mb-3">Step 4: Run the Python Cracker 🐍</p>
+                    <div className="bg-yellow-900/20 border border-yellow-500/30 p-3 rounded mb-3">
+                      <p className="text-yellow-400 text-sm font-semibold mb-1">Why Python instead of Hashcat?</p>
+                      <p className="text-gray-400 text-xs">
+                        Medium passwords have a separator (<code className="text-yellow-400">_</code> or <code className="text-yellow-400">-</code>) inserted
+                        near the <strong>middle of the entire string</strong> — not between the two parts. This means it often lands in unexpected spots,
+                        like <code className="text-yellow-400">Bria_n26</code> or <code className="text-yellow-400">Lunas-eattle</code> or <code className="text-yellow-400">20L_una</code>.
+                        Hashcat can't try every possible insertion point, so a short Python script brute-forces all positions.
+                      </p>
                     </div>
-                    <div className="mt-2 text-xs text-gray-400">
-                      <p>• <code className="text-green-400">-a 0</code> = Dictionary mode</p>
-                    </div>
-                  </div>
 
-                  {/* Option B */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
-                    <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
-                    <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 1 hash.txt words.txt numbers.txt`}</pre>
-                      <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
-                    </div>
-                    <div className="mt-2 text-xs text-gray-400">
-                      <p>• <code className="text-green-400">-a 1</code> = Combinator mode</p>
-                    </div>
-                  </div>
-                </div>
+                    <p className="text-gray-400 text-sm mb-2">Save this as <code className="text-yellow-400">crack.py</code>:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`import hashlib, sys, re
 
-                <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
-                  <p>• <code className="text-green-400">-m {selectedDifficulty === 'easy' ? '0' : '1400'}</code> = {selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} hash type</p>
-                  <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
-                </div>
+# Load your target hash
+target = open("hash.txt").read().strip()
 
-                {selectedDifficulty === 'hard' && (
-                  <div className="mt-3 text-xs bg-red-900/20 border border-red-500/30 p-3 rounded">
-                    <p className="text-red-400 font-semibold mb-2">🔥 Hard Mode Tip:</p>
-                    <p className="text-gray-300 mb-2">Use hashcat rules to generate variations (capitalization, leetspeak, special chars):</p>
-                    <pre className="bg-black/50 p-2 rounded text-green-400 overflow-x-auto">
+# Load clue words (names, pets, locations, years)
+words = open("words.txt").read().strip().split("\\n")
+
+def capitalize(pw):
+    # Split on numbers, capitalize first letter of each word part
+    # e.g. "luna2020" -> "Luna2020", "2020luna" -> "2020Luna"
+    parts = re.split(r'(\\d+)', pw)
+    result = ""
+    for part in parts:
+        if part.isdigit() or len(part) == 0:
+            result += part
+        else:
+            result += part[0].upper() + part[1:]
+    return result
+
+# Build all two-part combinations
+bases = []
+for a in words:
+    for b in words:
+        if a != b:
+            bases.append(a.lower() + b.lower())
+
+# Try each base with capitalization + separator
+for base in bases:
+    cap = capitalize(base)
+    for sep in ["_", "-"]:
+        for i in range(1, len(cap)):
+            candidate = cap[:i] + sep + cap[i:]
+            h = hashlib.sha256(candidate.encode()).hexdigest()
+            if h == target:
+                print(f"CRACKED: {candidate}")
+                sys.exit(0)
+
+print("Not cracked - add more words to words.txt")`}</pre>
+
+                    <p className="text-gray-400 text-sm mt-3 mb-2">Run it:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">python3 crack.py</pre>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-white font-semibold mb-3">Step 4: Run Hashcat ⚡</p>
+
+                    {/* Side by side options */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Option A */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
+                        <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
+                        <div className="relative">
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 0 hash.txt wordlist.txt`}</pre>
+                          <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
+                        </div>
+                        <div className="mt-2 text-xs text-gray-400">
+                          <p>• <code className="text-green-400">-a 0</code> = Dictionary mode</p>
+                        </div>
+                      </div>
+
+                      {/* Option B */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
+                        <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
+                        <div className="relative">
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 1 hash.txt words.txt numbers.txt`}</pre>
+                          <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
+                        </div>
+                        <div className="mt-2 text-xs text-gray-400">
+                          <p>• <code className="text-green-400">-a 1</code> = Combinator mode</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
+                      <p>• <code className="text-green-400">-m {selectedDifficulty === 'easy' ? '0' : '1400'}</code> = {selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} hash type</p>
+                      <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
+                    </div>
+
+                    {selectedDifficulty === 'hard' && (
+                      <div className="mt-3 text-xs bg-red-900/20 border border-red-500/30 p-3 rounded">
+                        <p className="text-red-400 font-semibold mb-2">🔥 Hard Mode Tip:</p>
+                        <p className="text-gray-300 mb-2">Use hashcat rules to generate variations (capitalization, leetspeak, special chars):</p>
+                        <pre className="bg-black/50 p-2 rounded text-green-400 overflow-x-auto">
 hashcat -m 1400 -a 0 hash.txt wordlist.txt -r /usr/share/hashcat/rules/best64.rule
-                    </pre>
-                    <p className="text-gray-400 mt-2">Or create custom rules for capitalization and special chars!</p>
-                  </div>
+                        </pre>
+                        <p className="text-gray-400 mt-2">Or create custom rules for capitalization and special chars!</p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
               {/* Step 5: View Results */}
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-2">Step 5: Check Results & Iterate 🔄</p>
-                <p className="text-gray-400 text-sm mb-2">First attempt - no match found:</p>
-                <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
+
+                {selectedDifficulty === 'medium' ? (
+                  <>
+                    <p className="text-gray-400 text-sm mb-2">If no match is found:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
+Not cracked. Try adding more words to words.txt</pre>
+                    <p className="text-gray-400 text-sm mt-3 mb-2">
+                      Go back and re-read the tweets. Did you miss a pet name, city, or year? Add it to <code className="text-yellow-400">words.txt</code> and run again.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-3 mb-2">When it works:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+CRACKED: Lunase_attle</pre>
+                    <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found! Copy it exactly as shown — capitalization and separator position matter.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-400 text-sm mb-2">First attempt - no match found:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
 Exhausted
 Status: Not cracked</pre>
-                <p className="text-gray-400 text-sm mt-3 mb-3"><em>Think again! Adoption year was 2020.</em></p>
+                    <p className="text-gray-400 text-sm mt-3 mb-3"><em>Think again! Adoption year was 2020.</em></p>
 
-                {/* Side by side options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Option A */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Fix</p>
-                    <p className="text-gray-400 text-xs mb-2">Add the missing combination</p>
-                    <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "luna2020" >> wordlist.txt
+                    {/* Side by side options */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Option A */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option A: Manual Fix</p>
+                        <p className="text-gray-400 text-xs mb-2">Add the missing combination</p>
+                        <div className="relative">
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "luna2020" >> wordlist.txt
 hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
-                      <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
-                    </div>
-                  </div>
+                          <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
+                        </div>
+                      </div>
 
-                  {/* Option B */}
-                  <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                    <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Fix</p>
-                    <p className="text-gray-400 text-xs mb-2">Add 2020 to auto-combine</p>
-                    <div className="relative">
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "2020" >> numbers.txt
+                      {/* Option B */}
+                      <div className="bg-gray-900 p-3 rounded border border-gray-700">
+                        <p className="text-green-400 text-sm font-semibold mb-1">Option B: Auto-Fix</p>
+                        <p className="text-gray-400 text-xs mb-2">Add 2020 to auto-combine</p>
+                        <div className="relative">
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`echo "2020" >> numbers.txt
 hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
-                      <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
+                          <div className="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-black/70 to-transparent pointer-events-none rounded-r"></div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <p className="text-gray-400 text-sm mt-4 mb-2">Result:</p>
-                <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
+                    <p className="text-gray-400 text-sm mt-4 mb-2">Result:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
 {selectedDifficulty === 'easy' ? 'b59c67bf196a4758191e42f76670ceba:luna2020' :
- selectedDifficulty === 'medium' ? '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92:Luna2020' :
  'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3:Luna2020!'}
 Status: Cracked</pre>
-                <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: {
-                  selectedDifficulty === 'easy' ? 'luna2020' :
-                  selectedDifficulty === 'medium' ? 'Luna2020' :
-                  'Luna2020!'
-                }</p>
-                <p className="text-gray-400 text-xs mt-2">💡 Combinator mode (-a 1) automatically tries all combinations!</p>
+                    <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found: {
+                      selectedDifficulty === 'easy' ? 'luna2020' : 'Luna2020!'
+                    }</p>
+                    <p className="text-gray-400 text-xs mt-2">💡 Combinator mode (-a 1) automatically tries all combinations!</p>
+                  </>
+                )}
               </div>
 
               {/* Step 6: Login */}
@@ -340,7 +481,11 @@ Status: Cracked</pre>
                 <ul className="text-gray-400 text-sm space-y-1">
                   <li>• Click the <strong className="text-green-400">Login</strong> button</li>
                   <li>• Username: <code className="text-green-400">sarah_jones</code> (no @)</li>
-                  <li>• Password: <code className="text-green-400">luna2020</code></li>
+                  <li>• Password: <code className="text-green-400">{
+                    selectedDifficulty === 'easy' ? 'luna2020' :
+                    selectedDifficulty === 'medium' ? 'Luna_2020' :
+                    'Luna2020!'
+                  }</code>{selectedDifficulty === 'medium' && ' — copy exactly what the script outputs, separator and all!'}</li>
                   <li>• Make a post to complete the round!</li>
                 </ul>
               </div>
@@ -362,11 +507,14 @@ Status: Cracked</pre>
               )}
               {selectedDifficulty === 'medium' && (
                 <>
-                  <li>• <strong>Capitalize first letters</strong> - passwords use Title Case (Luna2020, Seattle2019)</li>
-                  <li>• Try variations with separators: Luna_2020, Seattle-2019</li>
-                  <li>• SHA-256 is slower to crack - be patient!</li>
-                  <li>• Use hashcat rules to auto-generate capitalization variants</li>
-                  <li>• Common patterns still apply: PetName+Year, Location+Name</li>
+                  <li>• <strong>Capitalization:</strong> First letter of each word part is uppercase. Numbers stay as-is.
+                    E.g. <code>luna2020</code> → <code>Luna2020</code>, <code>2020luna</code> → <code>2020Luna</code></li>
+                  <li>• <strong>Separator lands in odd spots!</strong> A <code>_</code> or <code>-</code> is inserted near the middle of the <em>whole</em> string — not between the two parts.
+                    E.g. <code>Bria_n26</code>, <code>Lunas-eattle</code>, <code>20L_una</code></li>
+                  <li>• <strong>Include years in your words file</strong> — both full (2020) and short (20). Passwords can be word+year, year+word, or word+word</li>
+                  <li>• <strong>The Python script handles this</strong> — it tries every separator position at every spot in the string automatically</li>
+                  <li>• <strong>Don't guess manually</strong> — the separator position looks random, so let the script do the work. Just give it good clue words</li>
+                  <li>• Common base patterns: petname+year, petname+location, name+petname, year+location, location+name</li>
                 </>
               )}
               {selectedDifficulty === 'hard' && (
@@ -391,12 +539,22 @@ Status: Cracked</pre>
               </p>
             </div>
           )}
-          {selectedDifficulty !== 'easy' && (
+          {selectedDifficulty === 'medium' && (
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded p-4">
+              <p className="text-yellow-400 font-semibold mb-2">🐍 Python Required</p>
+              <p className="text-gray-400 text-sm">
+                Online hash crackers and basic hashcat won't work for medium — the random separator position makes it impossible
+                to guess manually. The Python script above handles this by trying every position automatically.
+                You just need to give it good clue words from the profile.
+              </p>
+            </div>
+          )}
+          {selectedDifficulty === 'hard' && (
             <div className="bg-red-900/20 border border-red-500/30 rounded p-4">
-              <p className="text-red-400 font-semibold mb-2">⚠️ {selectedDifficulty === 'medium' ? 'Medium' : 'Hard'} Mode</p>
+              <p className="text-red-400 font-semibold mb-2">⚠️ Hard Mode</p>
               <p className="text-gray-400 text-sm">
                 Online hash crackers won't help much here. You MUST use Hashcat with custom wordlists
-                {selectedDifficulty === 'hard' && ' and rules'}. This is the real challenge!
+                and rules. This is the real challenge!
               </p>
             </div>
           )}
