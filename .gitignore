@@ -42,6 +42,7 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.playwright-mcp/
 
 # test scripts
 test-realistic-system.js
