@@ -81,7 +81,7 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
             <p className="text-gray-300">
               Learn to perform a <strong>dictionary attack</strong> by gathering OSINT (open source intelligence) from a Twitter profile,
               building a custom wordlist, and using {
-                selectedDifficulty === 'medium' ? 'a Python script' : 'command-line tools'
+                selectedDifficulty === 'easy' ? 'command-line tools' : 'a Python script'
               } to crack {
                 selectedDifficulty === 'easy' ? 'MD5' :
                 selectedDifficulty === 'medium' ? 'SHA-256' :
@@ -110,9 +110,28 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               </div>
             )}
             {selectedDifficulty === 'hard' && (
-              <p className="text-red-400 text-sm mt-2">
-                <strong>Hard:</strong> Passwords use mixed case, special characters (!@#), and leetspeak (3 for e, 4 for a). Requires hashcat rules.
-              </p>
+              <div className="text-red-400 text-sm mt-2 space-y-1">
+                <p>
+                  <strong>Hard:</strong> Passwords combine two parts with three transformations:
+                </p>
+                <p>
+                  <strong>1. Capitalization</strong> — same as medium. E.g. <code>luna2020</code> → <code>Luna2020</code>
+                </p>
+                <p>
+                  <strong>2. Special character</strong> — always appended at the end: <code>!</code> <code>@</code> <code>#</code> <code>$</code> <code>*</code>
+                </p>
+                <p>
+                  <strong>3. EITHER leetspeak OR separator:</strong>
+                </p>
+                <ul className="ml-4 space-y-0.5 text-red-300">
+                  <li>• Leetspeak: <code>a→4</code> <code>e→3</code> <code>i→1</code> <code>o→0</code> <code>s→5</code> <code>t→7</code> (some letters replaced)</li>
+                  <li>• OR separator (<code>_</code> <code>-</code> <code>.</code>) inserted near the middle, like medium</li>
+                </ul>
+                <p className="text-red-300 mt-1">
+                  Example: <code>luna2020</code> → <code>Lun42020!</code> (leetspeak) or <code>Luna.2020$</code> (separator).
+                  Some clues are hidden — you may need to estimate values like birth year.
+                </p>
+              </div>
             )}
           </div>
 
@@ -123,24 +142,24 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               <div>
                 <p className="text-gray-300 font-medium">Required Tools:</p>
                 <ul className="text-gray-400 text-sm ml-4 mt-2 space-y-1">
-                  {selectedDifficulty === 'medium' ? (
-                    <>
-                      <li>• <strong className="text-yellow-400">Python 3</strong> (for the cracking script)</li>
-                      <li>• A terminal or command prompt</li>
-                      <li>• A text editor to create your words file</li>
-                    </>
-                  ) : (
+                  {selectedDifficulty === 'easy' ? (
                     <>
                       <li>• <strong className="text-green-400">Hashcat</strong> (password cracking tool)</li>
                       <li>• A terminal or command prompt</li>
                       <li>• A text editor to create wordlists</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>• <strong className={selectedDifficulty === 'medium' ? 'text-yellow-400' : 'text-red-400'}>Python 3</strong> (for the cracking script)</li>
+                      <li>• A terminal or command prompt</li>
+                      <li>• A text editor to create your words file</li>
                     </>
                   )}
                 </ul>
               </div>
 
               {/* Installation - Side by Side */}
-              {selectedDifficulty === 'medium' ? (
+              {selectedDifficulty === 'medium' || selectedDifficulty === 'hard' ? (
                 <div className="bg-gray-900 p-3 rounded">
                   <p className="text-gray-400 text-sm font-medium mb-2">Python 3 (usually pre-installed on macOS/Linux)</p>
                   <p className="text-gray-400 text-xs">Check with: <code className="text-green-400">python3 --version</code></p>
@@ -224,16 +243,26 @@ export default function HowToPlayModal({ onClose }: HowToPlayModalProps) {
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-3">Step 2: Create wordlist.txt 📝</p>
 
-                {selectedDifficulty === 'medium' ? (
+                {selectedDifficulty === 'medium' || selectedDifficulty === 'hard' ? (
                   <>
                     <p className="text-gray-400 text-sm mb-3">
-                      Write down all the clue words you found. Include names, pet names, locations, <strong className="text-yellow-400">and years</strong> (both
+                      Write down all the clue words you found. Include names, pet names, locations, <strong className={selectedDifficulty === 'medium' ? 'text-yellow-400' : 'text-red-400'}>and years</strong> (both
                       full like 2020 and short like 20). You'll feed these into a Python script.
                     </p>
+                    {selectedDifficulty === 'hard' && (
+                      <div className="bg-red-900/20 border border-red-500/30 p-3 rounded mb-3">
+                        <p className="text-red-400 text-sm font-semibold mb-1">Hard mode hides some clues!</p>
+                        <p className="text-gray-400 text-xs">
+                          Birth year is often used in passwords but never mentioned in tweets. Estimate the person's age
+                          from context (job, kids, lifestyle) and add a range of birth years. E.g. a working parent might
+                          be 28-45, so add years 1981-1998 (both full and short).
+                        </p>
+                      </div>
+                    )}
                     <div className="bg-gray-900 p-3 rounded border border-gray-700">
-                      <p className="text-yellow-400 text-sm font-semibold mb-1">Create a words file</p>
+                      <p className={`${selectedDifficulty === 'medium' ? 'text-yellow-400' : 'text-red-400'} text-sm font-semibold mb-1`}>Create a words file</p>
                       <p className="text-gray-400 text-xs mb-2">One entry per line — words AND numbers. Include both full and short years.</p>
-                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{`cat > words.txt << EOF
+                      <pre className="bg-black/50 p-2 rounded text-green-400 text-xs whitespace-pre-wrap break-words">{selectedDifficulty === 'medium' ? `cat > words.txt << EOF
 luna
 seattle
 sarah
@@ -243,10 +272,25 @@ sarah
 19
 1995
 95
+EOF` : `cat > words.txt << EOF
+luna
+seattle
+sarah
+2020
+20
+2019
+19
+1988
+88
+1989
+89
+1990
+90
 EOF`}</pre>
                     </div>
                     <p className="text-gray-500 text-xs mt-2">
                       Passwords can be word+word, word+year, or year+word — the script tries all combinations.
+                      {selectedDifficulty === 'hard' && ' Add extra birth year estimates since they won\'t appear in tweets.'}
                     </p>
                   </>
                 ) : (
@@ -360,6 +404,69 @@ print("Not cracked - add more words to words.txt")`}</pre>
                     <p className="text-gray-400 text-sm mt-3 mb-2">Run it:</p>
                     <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">python3 crack.py</pre>
                   </>
+                ) : selectedDifficulty === 'hard' ? (
+                  <>
+                    <p className="text-white font-semibold mb-3">Step 4: Run the Python Cracker 🐍</p>
+                    <div className="bg-red-900/20 border border-red-500/30 p-3 rounded mb-3">
+                      <p className="text-red-400 text-sm font-semibold mb-1">Why Python?</p>
+                      <p className="text-gray-400 text-xs">
+                        Hard passwords have capitalization + a special character at the end + <strong>either</strong> leetspeak
+                        (a→4, e→3, i→1, o→0, s→5, t→7) <strong>or</strong> a separator (<code className="text-red-400">_</code> <code className="text-red-400">-</code> <code className="text-red-400">.</code>)
+                        inserted near the middle. A Python script can try all these variations systematically.
+                      </p>
+                    </div>
+
+                    <p className="text-gray-400 text-sm mb-2">Save this as <code className="text-red-400">crack.py</code>:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto whitespace-pre">{`import hashlib, sys, re
+from itertools import product
+
+target = open("hash.txt").read().strip()
+words = open("words.txt").read().strip().split("\\n")
+
+# Leetspeak: a->4, e->3, i->1, o->0, s->5, t->7
+leet = {'a':'4','e':'3','i':'1','o':'0','s':'5','t':'7'}
+
+def capitalize(pw):
+    parts = re.split(r'(\\d+)', pw)
+    return "".join(
+        p if p.isdigit() or not p else p[0].upper()+p[1:]
+        for p in parts
+    )
+
+def leet_variants(pw):
+    eligible = [l for l in leet if l in pw.lower()]
+    for combo in product([False, True], repeat=len(eligible)):
+        v = pw
+        for i, do_it in enumerate(combo):
+            if do_it:
+                v = re.sub(eligible[i], leet[eligible[i]], v, flags=re.I)
+        yield v
+
+def check(c):
+    if hashlib.sha256(c.encode()).hexdigest() == target:
+        print(f"CRACKED: {c}")
+        sys.exit(0)
+
+bases = [a.lower()+b.lower() for a in words for b in words if a!=b]
+print(f"Trying {len(bases)} base combinations...")
+
+for base in bases:
+    cap = capitalize(base)
+    for special in ["!", "@", "#", "$", "*"]:
+        pw = cap + special
+        # Path 1: leetspeak (no separator)
+        for v in leet_variants(pw):
+            check(v)
+        # Path 2: separator (no leetspeak)
+        for sep in ["_", "-", "."]:
+            for i in range(1, len(cap)):
+                check(cap[:i] + sep + cap[i:] + special)
+
+print("Not cracked - add more words to words.txt")`}</pre>
+
+                    <p className="text-gray-400 text-sm mt-3 mb-2">Run it:</p>
+                    <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">python3 crack.py</pre>
+                  </>
                 ) : (
                   <>
                     <p className="text-white font-semibold mb-3">Step 4: Run Hashcat ⚡</p>
@@ -371,7 +478,7 @@ print("Not cracked - add more words to words.txt")`}</pre>
                         <p className="text-green-400 text-sm font-semibold mb-1">Option A: Straight Attack</p>
                         <p className="text-gray-400 text-xs mb-2">Tries each line as-is</p>
                         <div className="relative">
-                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 0 hash.txt wordlist.txt`}</pre>
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 0 hash.txt wordlist.txt`}</pre>
                           <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
                         </div>
                         <div className="mt-2 text-xs text-gray-400">
@@ -384,7 +491,7 @@ print("Not cracked - add more words to words.txt")`}</pre>
                         <p className="text-green-400 text-sm font-semibold mb-1">Option B: Combinator Attack</p>
                         <p className="text-gray-400 text-xs mb-2">Auto-combines word+number</p>
                         <div className="relative">
-                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m ${selectedDifficulty === 'easy' ? '0' : '1400'} -a 1 hash.txt words.txt numbers.txt`}</pre>
+                          <pre className="bg-black/50 p-2 rounded text-green-400 text-xs overflow-x-auto">{`hashcat -m 0 -a 1 hash.txt words.txt numbers.txt`}</pre>
                           <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-l from-black/50 to-transparent pointer-events-none rounded-r"></div>
                         </div>
                         <div className="mt-2 text-xs text-gray-400">
@@ -394,20 +501,9 @@ print("Not cracked - add more words to words.txt")`}</pre>
                     </div>
 
                     <div className="mt-3 text-xs text-gray-400 bg-gray-800 p-2 rounded">
-                      <p>• <code className="text-green-400">-m {selectedDifficulty === 'easy' ? '0' : '1400'}</code> = {selectedDifficulty === 'easy' ? 'MD5' : 'SHA-256'} hash type</p>
+                      <p>• <code className="text-green-400">-m 0</code> = MD5 hash type</p>
                       <p>• <code className="text-green-400">hash.txt</code> = Your hash file</p>
                     </div>
-
-                    {selectedDifficulty === 'hard' && (
-                      <div className="mt-3 text-xs bg-red-900/20 border border-red-500/30 p-3 rounded">
-                        <p className="text-red-400 font-semibold mb-2">🔥 Hard Mode Tip:</p>
-                        <p className="text-gray-300 mb-2">Use hashcat rules to generate variations (capitalization, leetspeak, special chars):</p>
-                        <pre className="bg-black/50 p-2 rounded text-green-400 overflow-x-auto">
-hashcat -m 1400 -a 0 hash.txt wordlist.txt -r /usr/share/hashcat/rules/best64.rule
-                        </pre>
-                        <p className="text-gray-400 mt-2">Or create custom rules for capitalization and special chars!</p>
-                      </div>
-                    )}
                   </>
                 )}
               </div>
@@ -416,18 +512,21 @@ hashcat -m 1400 -a 0 hash.txt wordlist.txt -r /usr/share/hashcat/rules/best64.ru
               <div className="border-l-4 border-green-500 pl-4">
                 <p className="text-white font-semibold mb-2">Step 5: Check Results & Iterate 🔄</p>
 
-                {selectedDifficulty === 'medium' ? (
+                {selectedDifficulty === 'medium' || selectedDifficulty === 'hard' ? (
                   <>
                     <p className="text-gray-400 text-sm mb-2">If no match is found:</p>
                     <pre className="bg-gray-900 p-3 rounded text-red-400 text-xs overflow-x-auto">
-Not cracked. Try adding more words to words.txt</pre>
+Not cracked - add more words to words.txt</pre>
                     <p className="text-gray-400 text-sm mt-3 mb-2">
-                      Go back and re-read the tweets. Did you miss a pet name, city, or year? Add it to <code className="text-yellow-400">words.txt</code> and run again.
+                      Go back and re-read the tweets. Did you miss a pet name, city, or year? Add it to <code className={selectedDifficulty === 'medium' ? 'text-yellow-400' : 'text-red-400'}>words.txt</code> and run again.
+                      {selectedDifficulty === 'hard' && ' For hard mode, try adding more birth year estimates — the person\'s age is often not mentioned in tweets.'}
                     </p>
                     <p className="text-gray-400 text-sm mt-3 mb-2">When it works:</p>
                     <pre className="bg-gray-900 p-3 rounded text-green-400 text-xs overflow-x-auto">
-CRACKED: Lunase_attle</pre>
-                    <p className="text-green-400 text-sm mt-2 font-semibold">✓ Password found! Copy it exactly as shown — capitalization and separator position matter.</p>
+{selectedDifficulty === 'medium' ? 'CRACKED: Lunase_attle' : 'CRACKED: 88Bra.dford$'}</pre>
+                    <p className="text-green-400 text-sm mt-2 font-semibold">
+                      ✓ Password found! Copy it exactly as shown — capitalization, {selectedDifficulty === 'hard' ? 'special chars, leetspeak,' : ''} and separator position matter.
+                    </p>
                   </>
                 ) : (
                   <>
@@ -519,11 +618,13 @@ Status: Cracked</pre>
               )}
               {selectedDifficulty === 'hard' && (
                 <>
-                  <li>• <strong>Expect leetspeak</strong> - e→3, a→4, i→1, o→0, s→5, t→7</li>
-                  <li>• <strong>Special characters</strong> - passwords often end with !, @, #, $, *</li>
-                  <li>• Use hashcat rules file (best64.rule or custom rules) to generate all variations</li>
-                  <li>• Start with base words, let hashcat mutate them with rules</li>
-                  <li>• Example: "luna2020" → hashcat rules → "Lun42020!", "Luna_2020@", etc.</li>
+                  <li>• <strong>Leetspeak OR separator</strong> — the password has one or the other, not both.
+                    Leetspeak: <code>a→4 e→3 i→1 o→0 s→5 t→7</code>. Separator: <code>_ - .</code> near the middle</li>
+                  <li>• <strong>Always a special char at the end:</strong> <code>!</code> <code>@</code> <code>#</code> <code>$</code> <code>*</code></li>
+                  <li>• <strong>Birth year is often hidden</strong> — estimate from context (parent with young kids? probably 28-45).
+                    Add both full (1988) and short (88) years to your words file</li>
+                  <li>• <strong>The Python script handles everything</strong> — it tries all leetspeak combinations, all separator positions, and all special chars automatically</li>
+                  <li>• Example: <code>luna2020</code> → <code>Lun42020!</code> (leetspeak path) or <code>Luna.2020$</code> (separator path)</li>
                 </>
               )}
             </ul>
@@ -551,10 +652,11 @@ Status: Cracked</pre>
           )}
           {selectedDifficulty === 'hard' && (
             <div className="bg-red-900/20 border border-red-500/30 rounded p-4">
-              <p className="text-red-400 font-semibold mb-2">⚠️ Hard Mode</p>
+              <p className="text-red-400 font-semibold mb-2">🐍 Python Required</p>
               <p className="text-gray-400 text-sm">
-                Online hash crackers won't help much here. You MUST use Hashcat with custom wordlists
-                and rules. This is the real challenge!
+                Online hash crackers won't work for hard mode — the combination of leetspeak, special characters,
+                and separator positions is too complex to guess manually. The Python script above handles all these
+                variations automatically. Your job is to gather the right clue words and estimate hidden values like birth year.
               </p>
             </div>
           )}
